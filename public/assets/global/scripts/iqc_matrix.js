@@ -7,7 +7,7 @@ var dataColumn = [
 	{ data: 'classification', name: 'classification' },
 	{ data: 'update_user', name: 'update_user' },
 	{ data: 'updated_at', name: 'updated_at' },
-	{ data: 'action', name: 'action',orderable: false, searchable: false  },
+	{ data: 'action', name: 'action',orderable: false, searchable: false },
 ];
 
 $( function() {

@@ -1175,7 +1175,7 @@ class WBSMaterialReceivingController extends Controller
                             ->join('tbl_wbs_material_receiving as r','b.wbs_mr_id','=','r.receive_no')
                             ->where('b.wbs_mr_id', $receiveno)
                             ->where('b.for_kitting', '0')
-                            ->where('b.iqc_status', '0')
+                            // ->where('b.iqc_status', '0')
                             ->select('r.receive_no as receive_no',
                                     'r.invoice_no as invoice_no',
                                     'b.item as item',
@@ -1264,7 +1264,7 @@ class WBSMaterialReceivingController extends Controller
                         $sheet->cell('F6', $app_date);
 
                         $sheet->cell('A8', "INVOICE #:");
-                        $sheet->cell('B8', $iqc_data[0]->receive_no);
+                        $sheet->cell('B8', $iqc_data[0]->invoice_no);
                         $sheet->cell('E8', "TIME:");
                         $sheet->cell('F8', $app_time);
 

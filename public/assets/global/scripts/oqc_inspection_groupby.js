@@ -83,6 +83,17 @@ $( function() {
         $('#main_pane').show();
         $('#group_by_pane').hide();
     });
+
+    $('#btn_clear_grpby').on('click', function() {
+        clearGrpByFields();
+    });
+
+    $('#btn_pdf_groupby').live('click', function() {
+        window.location.href=PDFGroupByReportURL;
+    });
+    $('#btn_excel_groupby').live('click', function() {
+        window.location.href=ExcelGroupByReportURL;
+    });
 });
 
 
@@ -124,9 +135,16 @@ function calculateLARDPPM(data) {
     var node_parent_count = 1;
     var nxt_node = 1;
     var details = '';
-    $('#group_by_pane').html('<button class="btn btn-danger btn-sm pull-right" id="btn_close_groupby">'+
-                    '<i class="fa fa-times"></i> Close'+
-                '</button><br><br>');
+    $('#group_by_pane').html('<div class="btn-group pull-right">'+
+                                '<button class="btn btn-danger btn-sm" id="btn_close_groupby">'+
+                                    '<i class="fa fa-times"></i> Close'+
+                                '</button>'+
+                                '<button class="btn btn-info btn-sm" id="btn_pdf_groupby">'+
+                                    '<i class="fa fa-file-pdf-o"></i> PDF'+
+                                '</button>'+
+                                '<button class="btn btn-success btn-sm" id="btn_excel_groupby">'+
+                                    '<i class="fa fa-file-excel-o"></i> Excel'+
+                                '</button></div><br><br>');
     var details_body = '';
     
 
@@ -158,26 +176,43 @@ function calculateLARDPPM(data) {
                 if (xx.details.length > 0) {
                     details = '';
                     details_body = '';
-                    details += '<table style="font-size:10px" class="table table-condensed table-borderd table-fixedheader">';
+                    details += '<table style="font-size:9px" class="table table-condensed table-bordered">';
                     details += '<thead>';
                     details += '<tr>';
-                    details += '<td width="2.25%"></td>';
-                    details += '<td width="2.25%"></td>';
-                    details += '<td width="5.25%"><strong>Date Inspected</strong></td>';
-                    details += '<td width="3.25%"><strong>FY-WW</strong></td>';
-                    details += '<td width="3.25%"><strong>From</strong></td>';
-                    details += '<td width="3.25%"><strong>To</strong></td>';
-                    details += '<td width="3.25%"><strong>Lot Size</strong></td>';
-                    details += '<td width="5.25%"><strong>Sample Size</strong></td>';
-                    details += '<td width="6.25%"><strong>No. of Defectives</strong></td>';
-                    details += '<td width="3.25%"><strong>Lot No.</strong></td>';
-                    details += '<td width="15.25%"><strong>Device Name</strong></td>';
-                    details += '<td width="3.25%"><strong>Sub</strong></td>';
-                    details += '<td width="3.25%"><strong>Qty</strong></td>';
-                    details += '<td width="4.25%"><strong>Judgement</strong></td>';
-                    details += '<td width="6.25%"><strong>Inspector</strong></td>';
-                    details += '<td width="24.25%"><strong>Remarks</strong></td>';
-                    details += '<td width="6.25%"><strong>Type</strong></td>';
+                    details += '<td></td>';
+                    details += '<td></td>';
+                    details += '<td><strong>PO</strong></td>';
+                    details += '<td><strong>Device Name</strong></td>';
+                    details += '<td><strong>Customer</strong></td>';
+                    details += '<td><strong>PO Qty</strong></td>';
+                    details += '<td><strong>Family</strong></td>';
+                    details += '<td><strong>Assembly Line</strong></td>';
+                    details += '<td><strong>Lot No</strong></td>';
+                    details += '<td><strong>App. Date</strong></td>';
+                    details += '<td><strong>App. Time</strong></td>';
+                    details += '<td><strong>Category</strong></td>';
+                    details += '<td><strong>Type of Inspection</strong></td>';
+                    details += '<td><strong>Severity of Inspection</strong></td>';
+                    details += '<td><strong>Inspection Level</strong></td>';
+                    details += '<td><strong>AQL</strong></td>';
+                    details += '<td><strong>Accept</strong></td>';
+                    details += '<td><strong>Reject</strong></td>';
+                    details += '<td><strong>Date inspected</strong></td>';
+                    details += '<td><strong>WW</strong></td>';
+                    details += '<td><strong>FY</strong></td>';
+                    details += '<td><strong>Time Inspected</strong></td>';
+                    details += '<td><strong>Shift</strong></td>';
+                    details += '<td><strong>Inspector</strong></td>';
+                    details += '<td><strong>Submission</strong></td>';
+                    details += '<td><strong>COC Requirement</strong></td>';
+                    details += '<td><strong>Judgement</strong></td>';
+                    details += '<td><strong>Lot Qty</strong></td>';
+                    details += '<td><strong>Sample Size</strong></td>';
+                    details += '<td><strong>Lot Inspected</strong></td>';
+                    details += '<td><strong>Lot Accepted</strong></td>';
+                    details += '<td><strong>No. of Defects</strong></td>';
+                    details += '<td><strong>Remarks</strong></td>';
+                    details += '<td><strong>Type</strong></td>';
                     details += '</tr>';
                     details += '</thead>';
                     details += '<tbody id="details_tbody">';
@@ -187,8 +222,8 @@ function calculateLARDPPM(data) {
                     $.each(xx.details, function(iii,xxx) {
                         
                         details_body += '<tr>';
-                        details_body += '<td width="2.25%">'+cnt+'</td>';
-                        details_body += '<td width="2.25%"><button class="btn btn-sm view_inspection blue" data-id="'+xxx.id+'"'+ 
+                        details_body += '<td>'+cnt+'</td>';
+                        details_body += '<td><button class="btn btn-sm view_inspection blue" data-id="'+xxx.id+'"'+ 
                                                 'data-assembly_line="'+xxx.assembly_line+'"'+
                                                 'data-lot_no="'+xxx.lot_no+'"'+
                                                 'data-app_date="'+xxx.app_date+'"'+
@@ -223,21 +258,38 @@ function calculateLARDPPM(data) {
                                                 'data-remarks="'+xxx.remarks+'"><i class="fa fa-edit"></i>'+
                                             '</button>'+
                                         '</td>';
-                        details_body += '<td width="5.25%">'+xxx.date_inspected+'</td>';
-                        details_body += '<td width="3.25%">'+xxx.fy+'-'+xxx.ww+'</td>';
-                        details_body += '<td width="4.25%">'+xxx.time_ins_from+'</td>';
-                        details_body += '<td width="4.25%">'+xxx.time_ins_to+'</td>';
-                        details_body += '<td width="3.25%">'+xxx.lot_qty+'</td>';
-                        details_body += '<td width="5.25%">'+xxx.sample_size+'</td>';
-                        details_body += '<td width="6.25%">'+xxx.num_of_defects+'</td>';
-                        details_body += '<td width="3.25%">'+xxx.lot_no+'</td>';
-                        details_body += '<td width="15.25%">'+xxx.device_name+'</td>';
-                        details_body += '<td width="3.25%">'+xxx.submission+'</td>';
-                        details_body += '<td width="3.25%">'+xxx.po_qty+'</td>';
-                        details_body += '<td width="4.25%">'+xxx.judgement+'</td>';
-                        details_body += '<td width="6.25%">'+xxx.inspector+'</td>';
-                        details_body += '<td width="24.25%">'+xxx.remarks+'</td>';
-                        details_body += '<td width="6.25%">'+xxx.type+'</td>';
+                        details_body += '<td>'+xxx.po_no+'</td>';
+                        details_body += '<td>'+xxx.device_name+'</td>';
+                        details_body += '<td>'+xxx.customer+'</td>';
+                        details_body += '<td>'+xxx.po_qty+'</td>';
+                        details_body += '<td>'+xxx.family+'</td>';
+                        details_body += '<td>'+xxx.assembly_line+'</td>';
+                        details_body += '<td>'+xxx.lot_no+'</td>';
+                        details_body += '<td>'+xxx.app_date+'</td>';
+                        details_body += '<td>'+xxx.app_time+'</td>';
+                        details_body += '<td>'+xxx.prod_category+'</td>';
+                        details_body += '<td>'+xxx.type_of_inspection+'</td>';
+                        details_body += '<td>'+xxx.severity_of_inspection+'</td>';
+                        details_body += '<td>'+xxx.inspection_lvl+'</td>';
+                        details_body += '<td>'+xxx.aql+'</td>';
+                        details_body += '<td>'+xxx.accept+'</td>';
+                        details_body += '<td>'+xxx.reject+'</td>';
+                        details_body += '<td>'+xxx.date_inspected+'</td>';
+                        details_body += '<td>'+xxx.ww+'</td>';
+                        details_body += '<td>'+xxx.fy+'</td>';
+                        details_body += '<td>'+xxx.time_ins_from+'-'+xxx.time_ins_to+'</td>';
+                        details_body += '<td>'+xxx.shift+'</td>';
+                        details_body += '<td>'+xxx.inspector+'</td>';
+                        details_body += '<td>'+xxx.submission+'</td>';
+                        details_body += '<td>'+xxx.coc_req+'</td>';
+                        details_body += '<td>'+xxx.judgement+'</td>';
+                        details_body += '<td>'+xxx.lot_qty+'</td>';
+                        details_body += '<td>'+xxx.sample_size+'</td>';
+                        details_body += '<td>'+xxx.lot_inspected+'</td>';
+                        details_body += '<td>'+xxx.lot_accepted+'</td>';
+                        details_body += '<td>'+xxx.num_of_defects+'</td>';
+                        details_body += '<td>'+xxx.remarks+'</td>';
+                        details_body += '<td>'+xxx.type+'</td>';
                         details_body += '</tr>';
                         cnt++;
                     });
@@ -604,4 +656,8 @@ function calculateLARDPPM(data) {
     });
     //node_parent_count++;
 
+}
+
+function clearGrpByFields() {
+    $('.grpfield').val('');
 }

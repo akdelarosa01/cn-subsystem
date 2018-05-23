@@ -168,12 +168,22 @@ class WBSIqcController extends Controller
         $details = DB::connection($this->wbs)->table('tbl_wbs_inventory')
                         ->where('id',$id)->first();
 
-        $app = DB::connection($this->wbs)->table('tbl_wbs_material_receiving')
-                        ->where('invoice_no',$details->invoice_no)->first();
+        $app = DB::connection($this->wbs)->table('tbl_wbs_material_receiving_batch')
+                    ->select(
+                            'app_date',
+                            'app_time',
+                            'wbs_mr_id'
+                    )
+                    ->where('id',$details->mat_batch_id)->first();
 
         if (count((array)$app) < 1) {
-            $app = DB::connection($this->wbs)->table('tbl_wbs_local_receiving')
-                        ->where('invoice_no',$details->invoice_no)->first();
+            $app = DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch')
+                        ->select(
+                                'app_date',
+                                'app_time',
+                                DB::raw('wbs_loc_id as wbs_mr_id')
+                        )
+                        ->where('id',$details->loc_batch_id)->first();
 
             DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch')
                     ->where('id',$details->loc_batch_id)
@@ -200,7 +210,7 @@ class WBSIqcController extends Controller
                 'supplier' => $details->supplier,
                 'app_date' => $app->app_date,
                 'app_time' => $app->app_time,
-                'app_no' => $app->receive_no,
+                'app_no' => $app->wbs_mr_id,
                 'lot_no' => $details->lot_no,
                 'lot_qty' => $details->qty,
                 'time_ins_from' => $req->start_time,

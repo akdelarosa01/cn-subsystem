@@ -1116,7 +1116,7 @@ class WBSLocalMaterialReceivingController extends Controller
                             ->join('tbl_wbs_local_receiving as r','b.wbs_loc_id','=','r.receive_no')
                             ->where('b.wbs_loc_id', $receiveno)
                             ->where('b.for_kitting', '0')
-                            ->where('b.iqc_status', '0')
+                            // ->where('b.iqc_status', '0')
                             ->select('r.receive_no as receive_no',
                                     'r.invoice_no as invoice_no',
                                     'b.item as item',

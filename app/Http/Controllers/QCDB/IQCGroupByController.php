@@ -41,13 +41,15 @@ class IQCGroupByController extends Controller
     {
         $g1 = ''; $g2 = ''; $g3 = '';
         $g1c = ''; $g2c = ''; $g3c = '';
-        $date_inspected = '';
-        $groupBy = []; $inVal; $wherein;
+        $date_inspected = ''; $sub_date_inspected = '';
+        $groupBy = []; $inVal; $wherein1 = []; $wherein2 = []; $wherein3 = [];
         $node1 = []; $node2 = []; $node3 = [];
 
         // wheres
         if (!empty($req->gfrom) && !empty($req->gto)) {
             $date_inspected = " AND main.date_ispected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
+                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
+            $sub_date_inspected = " AND date_ispected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
                             "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
         }
 
@@ -55,24 +57,67 @@ class IQCGroupByController extends Controller
 
         if (!empty($req->field1)) {
             $g1 = $req->field1;
+            $g2 = $req->field2;
 
-            $wherein = [];
+            if ($req->content1 == '' && $req->content2 == '') {
+                $in = DB::connection($this->mysql)
+                        ->select("SELECT ".$g1." as description,date_ispected, ".$g2." as g2
+                                FROM iqc_inspections
+                                WHERE 1=1 ".$sub_date_inspected." 
+                                GROUP BY ".$g1.",".$g2
+                            );
+
+                
+                foreach ($in as $key => $flds) {
+                    array_push($wherein1,$flds->description);
+                    array_push($wherein2,$flds->g2);
+                }
+
+                $inVal = implode("','",$wherein1);
+                $inVal2 = implode("','",$wherein2);
+
+                $query = DB::connection($this->mysql)
+                            ->select("SELECT main.".$g1." as field1,
+                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted,
+                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected,
+                                            IFNULL(SUM(main.no_of_defects),0) as no_of_defects,
+                                            IFNULL(SUM(main.sample_size),0) as sample_size
+                                        FROM iqc_inspections as main
+                                        LEFT JOIN (
+                                            SELECT COUNT(id) as no_of_accepted,date_ispected,".$g1."
+                                            FROM iqc_inspections
+                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
+                                            AND ".$g1." IN ('".$inVal."') AND ".$g2." IN ('".$inVal2."')
+                                            GROUP BY ".$g1.",".$g2."
+                                        ) AS acc ON acc.".$g1." = main.".$g1."
+
+                                        LEFT JOIN (
+                                            SELECT COUNT(id) as no_of_lots_inspected,date_ispected,".$g1."
+                                            FROM iqc_inspections
+                                            WHERE ".$g1." IN ('".$inVal."') AND ".$g2." IN ('".$inVal2."') ".$sub_date_inspected." 
+                                            GROUP BY ".$g1.",".$g1."
+                                        ) AS ins ON ins.".$g1." = main.".$g1."
+
+                                        WHERE 1=1".$date_inspected." AND main.".$g1." IN ('".$inVal."') AND ".$g2." IN ('".$inVal2."')".
+                                        "GROUP BY main.".$g1."");
+                
+            }
 
             if ($req->content1 == '') {
+                $wherein1 = [];
                 $in = DB::connection($this->mysql)
                         ->select("SELECT ".$g1." as description,date_ispected
                                 FROM iqc_inspections
-                                WHERE date_ispected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'
+                                WHERE 1=1 ".$sub_date_inspected."
                                 GROUP BY ".$g1
                             );
 
                 
                 foreach ($in as $key => $flds) {
-                    array_push($wherein,$flds->description);
+                    array_push($wherein1,$flds->description);
                 }
 
-                $inVal = implode("','",$wherein);
+                $inVal = implode("','",$wherein1);
 
                 $query = DB::connection($this->mysql)
                             ->select("SELECT main.".$g1." as field1,
@@ -84,9 +129,7 @@ class IQCGroupByController extends Controller
                                         LEFT JOIN (
                                         	SELECT COUNT(id) as no_of_accepted,date_ispected,".$g1."
                                         	FROM iqc_inspections
-                                        	WHERE judgement = 'Accepted' AND date_ispected BETWEEN 
-                                            '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'
+                                        	WHERE judgement = 'Accepted' ".$sub_date_inspected."
                                             AND ".$g1." IN ('".$inVal."')
                                             GROUP BY ".$g1."
                                         ) AS acc ON acc.".$g1." = main.".$g1."
@@ -94,9 +137,7 @@ class IQCGroupByController extends Controller
                                         LEFT JOIN (
                                         	SELECT COUNT(id) as no_of_lots_inspected,date_ispected,".$g1."
                                         	FROM iqc_inspections
-                                            WHERE ".$g1." IN ('".$inVal."') AND date_ispected BETWEEN 
-                                            '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'
+                                            WHERE ".$g1." IN ('".$inVal."') ".$sub_date_inspected."
                                         	GROUP BY ".$g1."
                                         ) AS ins ON ins.".$g1." = main.".$g1."
 
@@ -114,9 +155,7 @@ class IQCGroupByController extends Controller
                                         LEFT JOIN (
                                             SELECT COUNT(id) as no_of_accepted,date_ispected,".$g1."
                                             FROM iqc_inspections
-                                            WHERE judgement = 'Accepted'  AND date_ispected BETWEEN 
-                                            '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'
+                                            WHERE judgement = 'Accepted' ".$sub_date_inspected."
                                             AND ".$g1."='".$req->content1."'
                                             GROUP BY ".$g1."
                                         ) AS acc ON acc.".$g1." = main.".$g1."
@@ -124,9 +163,7 @@ class IQCGroupByController extends Controller
                                         LEFT JOIN (
                                             SELECT COUNT(id) as no_of_lots_inspected,date_ispected,".$g1."
                                             FROM iqc_inspections
-                                            WHERE ".$g1."='".$req->content1."'  AND date_ispected BETWEEN 
-                                            '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'
+                                            WHERE ".$g1."='".$req->content1."' ".$sub_date_inspected."
                                             GROUP BY ".$g1."
                                         ) AS ins ON ins.".$g1." = main.".$g1."
 
@@ -137,6 +174,8 @@ class IQCGroupByController extends Controller
 
             $lar = 0;
             $dppm = 0;
+
+            $inVal2 = implode("','",$wherein2);
 
             foreach ($query as $key => $qy) {
                 if ($qy->no_of_accepted >= 0 && $qy->no_of_lots_inspected >= 0) {
@@ -157,13 +196,14 @@ class IQCGroupByController extends Controller
 
                 $details = [];
 
-                if ($req->field2 == '') {
-                    if ($req->content1 == '') {
-                        if (isset($wherein[$key])) {
+                if ($req->field2 !== '' && $req->field1 !== '') {
+                    if ($req->field2 !== '' && $req->field1 !== '') {
+                        if (isset($wherein1[$key])) {
                             $details = DB::connection($this->mysql)
                                 ->select("SELECT *
                                         FROM iqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND main.".$g1." = '".$wherein[$key]."'");
+                                        WHERE 1=1".$date_inspected." AND main.".$g1." = '".$wherein1[$key]."'
+                                        AND main.".$g2." IN ('".$inVal2."')");
                         }
                         
                     } else {
@@ -177,6 +217,25 @@ class IQCGroupByController extends Controller
                     $this->insertToReports($details);
                 }
                 
+                if ($req->field2 == '') {
+                    if ($req->content1 == '') {
+                        if (isset($wherein1[$key])) {
+                            $details = DB::connection($this->mysql)
+                                ->select("SELECT *
+                                        FROM iqc_inspections as main
+                                        WHERE 1=1".$date_inspected." AND main.".$g1." = '".$wherein1[$key]."'");
+                        }
+                        
+                    } else {
+                        $details = DB::connection($this->mysql)
+                                ->select("SELECT *
+                                        FROM iqc_inspections as main
+                                        WHERE 1=1".$date_inspected." AND
+                                        main.".$g1."='".$req->content1."'");
+                    }
+
+                    $this->insertToReports($details);
+                }
 
                 array_push($node1,[
                     'group' => $req->field1,
@@ -195,7 +254,7 @@ class IQCGroupByController extends Controller
         if (!empty($req->field2)) {
             $g2 = $req->field2;
 
-            $wherein = [];
+            $wherein2 = [];
 
             if ($req->content2 == '') {
                 $in = DB::connection($this->mysql)
@@ -209,10 +268,10 @@ class IQCGroupByController extends Controller
 
                 
                 foreach ($in as $key => $flds) {
-                    array_push($wherein,$flds->description);
+                    array_push($wherein2,$flds->description);
                 }
 
-                $inVal = implode("','",$wherein);
+                $inVal = implode("','",$wherein2);
 
                 $query = DB::connection($this->mysql)
                             ->select("SELECT main.".$g2." as field2,
@@ -295,12 +354,12 @@ class IQCGroupByController extends Controller
 
                 if ($req->field3 == '') {
                     if ($req->content2 == '') {
-                        if (isset($wherein[$key])) {
+                        if (isset($wherein2[$key])) {
                             $details = DB::connection($this->mysql)
                                 ->select("SELECT *
                                         FROM iqc_inspections as main
                                         WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."'
-                                        AND main.".$g2." = '".$wherein[$key]."'");
+                                        AND main.".$g2." = '".$wherein2[$key]."'");
                         }
                         
                     } else {
@@ -325,7 +384,7 @@ class IQCGroupByController extends Controller
                     'LAR' => number_format($lar,2),
                     'DPPM' => number_format($dppm,2),
                     'details' => $details,
-                    'wherein' => $wherein
+                    'wherein' => $wherein2
                 ]);
             }
         }
@@ -333,7 +392,7 @@ class IQCGroupByController extends Controller
         if (!empty($req->field3)) {
             $g3 = $req->field3;
 
-            $wherein = [];
+            $wherein3 = [];
 
             if ($req->content3 == '' && $req->content2 !== '') {
                 $in = DB::connection($this->mysql)
@@ -347,10 +406,10 @@ class IQCGroupByController extends Controller
 
                 
                 foreach ($in as $key => $flds) {
-                    array_push($wherein,$flds->description);
+                    array_push($wherein3,$flds->description);
                 }
 
-                $inVal = implode("','",$wherein);
+                $inVal = implode("','",$wherein3);
 
                 $query = DB::connection($this->mysql)
                             ->select("SELECT main.".$g3." as field3,
@@ -435,13 +494,13 @@ class IQCGroupByController extends Controller
 
                 //if ($req->field3 == '') {
                     if ($req->content3 == '') {
-                        if (isset($wherein[$key])) {
+                        if (isset($wherein3[$key])) {
                             $details = DB::connection($this->mysql)
                                 ->select("SELECT *
                                         FROM iqc_inspections as main
                                         WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."'
                                         AND main.".$g2."='".$req->content2."'
-                                        AND main.".$g3." = '".$wherein[$key]."'");
+                                        AND main.".$g3." = '".$wherein3[$key]."'");
                         }
                         
                     } else {
@@ -468,7 +527,7 @@ class IQCGroupByController extends Controller
                     'LAR' => number_format($lar,2),
                     'DPPM' => number_format($dppm,2),
                     'details' => $details,
-                    'wherein' => $wherein
+                    'wherein' => $wherein3
                 ]);
             }
         }
