@@ -228,10 +228,72 @@
 	"buffers":
 	[
 		{
-			"file": "app/Http/Controllers/WBS/WBSMaterialReceivingController.php",
+			"file": "public/assets/global/scripts/sakidashiissuance.js",
 			"settings":
 			{
-				"buffer_size": 109239,
+				"buffer_size": 24889,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "resources/views/wbs/sakidashiissuance.blade.php",
+			"settings":
+			{
+				"buffer_size": 15589,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/var/www/html/pmi-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+			"settings":
+			{
+				"buffer_size": 60376,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+			"settings":
+			{
+				"buffer_size": 60113,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Fixes\n - Detect Unicode Character specifically in ITEM NAMES,\n \tthat causes error when searching PO Details / Invoice Details\n \tin Material Receiving, Sakidashi Issuance and Material Kitting.\n - Can Detect barcode in Sakidashi Issuance.\n - Local Material Receiving Item list.\n ",
+			"settings":
+			{
+				"buffer_size": 277,
+				"line_ending": "Unix",
+				"name": "Fixes"
+			}
+		},
+		{
+			"file": "app/Http/routes.php",
+			"settings":
+			{
+				"buffer_size": 131667,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "resources/views/includes/sakidashi-modal.blade.php",
+			"settings":
+			{
+				"buffer_size": 8170,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
+			"settings":
+			{
+				"buffer_size": 83867,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -281,12 +343,36 @@
 	},
 	"expanded_folders":
 	[
-		"/var/www/html/cn-subsystem"
+		"/var/www/html/cn-subsystem",
+		"/var/www/html/cn-subsystem/app",
+		"/var/www/html/cn-subsystem/app/Http",
+		"/var/www/html/cn-subsystem/app/Http/Controllers",
+		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS",
+		"/var/www/html/cn-subsystem/public",
+		"/var/www/html/cn-subsystem/public/assets",
+		"/var/www/html/cn-subsystem/public/assets/global",
+		"/var/www/html/cn-subsystem/public/assets/global/scripts",
+		"/var/www/html/cn-subsystem/resources",
+		"/var/www/html/cn-subsystem/resources/views",
+		"/var/www/html/cn-subsystem/resources/views/wbs",
+		"/var/www/html/pmi-subsystem",
+		"/var/www/html/pmi-subsystem/app",
+		"/var/www/html/pmi-subsystem/app/Http",
+		"/var/www/html/pmi-subsystem/app/Http/Controllers",
+		"/var/www/html/pmi-subsystem/app/Http/Controllers/WBS"
 	],
 	"file_history":
 	[
-		"/var/www/html/cn-subsystem/cn.sublime-project",
+		"/var/www/html/cn-subsystem/resources/views/layouts/loginlayout.blade.php",
+		"/var/www/html/cn-subsystem/resources/views/auth/login.blade.php",
+		"/var/www/html/cn-subsystem/resources/views/errors/503.blade.php",
+		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
+		"/var/www/html/cn-subsystem/app/Http/routes.php",
 		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSMaterialKittingController.php",
+		"/var/www/html/cn-subsystem/resources/views/wbs/materialreceiving.blade.php",
+		"/var/www/html/cn-subsystem/app/Http/Controllers/CommonController.php",
+		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSMaterialReceivingController.php",
+		"/var/www/html/cn-subsystem/cn.sublime-project",
 		"/var/www/html/en-pms/routes/web.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/ProductionScheduleController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/RawMaterialWithdrawalController.php",
@@ -358,7 +444,6 @@
 		"/var/www/html/yf-subsystem/app/Http/Controllers/QCDB/IQCInspectionController.php",
 		"/var/www/html/yf-subsystem/resources/views/includes/iqc_inspection_modal.blade.php",
 		"/var/www/html/yf-subsystem/resources/views/qcdb/iqcinspection.blade.php",
-		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSMaterialReceivingController.php",
 		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
 		"/var/www/html/yf-subsystem/resources/views/home.blade.php",
 		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSIqcController.php",
@@ -405,14 +490,7 @@
 		"/var/www/html/yf-subsystem/resources/views/phase3/detailsYpicsInvoicing.blade.php",
 		"/var/www/html/yf-subsystem/resources/views/phase3/ypicsinvoicing.blade.php",
 		"/var/www/html/yf-subsystem/resources/views/phase2/ByBOM.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/ByParts.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/InventoryQuery.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/PRBalance.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/PRChange.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/PackingListDetails.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/PackingListMolding.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/PackingListSystem.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/ReBOM.blade.php"
+		"/var/www/html/yf-subsystem/resources/views/phase2/ByParts.blade.php"
 	],
 	"find":
 	{
@@ -430,6 +508,80 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"hd_barcode",
+			"partname",
+			"whs102",
+			"WHS102",
+			"x",
+			"ZAIK",
+			"CODE",
+			"x.",
+			"$data",
+			"+",
+			"Datatables",
+			"dataColumn",
+			"insertIntoTempMaterialKittingTable",
+			"convert_unicode",
+			"mssql",
+			"utf8_encode_deep",
+			"checkInPO",
+			"mssql",
+			"$this->com",
+			"CommonCon",
+			"$com",
+			"CommonCon",
+			"$common",
+			"$common->",
+			"CommonController",
+			"$common",
+			"{\n",
+			"$com",
+			"CommonController",
+			"$common",
+			"$com->",
+			"$this->com",
+			"$this->convert_unicode",
+			"convert_unicode",
+			"getSummaryInvoice",
+			"getDetails",
+			"amount",
+			"$details->",
+			"amount",
+			"$detail",
+			"detail->",
+			"qty",
+			"$summary",
+			"getSummaryInvoice",
+			"$summary",
+			"summary",
+			"getSummary",
+			"getSummaryInvoice",
+			"getSummary",
+			"getSummaryInvoice",
+			"getInvoiceData",
+			"getItemData",
+			"getitemdata",
+			"getItemData",
+			"invoiceno",
+			"getItems",
+			"tbl_wbs_material_receiving_summary",
+			"getItemData",
+			"AddState",
+			"btn_add_batch",
+			"AddState",
+			"getitems",
+			"getItems",
+			"    function getItems() {\n",
+			"getitems",
+			"getItems",
+			"getitems",
+			"getItems",
+			"getitems",
+			"getItems",
+			"getDetails",
+			"description",
+			"var",
+			"getDetails",
 			"getSummaryInvoice",
 			"getSummary",
 			"getSummaryInvoice",
@@ -483,81 +635,7 @@
 			"family",
 			"Family",
 			"family",
-			"APPLICA",
-			"print",
-			"IQC",
-			"iqcin",
-			".form-group",
-			"ppc_dropdown_name_id",
-			"dropdown_names",
-			"btn_travel_sheet",
-			"production-schedule",
-			"dropdown_name",
-			"prepared_by",
-			"dropdown_name",
-			"to",
-			".sidebar-menu > li > .treeview-menu",
-			".skin-blue .sidebar-menu > li > .treeview-menu",
-			".skin-blue",
-			".skin-blue.sidebar-menu>li>.treeview-menu",
-			".skin-blue .sidebar-menu>li>.treeview-menu",
-			".sidebar-menu>li>.treeview-menu",
-			"sidebarMenu",
-			".sidebar-menu",
-			"get_dropdown_items_by_name",
-			"Process",
-			"get_dropdown_items_by_name",
-			"Department",
-			"get_dropdown_items_by_name",
-			"get_div_code",
-			"x.sequence",
-			"genre",
-			"getMaterials",
-			"prop",
-			"div_cancel",
-			"btn_cancel_process",
-			"process_array",
-			"showProcessList",
-			"yil",
-			"->",
-			".$",
-			"$",
-			".",
-			"text",
-			"makeProcessList",
-			"check_all_prod_sum",
-			"sched_qty",
-			"<td>",
-			"control",
-			"quantity",
-			"\"+x.+\"",
-			"x",
-			"quantity",
-			"DB::table('ppc_upload_orders')->",
-			"div",
-			"_assembly",
-			"iv",
-			"_assembly",
-			"clear",
-			"div_cancel",
-			"'",
-			"Division",
-			"type",
-			"item_type",
-			"param1",
-			"type",
-			"materials_code",
-			"updated_at",
-			"update_user",
-			"supplier",
-			"DB::table('upload_orders')",
-			"UpdateInventory:",
-			"UpdateInventory",
-			"DB::table('update_inventories')",
-			" DB::table('update_inventories')",
-			"DB::table('upload_orders')",
-			"DB::table('upload_orders')\n                    ->",
-			"assign_product_lines"
+			"APPLICA"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -575,24 +653,82 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "app/Http/Controllers/WBS/WBSMaterialReceivingController.php",
+					"file": "public/assets/global/scripts/sakidashiissuance.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 109239,
+						"buffer_size": 24889,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								80828,
-								80828
+								502,
+								502
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 78.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "resources/views/wbs/sakidashiissuance.blade.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15589,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2150,
+								2150
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Laravel Blade Highlighter/blade.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 625.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/var/www/html/pmi-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 60376,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								45277,
+								33133
 							]
 						],
 						"settings":
@@ -602,10 +738,157 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 23158.0,
+						"translation.y": 3744.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 60113,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								45012,
+								45012
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 12885.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 277,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								277,
+								277
+							]
+						],
+						"settings":
+						{
+							"auto_name": "Fixes",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "app/Http/routes.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 131667,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								24497,
+								24497
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 8191.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "resources/views/includes/sakidashi-modal.blade.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8170,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								843,
+								843
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Laravel Blade Highlighter/blade.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 83867,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9378,
+								9378
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -741,7 +1024,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 238.0,
+	"side_bar_width": 498.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

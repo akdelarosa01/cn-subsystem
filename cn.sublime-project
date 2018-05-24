@@ -2,13 +2,17 @@
 	"folders":
 	[
 		{
-			"follow_symlinks": true,
 			"path": "."
+		},
+		{
+			"path": "/var/www/html/pmi-subsystem"
 		}
 	],
-	"settings": {
-        "xdebug": {
-             "url": "http://localhost/cn-subsystem/materialreceiving",
-        }
-    }
+	"settings":
+	{
+		"xdebug":
+		{
+			"url": "http://localhost/cn-subsystem/materialreceiving"
+		}
+	}
 }

@@ -782,7 +782,10 @@ class WBSLocalMaterialReceivingController extends Controller
                     ->select('receive_date',
                             'invoice_no',
                             'orig_invoice_no',
-                            'create_user')
+                            'create_user',
+                            'update_user',
+                            'receive_no',
+                            'invoice_date')
                     ->whereRaw("receive_date BETWEEN '" . $from . "' AND '" . $to . "'")
                     ->orderBy('receive_date','asc')
                     ->get();
@@ -818,7 +821,7 @@ class WBSLocalMaterialReceivingController extends Controller
                         'underline'  =>  true
                     ]);
                 });
-                $sheet->cell('A4',"TS MATERIALS INCOMING INVOICE MONITORING");
+                $sheet->cell('A4',Auth::user()->productline." MATERIALS INCOMING INVOICE MONITORING");
 
                 $sheet->cell('A5', function($cell) {
                     $cell->setFont([
@@ -842,25 +845,29 @@ class WBSLocalMaterialReceivingController extends Controller
                     // Set all borders (top, right, bottom, left)
                     $cells->setBorder('solid', 'solid', 'solid', 'solid');
                 });
-                $sheet->cell('A8', "Received Date");
-                $sheet->cell('B8', "Invoice Number");
-                $sheet->cell('C8', "Invoice Qty.");
-                $sheet->cell('D8', "Invoice Amount");
-                $sheet->cell('E8', "No. of Package");
-                $sheet->cell('F8', "CORRESPONDING INVPOCE NUMBER");
-                $sheet->cell('G8', "Encoded By");
+                $sheet->cell('A8', "Control No.");
+                $sheet->cell('B8', "Invoice No.");
+                $sheet->cell('C8', "Date Received");
+                $sheet->cell('D8', "Invoice Date");
+                $sheet->cell('E8', "Total Qty.");
+                $sheet->cell('F8', "CORRESPONDING INVOICE NUMBER");
+                $sheet->cell('G8', "Created By");
+                $sheet->cell('H8', "Updated By");
 
                 $row = 9;
 
                 foreach ($data as $key => $ml) {
+                    $qty = DB::connection($this->mysql)->table('tbl_wbs_local_receiving_batch')
+                            ->where('wbs_loc_id',$ml->receive_no)->sum('qty');
                     $sheet->setHeight($row, 20);
-                    $sheet->cell('A'.$row, $ml->receive_date);
+                    $sheet->cell('A'.$row, $ml->receive_no);
                     $sheet->cell('B'.$row, $ml->invoice_no);
-                    $sheet->cell('C'.$row, '');
-                    $sheet->cell('D'.$row, '');
-                    $sheet->cell('E'.$row, '');
+                    $sheet->cell('C'.$row, $ml->receive_date);
+                    $sheet->cell('D'.$row, $ml->invoice_date);
+                    $sheet->cell('E'.$row, $qty);
                     $sheet->cell('F'.$row, $ml->orig_invoice_no);
                     $sheet->cell('G'.$row, $ml->create_user);
+                    $sheet->cell('H'.$row, $ml->update_user);
                     $row++;
                 }
                 
@@ -870,8 +877,11 @@ class WBSLocalMaterialReceivingController extends Controller
             });
 
             foreach ($data as $key => $ml) {
-                $excel->sheet($ml->receive_date, function($sheet) use($from,$to,$ml,$com_info)
+                $excel->sheet($ml->receive_no, function($sheet) use($from,$to,$ml,$com_info)
                 {
+                    $qty = DB::connection($this->mysql)->table('tbl_wbs_local_receiving_batch')
+                            ->where('wbs_loc_id',$ml->receive_no)->sum('qty');
+
                     $sheet->setHeight(1, 20);
                     $sheet->mergeCells('A1:G1');
                     $sheet->cells('A1:G1', function($cells) {
@@ -897,7 +907,7 @@ class WBSLocalMaterialReceivingController extends Controller
                             'underline'  =>  true
                         ]);
                     });
-                    $sheet->cell('A4',"TS MATERIALS INCOMING INVOICE MONITORING");
+                    $sheet->cell('A4',"WBS LOCAL MATERIAL RECEIVING");
 
                     $sheet->cell('A5', function($cell) {
                         $cell->setFont([
@@ -907,9 +917,93 @@ class WBSLocalMaterialReceivingController extends Controller
                         ]);
                     });
 
+                    $sheet->cell('A6', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
+                    $sheet->cell('C5', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
+                    $sheet->cell('C6', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
+                    $sheet->cell('E5', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
+                    $sheet->cell('E6', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
+                    $sheet->cell('G5', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
+                    $sheet->cell('G5', function($cell) {
+                        $cell->setFont([
+                            'family'     => 'Calibri',
+                            'size'       => '14',
+                            'bold'       =>  true,
+                        ]);
+                    });
+
                     $sheet->setHeight(5, 20);
-                    $sheet->cell('A5', 'Month: ');
-                    $sheet->cell('B5', $this->convertDate($from,'F Y'));
+                    $sheet->cell('A5', 'Control No.: ');
+                    $sheet->cell('B5', $ml->receive_no);
+
+                    $sheet->setHeight(6, 20);
+                    $sheet->cell('A6', 'Invoice No.: ');
+                    $sheet->cell('B6', $ml->invoice_no);
+
+                    $sheet->setHeight(5, 20);
+                    $sheet->cell('C5', 'Receved Date: ');
+                    $sheet->cell('D5', $ml->receive_date);
+
+                    $sheet->setHeight(6, 20);
+                    $sheet->cell('C6', 'Invoice Date: ');
+                    $sheet->cell('D6', $ml->invoice_date);
+
+                    $sheet->setHeight(5, 20);
+                    $sheet->cell('E5', 'Corr. Invoice: ');
+                    $sheet->cell('F5', $ml->orig_invoice_no);
+
+                    $sheet->setHeight(6, 20);
+                    $sheet->cell('E6', 'Total Qty.: ');
+                    $sheet->cell('F6', $qty);
+
+                    $sheet->setHeight(5, 20);
+                    $sheet->cell('G5', 'Created By: ');
+                    $sheet->cell('H5', $ml->create_user);
+
+                    $sheet->setHeight(6, 20);
+                    $sheet->cell('G6', 'Updated By: ');
+                    $sheet->cell('H6', $ml->update_user);
 
                     $sheet->setHeight(8, 20);
                     $sheet->cells('A8:G8', function($cells) {
@@ -921,33 +1015,36 @@ class WBSLocalMaterialReceivingController extends Controller
                         // Set all borders (top, right, bottom, left)
                         $cells->setBorder('solid', 'solid', 'solid', 'solid');
                     });
-                    $sheet->cell('A8', "Received Date");
-                    $sheet->cell('B8', "Invoice Number");
-                    $sheet->cell('C8', "Invoice Qty.");
-                    $sheet->cell('D8', "Invoice Amount");
-                    $sheet->cell('E8', "No. of Package");
-                    $sheet->cell('F8', "CORRESPONDING INVPOCE NUMBER");
-                    $sheet->cell('G8', "Encoded By");
+                    $sheet->cell('A8', "Item Code");
+                    $sheet->cell('B8', "Description");
+                    $sheet->cell('C8', "Lot Number");
+                    $sheet->cell('D8', "Quantity");
+                    $sheet->cell('E8', "Packaging");
+                    $sheet->cell('F8', "Pckg Qty.");
+                    $sheet->cell('G8', "Supplier");
 
                     $row = 9;
 
-                    $locs = DB::connection($this->mysql)->table('tbl_wbs_local_receiving')
-                                ->select('receive_date',
-                                        'invoice_no',
-                                        'orig_invoice_no',
-                                        'create_user')
-                                ->where('receive_date',$ml->receive_date)
+                    $locs = DB::connection($this->mysql)->table('tbl_wbs_local_receiving_batch')
+                                ->select('item',
+                                        'item_desc',
+                                        'qty',
+                                        'box',
+                                        'box_qty',
+                                        'lot_no',
+                                        'supplier')
+                                ->where('wbs_loc_id',$ml->receive_no)
                                 ->get();
 
                     foreach ($locs as $key => $loc) {
                         $sheet->setHeight($row, 20);
-                        $sheet->cell('A'.$row, $loc->receive_date);
-                        $sheet->cell('B'.$row, $loc->invoice_no);
-                        $sheet->cell('C'.$row, '');
-                        $sheet->cell('D'.$row, '');
-                        $sheet->cell('E'.$row, '');
-                        $sheet->cell('F'.$row, $loc->orig_invoice_no);
-                        $sheet->cell('G'.$row, $loc->create_user);
+                        $sheet->cell('A'.$row, $loc->item);
+                        $sheet->cell('B'.$row, $loc->item_desc);
+                        $sheet->cell('C'.$row, $loc->lot_no);
+                        $sheet->cell('D'.$row, $loc->qty);
+                        $sheet->cell('E'.$row, $loc->box);
+                        $sheet->cell('F'.$row, $loc->box_qty);
+                        $sheet->cell('G'.$row, $loc->supplier);
                         $row++;
                     }
                     
