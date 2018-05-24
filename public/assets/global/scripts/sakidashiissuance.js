@@ -11,6 +11,14 @@ var dataColumn = [
 		{ data: 'received_date', name: 'received_date' }
 	];
 
+var poDetailsColumn = [
+		{ data: 'action', name: 'action', orderable: false, searchable: false },
+		{ data: 'kcode', name: 'kcode' },
+		{ data: 'partname', name: 'partname' },
+		{ data: 'rqdqty', name: 'rqdqty' },
+		{ data: 'actualqty', name: 'actualqty' },
+	];
+
 $(document).on('click', function(e) {
 	var isFocused = $('#hd_barcode').is(':focus');
 	var isModalOpen = $('#itemModal').hasClass('in');
@@ -377,21 +385,23 @@ function searchPO(url,data) {
 			$('#devicenamesaki').val(info['prodname']);
 			$('#poqtysaki').val(info['POqty']);
 
-			$.each(details, function(i, x) {
-				item_tbl_body = '<tr>'+
-									'<td style="width:14%">'+
-										'<a href="javascript:;" class="btn btn-sm green select_item" data-schedretdate="'+saki.return_date+'"'+
-											' data-item="'+x.kcode+'" data-item_desc="'+x.partname+'" data-req_qty="'+x.rqdqty+'">'+
-											'<i class="fa fa-thumbs-up"></i>'+
-										'</a>'+
-									'</td>'+
-									'<td style="width:20%">'+x.kcode+'</td>'+
-									'<td style="width:30%">'+x.partname+'</td>'+
-									'<td style="width:18%">'+x.rqdqty+'</td>'+
-									'<td style="width:18%">'+x.actualqty+'</td>'+
-								'</tr>';
-				$('#item_tbl_body').append(item_tbl_body);
-			});
+			getDatatable('item_tbl',poDetailsURL+"?porder="+info['porder']+"&po="+info['po'],poDetailsColumn,[],0);
+
+			// $.each(details, function(i, x) {
+			// 	item_tbl_body = '<tr>'+
+			// 						'<td style="width:14%">'+
+			// 							'<a href="javascript:;" class="btn btn-sm green select_item" data-schedretdate="'+saki.return_date+'"'+
+			// 								' data-item="'+x.kcode+'" data-item_desc="'+x.partname+'" data-req_qty="'+x.rqdqty+'">'+
+			// 								'<i class="fa fa-thumbs-up"></i>'+
+			// 							'</a>'+
+			// 						'</td>'+
+			// 						'<td style="width:20%">'+x.kcode+'</td>'+
+			// 						'<td style="width:30%">'+x.partname+'</td>'+
+			// 						'<td style="width:18%">'+x.rqdqty+'</td>'+
+			// 						'<td style="width:18%">'+x.actualqty+'</td>'+
+			// 					'</tr>';
+			// 	$('#item_tbl_body').append(item_tbl_body);
+			// });
 			$('#loading').modal('hide');
 			$('#itemModal').modal('show');
 

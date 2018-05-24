@@ -45,19 +45,20 @@ class WBSMaterialReceivingController extends Controller
     protected $common;
     protected $barcode;
     protected $ppscon;
+    protected $com;
 
     public function __construct()
     {
         $this->middleware('auth');
-        $com = new CommonController;
+        $this->com = new CommonController;
 
         if (Auth::user() != null) {
-            $this->mysql = $com->userDBcon(Auth::user()->productline,'wbs');
-            $this->main_mysql = $com->userDBcon(Auth::user()->productline,'mysql');
-            $this->mssql = $com->userDBcon(Auth::user()->productline,'mssql');
-            $this->common = $com->userDBcon(Auth::user()->productline,'common');
-            $this->barcode = $com->userDBcon(Auth::user()->productline,'barcode');
-            $this->ppscon = $com->userDBcon(Auth::user()->productline,'pps_invoice');
+            $this->mysql = $this->com->userDBcon(Auth::user()->productline,'wbs');
+            $this->main_mysql = $this->com->userDBcon(Auth::user()->productline,'mysql');
+            $this->mssql = $this->com->userDBcon(Auth::user()->productline,'mssql');
+            $this->common = $this->com->userDBcon(Auth::user()->productline,'common');
+            $this->barcode = $this->com->userDBcon(Auth::user()->productline,'barcode');
+            $this->ppscon = $this->com->userDBcon(Auth::user()->productline,'pps_invoice');
         } else {
             return redirect('/');
         }
@@ -65,8 +66,7 @@ class WBSMaterialReceivingController extends Controller
 
     public function getWBSMaterialReceiving(Request $request_data)
     {
-        $common = new CommonController;
-        if(!$common->getAccessRights(Config::get('constants.MODULE_CODE_MATRVC'), $userProgramAccess))
+        if(!$this->com->getAccessRights(Config::get('constants.MODULE_CODE_MATRVC'), $userProgramAccess))
         {
             return redirect('/home');
         }
@@ -127,7 +127,6 @@ class WBSMaterialReceivingController extends Controller
                 $dt = Carbon::now();
                 $date = $dt->format('m/d/Y');
 
-                $com = new CommonController();
         		$receive_no = '';
 
                 $invyr = substr($invoice_date->invoice_date,0,8);
@@ -153,6 +152,7 @@ class WBSMaterialReceivingController extends Controller
 
                 $details = $this->getDetails($mr_data->invoice_no);
                 $summary = $this->getSummaryInvoice($mr_data->invoice_no);
+
                 return response()->json($data = [
                     'invoicedata' => $invoice,
                     'detailsdata' => $details,
@@ -176,8 +176,7 @@ class WBSMaterialReceivingController extends Controller
             $summarydata = json_decode($req->summarydata);
             $notForIQC = json_decode($req->notForIQC);
 
-            $com = new CommonController();
-            $receive_no = $com->getTransCode('MAT_RCV');
+            $receive_no = $this->com->getTransCode('MAT_RCV');
 
             DB::connection($this->mysql)->table('tbl_wbs_material_receiving')->insert([
                 'receive_no' => $receive_no,
@@ -202,12 +201,12 @@ class WBSMaterialReceivingController extends Controller
             foreach ($detailsdata as $key => $details) {
                 DB::connection($this->mysql)->table('tbl_wbs_material_receiving_details')->insert([
                     'wbs_mr_id' => $wbs_mr_id,
-                    'item' => $details->item,
-                    'item_desc' => $details->description,
-                    'qty' => $details->qty,
-                    'pr_no' => $details->pr,
-                    'unit_price' => $details->price,
-                    'amount' => $details->amount,
+                    'item' => $details['item'],
+                    'item_desc' => $details['description'],
+                    'qty' => $details['qty'],
+                    'pr_no' => $details['pr'],
+                    'unit_price' => $details['price'],
+                    'amount' => $details['amount'],
                     'create_user' => Auth::user()->user_id,
                     'created_at' =>  date('Y-m-d h:i:s a'),
                     'update_user' => Auth::user()->user_id,
@@ -474,8 +473,7 @@ class WBSMaterialReceivingController extends Controller
 
     public function wbsCancel()
     {
-        $common = new CommonController();
-        $common->getWbsPrevCode('MAT_RCV');
+        $this->com->getWbsPrevCode('MAT_RCV');
     }
 
     public function getLatestMR()
@@ -1159,8 +1157,7 @@ class WBSMaterialReceivingController extends Controller
         $app_date = $dt->format('m/d/Y');
         $app_time = $dt->format('H:i A');
 
-        $common = new CommonController;
-        $company_info = $common->getCompanyInfo();
+        $company_info = $this->com->getCompanyInfo();
 
         $cnt = DB::connection($this->mysql)->table('tbl_wbs_material_receiving')
                     ->where('receive_no',$req->receivingno)
@@ -1316,8 +1313,7 @@ class WBSMaterialReceivingController extends Controller
         $dt = Carbon::now();
         $date = substr($dt->format('  M j, Y A'), 2);
 
-        $common = new CommonController;
-        $company_info = $common->getCompanyInfo();
+        $company_info = $this->com->getCompanyInfo();
 
         $cnt = DB::connection($this->mysql)->table('tbl_wbs_material_receiving')
                     ->where('receive_no',$req->receivingno)
@@ -1631,13 +1627,18 @@ class WBSMaterialReceivingController extends Controller
 
     public function getItems(Request $req)
     {
-        $data = DB::connection($this->mssql)
-                    ->table('XSACT as S')
-                    ->join('XHEAD as H', 'H.CODE', '=','S.CODE')
-                    ->leftJoin(DB::raw('(SELECT z.CODE, z.RACKNO FROM XZAIK as z WHERE z.JYOGAI = 0) AS Z'), 'Z.CODE', '=','S.CODE')
-                    ->select('S.CODE as id', DB::raw("CONCAT(S.CODE, ' | ', H.NAME) AS text"))
-                    ->where('S.INVOICE_NUM', '=', $req->invoice_no)
-                    ->groupBy('S.CODE','H.NAME')
+        // $data = DB::connection($this->mssql)
+        //             ->table('XSACT as S')
+        //             ->join('XHEAD as H', 'H.CODE', '=','S.CODE')
+        //             ->leftJoin(DB::raw('(SELECT z.CODE, z.RACKNO FROM XZAIK as z WHERE z.JYOGAI = 0) AS Z'), 'Z.CODE', '=','S.CODE')
+        //             ->select('S.CODE as id', DB::raw("CONCAT(S.CODE, ' | ', H.NAME) AS text"))
+        //             ->where('S.INVOICE_NUM', '=', $req->invoice_no)
+        //             ->groupBy('S.CODE','H.NAME')
+        //             ->get();
+        $data = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_summary')
+                    ->where('wbs_mr_id',$req->receive_no)
+                    ->select('item as id',DB::raw("CONCAT(item, ' | ', item_desc) AS text"))
+                    ->groupBy('item','item_desc')
                     ->get();
 
         if ($this->checkIfExistObject($data) > 0) {
@@ -1702,7 +1703,8 @@ class WBSMaterialReceivingController extends Controller
 
     private function getDetails($invoice_no)
     {
-        $data = DB::connection($this->mssql)
+        $data = [];
+        $ypics = DB::connection($this->mssql)
                     ->table('XSACT AS S')
                     ->join('XHEAD AS H', 'H.CODE' ,'=','S.CODE')
                     ->where('S.INVOICE_NUM', $invoice_no)
@@ -1714,7 +1716,17 @@ class WBSMaterialReceivingController extends Controller
                         , DB::raw('CAST(S.APRICE AS VARCHAR) as price')
                         , 'S.KOUNYUUGAKU as amount')
                     ->get();
-        $this->utf8_encode_deep($data);
+        // /$this->utf8_encode_deep($data);
+        foreach ($ypics as $key => $yp) {
+            array_push($data, [
+                'item' => $yp->item,
+                'description' => $this->com->convert_unicode($yp->description),
+                'qty' => $yp->qty,
+                'pr' => $yp->pr,
+                'price' => $yp->price,
+                'amount' => $yp->amount,
+            ]);
+        }
         return $data;
     }
 
@@ -1734,7 +1746,7 @@ class WBSMaterialReceivingController extends Controller
                     ->where('S.INVOICE_NUM', $invoice_no)
                     ->groupBy('S.CODE', 'H.NAME','S.VENDOR')
                     ->get();
-        $this->utf8_encode_deep($data);
+        //$this->utf8_encode_deep($data);
         return $data;
     }
 
@@ -1754,7 +1766,7 @@ class WBSMaterialReceivingController extends Controller
                     ->where('S.INVOICE_NUM', $invoice_no)
                     ->groupBy('S.CODE', 'H.NAME','S.VENDOR')
                     ->get();
-        $this->utf8_encode_deep($ypics);
+        //$this->utf8_encode_deep($ypics);
 
         $data = [];
 
@@ -1767,7 +1779,7 @@ class WBSMaterialReceivingController extends Controller
                 array_push($data, [
                     'id' => $yp->id,
                     'item' => $yp->item,
-                    'description' => $yp->description,
+                    'description' => $this->com->convert_unicode($yp->description),
                     'qty' => $yp->qty,
                     'r_qty' => $yp->r_qty,
                     'variance' => $yp->variance,
@@ -1778,7 +1790,7 @@ class WBSMaterialReceivingController extends Controller
                 array_push($data, [
                     'id' => $yp->id,
                     'item' => $yp->item,
-                    'description' => $yp->description,
+                    'description' => $this->com->convert_unicode($yp->description),
                     'qty' => $yp->qty,
                     'r_qty' => $yp->r_qty,
                     'variance' => $yp->variance,
@@ -1790,20 +1802,30 @@ class WBSMaterialReceivingController extends Controller
         return $data;
     }
 
-    private function utf8_encode_deep(&$input) {
+    
+
+    private function utf8_encode_deep(&$input)
+    {
         if (is_string($input)) {
-            //$input = utf8_encode($input);
-            mb_convert_encoding($input,"UTF-8","SJIS");
+            if (mb_detect_encoding($input, 'UTF-8', true) === false) { 
+                $input = utf8_encode($input);
+            }
         } else if (is_array($input)) {
             foreach ($input as &$value) {
                 if (is_object($value)) {
                     $vals = array_keys(get_object_vars($value));
 
                     foreach ($vals as $val) {
-                        mb_convert_encoding($val,"UTF-8","SJIS");
+                        if (mb_detect_encoding($val, 'UTF-8', true) === false) {
+                            $val = utf8_encode($val);
+                        }
+                       //mb_convert_encoding($val,"UTF-8","SJIS");
                     }
                 } else {
-                    mb_convert_encoding($value,"UTF-8","SJIS");
+                    if (mb_detect_encoding($value, 'UTF-8', true) === false) {
+                        $value = utf8_encode($value);
+                    }
+                    //mb_convert_encoding($value,"UTF-8","SJIS");
                 }
 
             }
@@ -1813,7 +1835,10 @@ class WBSMaterialReceivingController extends Controller
             $vars = array_keys(get_object_vars($input));
 
             foreach ($vars as $var) {
-                mb_convert_encoding($var,"UTF-8","SJIS");
+                if (mb_detect_encoding($var, 'UTF-8', true) === false) {
+                    $var = utf8_encode($var);
+                }
+                // mb_convert_encoding($var,"UTF-8","SJIS");
             }
         }
     }
@@ -2393,18 +2418,18 @@ class WBSMaterialReceivingController extends Controller
                 ->delete();
 
             $detailsdata = $this->getDetails($invoiceno);
-            $summarydata = $this->getSummary($invoiceno);
+            $summarydata = $this->getSummaryInvoice($invoiceno);
 
             foreach ($detailsdata as $key => $detail) {
                 DB::connection($this->mysql)->table('tbl_wbs_material_receiving_details')
                     ->insert([
                         'wbs_mr_id' => $mrdata->receive_no,
-                        'item' => $detail->item,
-                        'item_desc' => $detail->description,
-                        'qty' => $detail->qty,
-                        'pr_no' => $detail->pr,
-                        'unit_price' => $detail->price,
-                        'amount' => $detail->amount,
+                        'item' => $detail['item'],
+                        'item_desc' => $detail['description'],
+                        'qty' => $detail['qty'],
+                        'pr_no' => $detail['pr'],
+                        'unit_price' => $detail['price'],
+                        'amount' => $detail['amount'],
                         'create_user' => Auth::user()->user_id,
                         'created_at' =>  date('Y-m-d h:i:s a'),
                         'update_user' => Auth::user()->user_id,
@@ -2422,19 +2447,19 @@ class WBSMaterialReceivingController extends Controller
                                     'for_kitting'
                             )
                             ->where('wbs_mr_id',$mrdata->receive_no)
-                            ->where('item',$summary->item)
+                            ->where('item',$summary['item'])
                             ->first();
 
                 $receivedqty = $batch->qty;
-                $variance = $summary->qty - $receivedqty;
+                $variance = $summary['qty'] - $receivedqty;
 
                 DB::connection($this->mysql)->table('tbl_wbs_material_receiving_summary')->insert([
                     'wbs_mr_id' => $mrdata->receive_no,
-                    'item' => $summary->item,
-                    'item_desc' => $summary->description,
-                    'qty' => $summary->qty,
+                    'item' => $summary['item'],
+                    'item_desc' => $summary['description'],
+                    'qty' => $summary['qty'],
                     'received_qty' => $receivedqty,
-                    'variance' => $summary->qty,
+                    'variance' => $summary['qty'],
                     'not_for_iqc' => $batch->not_for_iqc,
                     'for_kitting' => $batch->for_kitting,
                     'create_user' => Auth::user()->user_id,

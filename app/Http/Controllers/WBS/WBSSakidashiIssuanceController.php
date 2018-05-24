@@ -41,8 +41,7 @@ class WBSSakidashiIssuanceController extends Controller
 
     public function index()
     {
-    	$common = new CommonController;
-        if(!$common->getAccessRights(Config::get('constants.MODULE_CODE_SAKIISS'), $userProgramAccess))
+        if(!$this->com->getAccessRights(Config::get('constants.MODULE_CODE_SAKIISS'), $userProgramAccess))
         {
             return redirect('/home');
         }
@@ -65,7 +64,8 @@ class WBSSakidashiIssuanceController extends Controller
                         ->select(DB::raw('s.CODE as code'),
                                 DB::raw('h.NAME as prodname'),
                                 DB::raw('r.KVOL as POqty'),
-                                DB::raw('s.PORDER as porder'))
+                                DB::raw('s.PORDER as porder'),
+                                DB::raw('s.SEIBAN as po'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('s.PORDER','desc')
                         ->first();
@@ -78,7 +78,8 @@ class WBSSakidashiIssuanceController extends Controller
                         ->select(DB::raw('s.CODE as code'),
                                 DB::raw('h.NAME as prodname'),
                                 DB::raw('r.KVOL as POqty'),
-                                DB::raw('s.PORDER as porder'))
+                                DB::raw('s.PORDER as porder'),
+                                DB::raw('s.SEIBAN as po'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('s.PORDER','desc')
                         ->first();
@@ -88,7 +89,7 @@ class WBSSakidashiIssuanceController extends Controller
         $return_date = $dt->format('m/d/Y');
 
         if ($this->com->checkIfExistObject($info) > 0) {
-                $details = DB::connection($this->mssql)
+                $ypics = DB::connection($this->mssql)
                                 ->select("SELECT hk.CODE as kcode, 
                                                 h.NAME as partname, 
                                                 hk.KVOL as rqdqty, 
@@ -120,6 +121,19 @@ class WBSSakidashiIssuanceController extends Controller
                                                 x.WHS102, 
                                                 x.RACKNO,
                                                 x.ZAIK");
+            $details = [];
+            foreach ($ypics as $key => $yp) {
+                array_push($details,[
+                    'kcode' => $yp->kcode,
+                    'partname' => $this->com->convert_unicode($yp->partname),
+                    'rqdqty' => $yp->rqdqty,
+                    'actualqty' => $yp->actualqty,
+                    'location' => $this->com->convert_unicode($yp->location),
+                    'supplier' => $this->com->convert_unicode($yp->supplier),
+                    'whs100' => $yp->whs100,
+                    'whs102' => $yp->whs102,
+                ]);
+            }
 
             if ($this->com->checkIfExistObject($details) > 0) {
                 // $this->utf8_encode_deep($info);
@@ -138,32 +152,53 @@ class WBSSakidashiIssuanceController extends Controller
         return json_encode($data);
     }
 
-    private function utf8_encode_deep(&$input) {
-        if (is_string($input)) {
-            //$input = utf8_encode($input);
-            mb_convert_encoding($input,"UTF-8","SJIS");
-        } else if (is_array($input)) {
-            foreach ($input as &$value) {
-                if (is_object($value)) {
-                    $vals = array_keys(get_object_vars($value));
+    public function poDetails(Request $req)
+    {
+        $data = DB::connection($this->mssql)->table('XSLIP as s')
+                    ->leftjoin('XHIKI as hk','s.PORDER', '=', 'hk.PORDER')
+                    ->leftjoin('XITEM as i','i.CODE', '=', 'hk.CODE')
+                    ->leftjoin('XHEAD as h','h.CODE', '=', 'hk.CODE')
+                    ->leftjoin(DB::raw("(SELECT z.CODE, 
+                                            ISNULL(z1.ZAIK,0) as WHS100, 
+                                            ISNULL(z2.ZAIK,0) as WHS102, 
+                                            SUM(z.ZAIK) as ZAIK,
+                                            z.RACKNO FROM XZAIK z
+                                       LEFT JOIN XZAIK as z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                       LEFT JOIN XZAIK as z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                       WHERE z.RACKNO <> ''
+                                       GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z.RACKNO) as x"), 'x.CODE','=','hk.CODE')
+                    ->where('s.SEIBAN',$req->po)
+                    ->where('s.PORDER',$req->porder)
+                    ->groupBy('hk.CODE', 
+                            'h.NAME', 
+                            'i.VENDOR', 
+                            'hk.KVOL',
+                            'x.WHS100', 
+                            'x.WHS102', 
+                            'x.RACKNO',
+                            'x.ZAIK')
+                    ->select([DB::raw('hk.CODE as kcode'), 
+                            DB::raw('h.NAME as partname'), 
+                            DB::raw('hk.KVOL as rqdqty'), 
+                            DB::raw('x.ZAIK as actualqty'),
+                            DB::raw('x.RACKNO as location'),
+                            DB::raw('i.VENDOR as supplier'), 
+                            DB::raw('x.WHS100 as whs100'), 
+                            DB::raw('x.WHS102 as whs102')]);
 
-                    foreach ($vals as $val) {
-                        mb_convert_encoding($val,"UTF-8","SJIS");
-                    }
-                } else {
-                    mb_convert_encoding($value,"UTF-8","SJIS");
-                }
-
-            }
-
-            unset($value);
-        } else if (is_object($input)) {
-            $vars = array_keys(get_object_vars($input));
-
-            foreach ($vars as $var) {
-                mb_convert_encoding($var,"UTF-8","SJIS");
-            }
-        }
+        return Datatables::of($data)
+                        ->addColumn('action', function($data) {
+                            return '<a href="javascript:;" class="btn btn-sm green select_item" '.
+                                        'data-schedretdate="'.date('m/d/Y', strtotime("+2 days")).'"'.
+                                        ' data-item="'.$data->kcode.'" data-item_desc="'.$this->com->convert_unicode($data->partname).'" 
+                                        data-req_qty="'.$data->rqdqty.'">'.
+                                        '<i class="fa fa-thumbs-up"></i>'.
+                                     '</a>';
+                        })
+                        ->editColumn('partname', function($data) {
+                            return $this->com->convert_unicode($data->partname);
+                        })
+                        ->make(true);
     }
 
     public function saveRecord(Request $req)
@@ -1417,7 +1452,7 @@ class WBSSakidashiIssuanceController extends Controller
 
     public function checkInPO(Request $req)
     {
-        $details = DB::connection($this->mssql)
+        $ypics = DB::connection($this->mssql)
                     ->select("SELECT hk.CODE as item
                                 FROM XSLIP s
                                 LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER

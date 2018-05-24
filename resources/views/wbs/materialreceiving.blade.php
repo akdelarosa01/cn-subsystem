@@ -1065,8 +1065,8 @@
 
         $('#savestate').val('ADD');
 
-        getPackage();
-        getItems();
+        // getPackage();
+        // getItems();
     }
 
     function ViewState() {
@@ -1280,7 +1280,7 @@
         var token = "{{ Session::token() }}";
         var data = {
         _token: token,
-            invoice_no: $('#invoiceno').val()
+            receive_no: $('#receivingno').val()
         };
 
         $.ajax({

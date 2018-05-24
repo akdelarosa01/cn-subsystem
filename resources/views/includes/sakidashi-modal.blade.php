@@ -11,7 +11,7 @@
 			<div class="modal-body">
 				<div class="col-md-12">
 					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover table-fixedheader" style="font-size:10px">
+						<table class="table table-striped table-bordered table-hover" style="font-size:10px" id="item_tbl"> {{-- table-fixedheader --}}
 							<thead>
 								<tr>
 									<td style="width:14%"></td>

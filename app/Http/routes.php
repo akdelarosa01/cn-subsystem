@@ -653,6 +653,11 @@ Route::group(['middleware' => 'web'], function () {
                     'name' => 'searchpo'
                 ]);
 
+                Route::get('/get-po-details', [
+                    'uses' => 'WBS\WBSSakidashiIssuanceController@poDetails',
+                    'name' => 'get-po-details'
+                ]);
+
                 Route::post('/wbssisave', [
                     'uses' => 'WBS\WBSSakidashiIssuanceController@saveRecord',
                     'name' => 'wbssisave'

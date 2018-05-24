@@ -359,6 +359,7 @@
 		var getLatestURL = "{{ url('/sakidashi-issuance/get-latest') }}";
 		var getSakidashiDataURL = "{{ url('/sakidashi-issuance/get-sakidashi-data') }}";
 		var token = "{{ Session::token() }}";
+		var poDetailsURL = "{{ url('/sakidashi-issuance/get-po-details') }}";
 	</script>
 	<script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/common.js') }}" type="text/javascript"></script>
 	<script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/sakidashiissuance.js') }}" type="text/javascript"></script>

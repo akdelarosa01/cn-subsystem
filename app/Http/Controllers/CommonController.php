@@ -670,4 +670,13 @@ class  CommonController extends Controller
         $newdate = date($format,$time);
         return $newdate;
     }
+
+    public function convert_unicode($str)
+    {
+        if (mb_detect_encoding($str, 'UTF-8', true) === false) { 
+            $str = utf8_encode($str);
+        }
+
+        return $str;
+    }
 }
