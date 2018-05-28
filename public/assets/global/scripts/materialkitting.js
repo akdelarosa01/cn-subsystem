@@ -30,7 +30,9 @@ $( function() {
 	});
 
 	$('#updateKityQty').on('click', function(event) {
-		var kitqty = parseFloat($('#getkitQty').val());
+		var kqty = $('#getkitQty').val();
+		kqty = kqty.replace(/\,/g,'');
+		var kitqty = parseFloat(kqty);
 		var poqty = parseFloat($('#poqty').val());
 
 		// if (kitqty > poqty) {
