@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"material",
+				"material_used"
+			],
+			[
+				"tbl_jo_details",
+				"tbl_jo_details_body"
+			],
+			[
+				"tbl",
+				"tbl_jo_details_body"
+			],
+			[
+				"jo",
+				"joDetails_arr"
+			],
+			[
 				"from",
 				"from_encoded"
 			],
@@ -228,73 +244,55 @@
 	"buffers":
 	[
 		{
-			"file": "public/assets/global/scripts/sakidashiissuance.js",
+			"file": "/var/www/html/en-pms/routes/web.php",
 			"settings":
 			{
-				"buffer_size": 24889,
+				"buffer_size": 14740,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "resources/views/wbs/sakidashiissuance.blade.php",
+			"file": "/var/www/html/en-pms/resources/views/ppc/transaction/production-schedule.blade.php",
 			"settings":
 			{
-				"buffer_size": 15589,
+				"buffer_size": 12798,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/var/www/html/pmi-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+			"file": "/var/www/html/en-pms/resources/assets/js/pages/ppc/transactions/production-schedule/production-schedule.js",
 			"settings":
 			{
-				"buffer_size": 60376,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
-			"settings":
-			{
-				"buffer_size": 60113,
+				"buffer_size": 9907,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "Fixes\n - Detect Unicode Character specifically in ITEM NAMES,\n \tthat causes error when searching PO Details / Invoice Details\n \tin Material Receiving, Sakidashi Issuance and Material Kitting.\n - Can Detect barcode in Sakidashi Issuance.\n - Local Material Receiving Item list.\n ",
+			"contents": "EN PMS\n1. Fix JO Details\n\t- make jo details datatable with array/object data\n\t- get material used\n\t- display material used to each select box in the table\n\t- get material heat num based on material used\n\t- display material heat num to each select box in the table\n2. Fix Update Inventory\n3. Fix Material Master\n4. Assist Chester\n\nPMI\n1. Support sir randolf\n\t- Bug in Material Kitting but not happening in other user's pc\n\t- Ask sir mj to assist sir randolf's pc to clear browser cache.\n\nNEXT WEEK'S TASK\n1. Code EN PMS\n2. Off site support for PMI",
 			"settings":
 			{
-				"buffer_size": 277,
+				"buffer_size": 546,
 				"line_ending": "Unix",
-				"name": "Fixes"
+				"name": "EN PMS"
 			}
 		},
 		{
-			"file": "app/Http/routes.php",
+			"file": "/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/ProductionScheduleController.php",
 			"settings":
 			{
-				"buffer_size": 131667,
+				"buffer_size": 4658,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "resources/views/includes/sakidashi-modal.blade.php",
+			"file": "/var/www/html/en-pms/app/PpcUpdateInventory.php",
 			"settings":
 			{
-				"buffer_size": 8170,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
-			"settings":
-			{
-				"buffer_size": 83867,
-				"encoding": "UTF-8",
+				"buffer_size": 402,
 				"line_ending": "Unix"
 			}
 		}
@@ -343,31 +341,39 @@
 	},
 	"expanded_folders":
 	[
-		"/var/www/html/cn-subsystem",
-		"/var/www/html/cn-subsystem/app",
-		"/var/www/html/cn-subsystem/app/Http",
-		"/var/www/html/cn-subsystem/app/Http/Controllers",
-		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS",
-		"/var/www/html/cn-subsystem/public",
-		"/var/www/html/cn-subsystem/public/assets",
-		"/var/www/html/cn-subsystem/public/assets/global",
-		"/var/www/html/cn-subsystem/public/assets/global/scripts",
-		"/var/www/html/cn-subsystem/resources",
-		"/var/www/html/cn-subsystem/resources/views",
-		"/var/www/html/cn-subsystem/resources/views/wbs",
-		"/var/www/html/pmi-subsystem",
-		"/var/www/html/pmi-subsystem/app",
-		"/var/www/html/pmi-subsystem/app/Http",
-		"/var/www/html/pmi-subsystem/app/Http/Controllers",
-		"/var/www/html/pmi-subsystem/app/Http/Controllers/WBS"
+		"/var/www/html/en-pms",
+		"/var/www/html/en-pms/app",
+		"/var/www/html/en-pms/app/Http",
+		"/var/www/html/en-pms/app/Http/Controllers",
+		"/var/www/html/en-pms/app/Http/Controllers/PPC",
+		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters",
+		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction"
 	],
 	"file_history":
 	[
+		"/var/www/html/yf-subsystem/public/assets/global/scripts/materialkitting.js",
+		"/var/www/html/yf-subsystem/app/Http/Controllers/WBS/WBSMaterialKittingController.php",
+		"/var/www/html/en-pms/resources/assets/js/helpers.js",
+		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/material-master/material-master.js",
+		"/var/www/html/en-pms/resources/views/ppc/masters/material-master.blade.php",
+		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/MaterialMasterController.php",
+		"/var/www/html/en-pms/resources/views/includes/modals/transactions/update-inventory-modals.blade.php",
+		"/var/www/html/en-pms/resources/assets/js/pages/ppc/transactions/update-inventory/update-inventory.js",
+		"/var/www/html/en-pms/webpack.mix.js",
+		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/UpdateInventoryController.php",
+		"/var/www/html/en-pms/app/PpcUpdateInventory.php",
+		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/product-master/product-code.js",
+		"/var/www/html/en-pms/resources/views/admin/users.blade.php",
+		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
+		"/var/www/html/cn-subsystem/resources/views/includes/sakidashi-modal.blade.php",
+		"/var/www/html/cn-subsystem/app/Http/routes.php",
+		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+		"/var/www/html/pmi-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+		"/var/www/html/cn-subsystem/resources/views/wbs/sakidashiissuance.blade.php",
+		"/var/www/html/cn-subsystem/public/assets/global/scripts/sakidashiissuance.js",
 		"/var/www/html/cn-subsystem/resources/views/layouts/loginlayout.blade.php",
 		"/var/www/html/cn-subsystem/resources/views/auth/login.blade.php",
 		"/var/www/html/cn-subsystem/resources/views/errors/503.blade.php",
-		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
-		"/var/www/html/cn-subsystem/app/Http/routes.php",
 		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSMaterialKittingController.php",
 		"/var/www/html/cn-subsystem/resources/views/wbs/materialreceiving.blade.php",
 		"/var/www/html/cn-subsystem/app/Http/Controllers/CommonController.php",
@@ -382,17 +388,12 @@
 		"/var/www/html/en-pms/app/Http/Controllers/Admin/UserTypeController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/Admin/UserController.php",
 		"/var/www/html/en-pms/app/User.php",
-		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/MaterialMasterController.php",
-		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/material-master/material-master.js",
 		"/var/www/html/en-pms/app/Http/Controllers/HelpersController.php",
-		"/var/www/html/en-pms/resources/views/ppc/masters/material-master.blade.php",
 		"/var/www/html/en-pms/database/migrations/2014_10_12_000000_create_users_table.php",
 		"/var/www/html/en-pms/resources/views/ppc/masters/division-master.blade.php",
 		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/division-master/division-master.js",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/DivisionMasterController.php",
-		"/var/www/html/en-pms/resources/assets/js/helpers.js",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/UserMasterController.php",
-		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/product-master/product-code.js",
 		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/dropdown-master/dropdown-master.js",
 		"/var/www/html/en-pms/resources/views/ppc/masters/dropdown-master.blade.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/DropdownMasterController.php",
@@ -405,7 +406,6 @@
 		"/var/www/html/en-pms/resources/views/includes/layout/header_production.blade.php",
 		"/var/www/html/en-pms/resources/assets/js/pages/ppc/masters/user-master/user-master.js",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/TravelSheetController.php",
-		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/UpdateInventoryController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/UploadOrdersController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Reports/TravelSheetStatusController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Reports/TransferItemController.php",
@@ -414,7 +414,6 @@
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/ProductMasterController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/Masters/AssignProductLineController.php",
 		"/var/www/html/en-pms/app/Http/Controllers/PPC/DashboardController.php",
-		"/var/www/html/en-pms/resources/views/admin/users.blade.php",
 		"/var/www/html/en-pms/resources/views/admin/user-type.blade.php",
 		"/var/www/html/pmi-subsystem/resources/views/includes/sidebar.blade.php",
 		"/var/www/html/pmi-subsystem/app/Http/Controllers/CommonController.php",
@@ -434,17 +433,14 @@
 		"/var/www/html/en-pms/resources/views/ppc/masters/user-masters/edit-user.blade.php",
 		"/var/www/html/en-pms/resources/views/ppc/masters/user-masters/create-user.blade.php",
 		"/var/www/html/yf-subsystem/app/Http/Controllers/CommonController.php",
-		"/var/www/html/yf-subsystem/public/assets/global/scripts/materialkitting.js",
 		"/var/www/html/yf-subsystem/app/Http/Controllers/WBS/WBSMaterialReceivingController.php",
 		"/var/www/html/pmi-subsystem/app/Http/Controllers/QCDB/OQCInspectionController.php",
 		"/var/www/html/en-pms/resources/views/ppc/transaction/travel-sheet.blade.php",
 		"/var/www/html/en-pms/resources/views/ppc/transaction/update-inventory.blade.php",
-		"/var/www/html/en-pms/resources/assets/js/pages/ppc/transactions/update-inventory/update-inventory.js",
 		"/var/www/html/yf-subsystem/app/Http/Controllers/WBS/WBSIqcController.php",
 		"/var/www/html/yf-subsystem/app/Http/Controllers/QCDB/IQCInspectionController.php",
 		"/var/www/html/yf-subsystem/resources/views/includes/iqc_inspection_modal.blade.php",
 		"/var/www/html/yf-subsystem/resources/views/qcdb/iqcinspection.blade.php",
-		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
 		"/var/www/html/yf-subsystem/resources/views/home.blade.php",
 		"/var/www/html/cn-subsystem/app/Http/Controllers/WBS/WBSIqcController.php",
 		"/var/www/html/pmi-subsystem/app/Http/Controllers/WBS/WBSIqcController.php",
@@ -482,19 +478,11 @@
 		"/var/www/html/yf-subsystem/resources/views/qcmld/packingmolding.blade.php",
 		"/var/www/html/yf-subsystem/resources/views/qcdb/fgs.blade.php",
 		"/var/www/html/yf-subsystem/resources/views/qcdb/iqc_matrix.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/qcdb/oqc_groupby.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/qcdb/packinginspection.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/qcdb/oqcinspection.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase3/AddnewYieldingPerformance.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase3/YieldPerformance.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase3/detailsYpicsInvoicing.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase3/ypicsinvoicing.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/ByBOM.blade.php",
-		"/var/www/html/yf-subsystem/resources/views/phase2/ByParts.blade.php"
+		"/var/www/html/yf-subsystem/resources/views/qcdb/oqc_groupby.blade.php"
 	],
 	"find":
 	{
-		"height": 70.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -508,6 +496,39 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"getMaterialHeatNo",
+			"material_used",
+			"$(this).val()",
+			"material-used",
+			"used_",
+			"val",
+			"index",
+			"event",
+			"getMaterialused",
+			"value1",
+			"param1",
+			"getMaterialUsed",
+			"production-list",
+			"20",
+			"10",
+			"width",
+			"<th ",
+			" width=\"5%\"",
+			"form-control-sm",
+			"<th>",
+			"console",
+			"quantity",
+			"description",
+			"},",
+			"sc_no",
+			"h6",
+			"h5",
+			"h3",
+			"strong",
+			"number",
+			"sweetalert",
+			"id",
+			"rownum",
 			"hd_barcode",
 			"partname",
 			"whs102",
@@ -602,40 +623,7 @@
 			".",
 			"description",
 			"type",
-			"plant",
-			"process",
-			"dropdown-item-name",
-			"id",
-			"subject",
-			"replace",
-			"department",
-			"productline",
-			"circle",
-			"assign-productline",
-			"title",
-			"access",
-			"PPC",
-			"page",
-			"subject",
-			"replace",
-			"Auth",
-			"auth",
-			"Auth",
-			"department",
-			"today",
-			"expDate",
-			".setHours(0,0,0,0)",
-			"checkExpDate",
-			"convertExpDate",
-			"exp_date",
-			"$com->",
-			"$this->com",
-			"$com->",
-			"Please fill out all required fields.",
-			"family",
-			"Family",
-			"family",
-			"APPLICA"
+			"plant"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -658,57 +646,59 @@
 			[
 				{
 					"buffer": 0,
-					"file": "public/assets/global/scripts/sakidashiissuance.js",
+					"file": "/var/www/html/en-pms/routes/web.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 24889,
+						"buffer_size": 14740,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								502,
-								502
+								11746,
+								11763
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 78.0,
+						"translation.y": 2307.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "resources/views/wbs/sakidashiissuance.blade.php",
+					"file": "/var/www/html/en-pms/resources/views/ppc/transaction/production-schedule.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15589,
+						"buffer_size": 12798,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2150,
-								2150
+								12631,
+								12631
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Laravel Blade Highlighter/blade.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 625.0,
+						"translation.y": 2098.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -716,29 +706,29 @@
 				},
 				{
 					"buffer": 2,
-					"file": "/var/www/html/pmi-subsystem/app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
+					"file": "/var/www/html/en-pms/resources/assets/js/pages/ppc/transactions/production-schedule/production-schedule.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 60376,
+						"buffer_size": 9907,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								45277,
-								33133
+								7817,
+								7817
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3744.0,
+						"translation.y": 1116.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -746,29 +736,27 @@
 				},
 				{
 					"buffer": 3,
-					"file": "app/Http/Controllers/WBS/WBSLocalMaterialReceivingController.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 60113,
+						"buffer_size": 546,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								45012,
-								45012
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"auto_name": "EN PMS",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 12885.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -776,27 +764,29 @@
 				},
 				{
 					"buffer": 4,
+					"file": "/var/www/html/en-pms/app/Http/Controllers/PPC/Transaction/ProductionScheduleController.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 277,
+						"buffer_size": 4658,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								277,
-								277
+								4562,
+								4562
 							]
 						],
 						"settings":
 						{
-							"auto_name": "Fixes",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 351.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -804,91 +794,31 @@
 				},
 				{
 					"buffer": 5,
-					"file": "app/Http/routes.php",
-					"semi_transient": false,
+					"file": "/var/www/html/en-pms/app/PpcUpdateInventory.php",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 131667,
+						"buffer_size": 402,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								24497,
-								24497
+								285,
+								292
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 8191.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "resources/views/includes/sakidashi-modal.blade.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8170,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								843,
-								843
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Laravel Blade Highlighter/blade.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "app/Http/Controllers/WBS/WBSSakidashiIssuanceController.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 83867,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9378,
-								9378
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -1024,7 +954,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 498.0,
+	"side_bar_width": 58.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

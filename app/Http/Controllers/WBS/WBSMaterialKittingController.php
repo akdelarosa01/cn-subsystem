@@ -276,8 +276,8 @@ class WBSMaterialKittingController extends Controller
                             'po_no' => $req->po,
                             'device_code' => $req->devicecode,
                             'device_name' => $req->devicename,
-                            'po_qty' => $req->poqty,
-                            'kit_qty' => $req->kitqty,
+                            'po_qty' => $this->cleanQty($req->poqty),
+                            'kit_qty' => $this->cleanQty($req->kitqty),
                             'kit_no' => $req->kitno,
                             'prepared_by' => $req->preparedby,
                             'status' => 'O',
@@ -297,9 +297,9 @@ class WBSMaterialKittingController extends Controller
                             'item' => $req->kit_itemcode[$key],
                             'item_desc' => $req->kit_itemname[$key],
                             'usage' => $req->kit_usage[$key],
-                            'rqd_qty' => $req->kit_rqdqty[$key],
-                            'kit_qty' => $req->kit_qty[$key],
-                            'issued_qty' => $req->kit_issuedqty[$key],
+                            'rqd_qty' => $this->cleanQty($req->kit_rqdqty[$key]),
+                            'kit_qty' => $this->cleanQty($req->kit_qty[$key]),
+                            'issued_qty' => $this->cleanQty($req->kit_issuedqty[$key]),
                             'location' => $req->kit_loaction[$key],
                             'drawing_no' => $req->kit_drawno[$key],
                             'supplier' => $req->kit_supplier[$key],
@@ -337,8 +337,8 @@ class WBSMaterialKittingController extends Controller
             DB::connection($this->mysql)->table('tbl_wbs_material_kitting')
                 ->where('id',$req->id)
                 ->update([
-                    'po_qty' => $req->poqty,
-                    'kit_qty' => $req->kitqty,
+                    'po_qty' => $this->cleanQty($req->poqty),
+                    'kit_qty' => $this->cleanQty($req->kitqty),
                     'kit_no' => $req->kitno,
                     'prepared_by' => $req->preparedby,
                     'update_user' => Auth::user()->user_id,
@@ -353,9 +353,9 @@ class WBSMaterialKittingController extends Controller
                                     'item' => $req->kit_itemcode[$key],
                                     'item_desc' => $req->kit_itemname[$key],
                                     'usage' => $req->kit_usage[$key],
-                                    'rqd_qty' => $req->kit_rqdqty[$key],
-                                    'kit_qty' => $req->kit_qty[$key],
-                                    'issued_qty' => $req->kit_issuedqty[$key],
+                                    'rqd_qty' => $this->cleanQty($req->kit_rqdqty[$key]),
+                                    'kit_qty' => $this->cleanQty($req->kit_qty[$key]),
+                                    'issued_qty' => $this->cleanQty($req->kit_issuedqty[$key]),
                                     'location' => $req->kit_loaction[$key],
                                     'drawing_no' => $req->kit_drawno[$key],
                                     'supplier' => $req->kit_supplier[$key],
@@ -408,8 +408,8 @@ class WBSMaterialKittingController extends Controller
                                         'detailid' => $iss_id,
                                         'item' => $req->issitem[$key],
                                         'item_desc' => $req->issitemdesc[$key],
-                                        'kit_qty' => $req->isskit_qty[$key],
-                                        'issued_qty' => $req->ississued_qty[$key],
+                                        'kit_qty' => $this->cleanQty($req->isskit_qty[$key]),
+                                        'issued_qty' => $this->cleanQty($req->ississued_qty[$key]),
                                         'lot_no' => $req->isslot_no[$key],
                                         'location' => $req->isslocation[$key],
                                         'remarks' => $req->issremarks[$key],
@@ -475,8 +475,8 @@ class WBSMaterialKittingController extends Controller
                             ->update([
                                 'item' => $req->issitem[$key],
                                 'item_desc' => $req->issitemdesc[$key],
-                                'kit_qty' => $req->isskit_qty[$key],
-                                'issued_qty' => $req->ississued_qty[$key],
+                                'kit_qty' => $this->cleanQty($req->isskit_qty[$key]),
+                                'issued_qty' => $this->cleanQty($req->ississued_qty[$key]),
                                 'lot_no' => $req->isslot_no[$key],
                                 'location' => $req->isslocation[$key],
                                 'remarks' => $req->issremarks[$key],
@@ -507,7 +507,7 @@ class WBSMaterialKittingController extends Controller
                     DB::connection($this->mysql)->table('tbl_wbs_material_kitting_details')
                         ->where('issue_no',$req->issuanceno)
                         ->where('item',$req->issitem[$key])
-                        ->update(['issued_qty' => $iss->issued_qty]);
+                        ->update(['issued_qty' => $this->cleanQty($iss->issued_qty]));
                 }
 
                 if ($db) {
@@ -550,9 +550,9 @@ class WBSMaterialKittingController extends Controller
                             ->first();
 
                 if ($this->com->checkIfExistObject($iss)) {
-                     $iss_qty = $kit->issued_qty + $iss->issued_qty;
+                     $iss_qty = $this->cleanQty($kit->issued_qty) + $this->cleanQty($iss->issued_qty);
 
-                    if ($iss_qty > $kit->kit_qty) {
+                    if ($iss_qty > $this->cleanQty($kit->kit_qty)) {
                         $data = [
                             'msg' => "Issuance Qty. is greater than required qty.",
                             'status' => 'failed'
@@ -560,7 +560,7 @@ class WBSMaterialKittingController extends Controller
                     } else {
                         $iss = DB::connection($this->mysql)->table('tbl_wbs_material_kitting_details')
                                 ->where('id',$id)
-                                ->update(['issued_qty' => $iss_qty]);
+                                ->update(['issued_qty' => $this->cleanQty($iss_qty]));
 
                     }
                 }
@@ -580,7 +580,7 @@ class WBSMaterialKittingController extends Controller
 	                    ->where('item',$req->item)
 	                    ->select('issued_qty','kit_qty')
 	                    ->first();
-	        $iss_qty = $kit->issued_qty + $req->qty;
+	        $iss_qty = $this->cleanQty($kit->issued_qty) + $this->cleanQty($req->qty);
 
 	        // if ($iss_qty > $kit->kit_qty) {
 	        //     $check = ['status' => 'failed'];
@@ -602,7 +602,7 @@ class WBSMaterialKittingController extends Controller
                 ->select(DB::raw("SUM(issued_qty) as issued_qty"))
                 ->first();
         if ($this->com->checkIfExistObject($db)) {
-            if ($req->kit_qty > $db->issued_qty || $req->kit_qty < $db->issued_qty) {
+            if ($this->cleanQty($req->kit_qty) > $db->issued_qty || $this->cleanQty($req->kit_qty) < $db->issued_qty) {
                 $equal = false;
             }
         }
