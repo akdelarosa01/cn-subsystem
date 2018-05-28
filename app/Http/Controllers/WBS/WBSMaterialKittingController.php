@@ -560,7 +560,7 @@ class WBSMaterialKittingController extends Controller
                     } else {
                         $iss = DB::connection($this->mysql)->table('tbl_wbs_material_kitting_details')
                                 ->where('id',$id)
-                                ->update(['issued_qty' => $this->cleanQty($iss_qty]));
+                                ->update(['issued_qty' => $this->cleanQty($iss_qty)]);
 
                     }
                 }
