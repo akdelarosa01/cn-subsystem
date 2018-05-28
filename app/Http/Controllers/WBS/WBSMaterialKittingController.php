@@ -507,7 +507,7 @@ class WBSMaterialKittingController extends Controller
                     DB::connection($this->mysql)->table('tbl_wbs_material_kitting_details')
                         ->where('issue_no',$req->issuanceno)
                         ->where('item',$req->issitem[$key])
-                        ->update(['issued_qty' => $this->cleanQty($iss->issued_qty]));
+                        ->update(['issued_qty' => $this->cleanQty($iss->issued_qty)]);
                 }
 
                 if ($db) {
