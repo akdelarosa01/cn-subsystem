@@ -3350,3 +3350,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/iqc-matrix-details', 'QCDB\IQCMatrixController@getDetails');
     Route::post('/iqc-matrix-upload', 'QCDB\IQCMatrixController@ExtractExcelFile');
     Route::get('/iqc-matrix-excel', 'QCDB\IQCMatrixController@getExcelReport');
+
+    // WBS Inventory
+    Route::get('/wbs-inventory', 'WBS\WBSInventoryController@index');
+    Route::get('/wbs-inventory-list', 'WBS\WBSInventoryController@list');
+    Route::post('/wbs-inventory-delete', 'WBS\WBSInventoryController@deleteselected');
+    Route::post('/wbs-inventory-save', 'WBS\WBSInventoryController@savedata');
