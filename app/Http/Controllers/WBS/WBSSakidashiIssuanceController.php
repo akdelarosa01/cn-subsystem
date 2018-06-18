@@ -58,17 +58,17 @@ class WBSSakidashiIssuanceController extends Controller
             'return_status' => "failed"
         ];
         $info = DB::connection($this->mssql)
-                        ->table('XSLIP as s')
-                        ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
-                        ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
-                        ->select(DB::raw('s.CODE as code'),
-                                DB::raw('h.NAME as prodname'),
-                                DB::raw('r.KVOL as POqty'),
-                                DB::raw('s.PORDER as porder'),
-                                DB::raw('s.SEIBAN as po'))
-                        ->where('s.SEIBAN',$req->po)
-                        ->orderBy('s.PORDER','desc')
-                        ->first();
+                    ->table('XSLIP as s')
+                    ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
+                    ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
+                    ->select(DB::raw('s.CODE as code'),
+                            DB::raw('h.NAME as prodname'),
+                            DB::raw('r.KVOL as POqty'),
+                            DB::raw('s.PORDER as porder'),
+                            DB::raw('r.SEDA as branch'))
+                    ->where('s.SEIBAN',$po)
+                    ->orderBy('r.SEDA','desc')
+                    ->first();
 
         if ($this->com->checkIfExistObject($info) < 1) {
             $info = DB::connection($this->mssql)
@@ -79,9 +79,9 @@ class WBSSakidashiIssuanceController extends Controller
                                 DB::raw('h.NAME as prodname'),
                                 DB::raw('r.KVOL as POqty'),
                                 DB::raw('s.PORDER as porder'),
-                                DB::raw('s.SEIBAN as po'))
-                        ->where('s.SEIBAN',$req->po)
-                        ->orderBy('s.PORDER','desc')
+                                DB::raw('r.SEDA as branch'))
+                        ->where('s.SEIBAN',$po)
+                        ->orderBy('r.SEDA','desc')
                         ->first();
         }
         $date = Carbon::now();

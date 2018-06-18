@@ -66,15 +66,16 @@ class WBSMaterialKittingController extends Controller
             $info = '';
             $details = '';
             $info = DB::connection($this->mssql)
-                        ->table('XRECE as r')
-                        ->leftJoin('XHEAD as h', 'r.CODE', '=', 'h.CODE')
-                        ->leftjoin('XSLIP as s', 'r.SORDER','=','s.SEIBAN')
-                        ->select(DB::raw('r.CODE as code'),
+                        ->table('XSLIP as s')
+                        ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
+                        ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
+                        ->select(DB::raw('s.CODE as code'),
                                 DB::raw('h.NAME as prodname'),
                                 DB::raw('r.KVOL as POqty'),
-                                DB::raw('s.PORDER as porder'))
-                        ->where('r.SORDER',$req->po)
-                        ->orderBy('s.PORDER','desc')
+                                DB::raw('s.PORDER as porder'),
+                                DB::raw('r.SEDA as branch'))
+                        ->where('s.SEIBAN',$req->po)
+                        ->orderBy('r.SEDA','desc')
                         ->first();
 
             if (count((array)$info) > 0) {
@@ -970,26 +971,31 @@ class WBSMaterialKittingController extends Controller
         //$mk_data = $this->getKitInfoByID($id)
         $mk_data = DB::connection($this->mssql)
                         ->table('XSLIP as s')
-                        ->leftjoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
-                        ->leftjoin('XRECE as r', 's.SEIBAN', '=', 'r.SORDER')
+                        ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
+                        ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
                         ->select(DB::raw('s.CODE as code'),
                                 DB::raw('h.NAME as prodname'),
-                                DB::raw('r.KVOL as POqty'))
+                                DB::raw('r.KVOL as POqty'),
+                                DB::raw('s.PORDER as porder'),
+                                DB::raw('r.SEDA as branch'))
                         ->where('s.SEIBAN',$req->po)
+                        ->orderBy('r.SEDA','desc')
                         ->count();
 
         if($mk_data > 0)
         {
             $info = DB::connection($this->mssql)
-                    ->table('XSLIP as s')
-                    ->leftjoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
-                    ->leftjoin('XRECE as r', 's.SEIBAN', '=', 'r.SORDER')
-                    ->select(DB::raw('s.CODE as code'),
-                            DB::raw('h.NAME as prodname'),
-                            DB::raw('r.KVOL as POqty'),
-                            DB::raw('s.SEIBAN as po'))
-                    ->where('s.SEIBAN',$req->po)
-                    ->first();
+                        ->table('XSLIP as s')
+                        ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
+                        ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
+                        ->select(DB::raw('s.CODE as code'),
+                                DB::raw('h.NAME as prodname'),
+                                DB::raw('r.KVOL as POqty'),
+                                DB::raw('s.PORDER as porder'),
+                                DB::raw('r.SEDA as branch'))
+                        ->where('s.SEIBAN',$req->po)
+                        ->orderBy('r.SEDA','desc')
+                        ->first();
                     
             // heto yung sa details...
             $mk_details_data = DB::connection($this->mssql)
@@ -1979,16 +1985,17 @@ class WBSMaterialKittingController extends Controller
     {
         $status = 'O';
         $ypics = DB::connection($this->mssql)
-                        ->table('XSLIP as s')
-                        ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
-                        ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
-                        ->select(DB::raw('s.CODE as code'),
-                                DB::raw('h.NAME as prodname'),
-                                DB::raw('r.KVOL as POqty'),
-                                DB::raw('s.PORDER as porder'))
-                        ->where('s.SEIBAN',$po)
-                        ->orderBy('s.PORDER','desc')
-                        ->first();
+                    ->table('XSLIP as s')
+                    ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
+                    ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
+                    ->select(DB::raw('s.CODE as code'),
+                            DB::raw('h.NAME as prodname'),
+                            DB::raw('r.KVOL as POqty'),
+                            DB::raw('s.PORDER as porder'),
+                            DB::raw('r.SEDA as branch'))
+                    ->where('s.SEIBAN',$po)
+                    ->orderBy('r.SEDA','desc')
+                    ->first();
 
                   
         $iss = DB::connection($this->mysql)->table('tbl_wbs_kit_issuance')
