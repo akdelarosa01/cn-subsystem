@@ -19,16 +19,17 @@ class YPICSDispatchController extends Controller
     protected $mysql;
     protected $mssql;
     protected $common;
+    protected $com;
     
     public function __construct()
     {
         $this->middleware('auth');
-        $com = new CommonController;
+        $this->com = new CommonController;
 
         if (Auth::user() != null) {
-            $this->mysql = $com->userDBcon(Auth::user()->productline,'mysql');
-            $this->mssql = $com->userDBcon(Auth::user()->productline,'mssql');
-            $this->common = $com->userDBcon(Auth::user()->productline,'common');
+            $this->mysql = $this->com->userDBcon(Auth::user()->productline,'mysql');
+            $this->mssql = $this->com->userDBcon(Auth::user()->productline,'mssql');
+            $this->common = $this->com->userDBcon(Auth::user()->productline,'common');
         } else {
             return redirect('/');
         }
@@ -36,8 +37,7 @@ class YPICSDispatchController extends Controller
 
     public function index()
     {
-    	$common = new CommonController;
-        if(!$common->getAccessRights(Config::get('constants.MODULE_CODE_DISPATCH'), $userProgramAccess))
+        if(!$this->com->getAccessRights(Config::get('constants.MODULE_CODE_DISPATCH'), $userProgramAccess))
         {
             return redirect('/home');
         }
@@ -328,6 +328,7 @@ class YPICSDispatchController extends Controller
     public function getDispatchData()
     {
     	$db = DB::connection($this->mysql)->table('tbl_dispatch_txpickjitu_none')
+                ->groupBy('code')
     			->select(['id',
     					'porder',
 						'code',

@@ -76,31 +76,33 @@ class WBSIqcController extends Controller
     public function getLoadwbs(Request $req)
     {
 
-        $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory')
-                    ->where('iqc_status',$req->status)
-                    ->where('not_for_iqc',0)
-                    ->where('qty','>',0)
-                    ->orderBy('created_at','desc')
+        $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')
+                    ->leftJoin('tbl_wbs_material_receiving_batch as b','i.mat_batch_id','=','b.id')
+                    ->where('i.iqc_status',$req->status)
+                    ->where('i.not_for_iqc',0)
+                    ->where('b.qty','>',0)
+                    ->orderBy('i.created_at','desc')
                     ->select([
-                            'id',
-                            'item',
-                            'item_desc',
-                            'supplier',
-                            'qty',
-                            'lot_no',
-                            'drawing_num',
-                            'wbs_mr_id',
-                            'invoice_no',
-                            'iqc_result',
-                            'updated_at',
-                            'update_user',
-                            'iqc_status',
-                            'ins_date',
-                            'ins_time',
-                            'ins_by',
-                            'app_date',
-                            'app_time',
-                            'app_by',
+                            DB::raw('i.id as id'),
+                            DB::raw('i.item as item'),
+                            DB::raw('i.item_desc as item_desc'),
+                            DB::raw('i.supplier as supplier'),
+                            DB::raw("IFNULL(b.qty,(SELECT b.qty FROM tbl_wbs_local_receiving_batch as b
+                                                    where b.id = i.loc_batch_id)) as qty"),
+                            DB::raw('i.lot_no as lot_no'),
+                            DB::raw('i.drawing_num as drawing_num'),
+                            DB::raw('i.wbs_mr_id as wbs_mr_id'),
+                            DB::raw('i.invoice_no as invoice_no'),
+                            DB::raw('i.iqc_result as iqc_result'),
+                            DB::raw('i.updated_at as updated_at'),
+                            DB::raw('i.update_user as update_user'),
+                            DB::raw('i.iqc_status as iqc_status'),
+                            DB::raw('i.ins_date as ins_date'),
+                            DB::raw('i.ins_time as ins_time'),
+                            DB::raw('i.ins_by as ins_by'),
+                            DB::raw('i.app_date as app_date'),
+                            DB::raw('i.app_time as app_time'),
+                            DB::raw('i.app_by as app_by'),
                         ]);
 
         return Datatables::of($iqc)
@@ -440,7 +442,7 @@ class WBSIqcController extends Controller
         }
         else
         {
-            $receivedate_cond = " AND received_date BETWEEN '" . $from . "' AND '" . $to . "'";
+            $receivedate_cond = " AND i.received_date BETWEEN '" . $from . "' AND '" . $to . "'";
         }
 
         if($itemno == '')
@@ -449,7 +451,7 @@ class WBSIqcController extends Controller
         }
         else
         {
-            $item_cond = " AND item = '" . $itemno . "'";
+            $item_cond = " AND i.item = '" . $itemno . "'";
         }
 
         if($status == '')
@@ -458,7 +460,7 @@ class WBSIqcController extends Controller
         }
         else
         {
-            $status_cond = " AND iqc_status = '" . $status . "'";
+            $status_cond = " AND i.iqc_status = '" . $status . "'";
         }
 
         if($lotno == '')
@@ -467,7 +469,7 @@ class WBSIqcController extends Controller
         }
         else
         {
-            $lotno_cond = " AND lot_no = '" . $lotno . "'";
+            $lotno_cond = " AND i.lot_no = '" . $lotno . "'";
         }
 
         if($recno == '')
@@ -476,7 +478,7 @@ class WBSIqcController extends Controller
         }
         else
         {
-            $recno_cond = " AND wbs_mr_id = '" . $recno . "'";
+            $recno_cond = " AND i.wbs_mr_id = '" . $recno . "'";
         }
 
         if($invoice_no == '')
@@ -488,35 +490,37 @@ class WBSIqcController extends Controller
             $invoice_no_cond = " AND invoice_no = '" . $invoice_no . "'";
         }
 
-        $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory')
-                    ->whereRaw("not_for_iqc='0'"
+        $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')
+                    ->leftJoin('tbl_wbs_material_receiving_batch as b','i.mat_batch_id','=','b.id')
+                    ->whereRaw("i.not_for_iqc='0'"
                             . $receivedate_cond
                             . $item_cond
                             . $status_cond
                             . $lotno_cond
                             . $recno_cond
                             . $invoice_no_cond)
-                    ->orderBy('created_at','desc')
+                    ->orderBy('i.created_at','desc')
                     ->select([
-                            'id',
-                            'item',
-                            'item_desc',
-                            'supplier',
-                            'qty',
-                            'lot_no',
-                            'drawing_num',
-                            'wbs_mr_id',
-                            'invoice_no',
-                            'iqc_result',
-                            'updated_at',
-                            'update_user',
-                            'iqc_status',
-                            'ins_date',
-                            'ins_time',
-                            'ins_by',
-                            'app_date',
-                            'app_time',
-                            'app_by',
+                            DB::raw('i.id as id'),
+                            DB::raw('i.item as item'),
+                            DB::raw('i.item_desc as item_desc'),
+                            DB::raw('i.supplier as supplier'),
+                            DB::raw("IFNULL(b.qty,(SELECT b.qty FROM tbl_wbs_local_receiving_batch as b
+                                                    where b.id = i.loc_batch_id)) as qty"),
+                            DB::raw('i.lot_no as lot_no'),
+                            DB::raw('i.drawing_num as drawing_num'),
+                            DB::raw('i.wbs_mr_id as wbs_mr_id'),
+                            DB::raw('i.invoice_no as invoice_no'),
+                            DB::raw('i.iqc_result as iqc_result'),
+                            DB::raw('i.updated_at as updated_at'),
+                            DB::raw('i.update_user as update_user'),
+                            DB::raw('i.iqc_status as iqc_status'),
+                            DB::raw('i.ins_date as ins_date'),
+                            DB::raw('i.ins_time as ins_time'),
+                            DB::raw('i.ins_by as ins_by'),
+                            DB::raw('i.app_date as app_date'),
+                            DB::raw('i.app_time as app_time'),
+                            DB::raw('i.app_by as app_by'),
                         ]);
 
         return Datatables::of($iqc)
