@@ -10,15 +10,17 @@ class WHSCheckRequest extends Event
 {
     use SerializesModels;
     public $conn;
+    public $transno;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($conn)
+    public function __construct($conn,$transno)
     {
         $this->conn = $conn;
+        $this->transno = $transno;
     }
 
     /**
