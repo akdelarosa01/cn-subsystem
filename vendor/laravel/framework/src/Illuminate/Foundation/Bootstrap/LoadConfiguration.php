@@ -42,9 +42,9 @@ class LoadConfiguration
             return $config->get('app.env', 'production');
         });
 
-        date_default_timezone_set($config['config.app.timezone']);
+        // date_default_timezone_set($config['config.app.timezone']);
 
-        //date_default_timezone_set($config['app.timezone']);
+        date_default_timezone_set($config['app.timezone']);
 
         mb_internal_encoding('UTF-8');
     }
