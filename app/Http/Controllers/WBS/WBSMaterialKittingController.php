@@ -980,9 +980,9 @@ class WBSMaterialKittingController extends Controller
                                 DB::raw('r.SEDA as branch'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('r.SEDA','desc')
-                        ->count();
+                        ->first();
 
-        if($mk_data > 0)
+        if(count((array)$mk_data) > 0)
         {
             $info = DB::connection($this->mssql)
                         ->table('XSLIP as s')
