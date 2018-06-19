@@ -992,7 +992,8 @@ class WBSMaterialKittingController extends Controller
                                 DB::raw('h.NAME as prodname'),
                                 DB::raw('r.KVOL as POqty'),
                                 DB::raw('s.PORDER as porder'),
-                                DB::raw('r.SEDA as branch'))
+                                DB::raw('r.SEDA as branch'),
+                                DB::raw('s.SEIBAN as po'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('r.SEDA','desc')
                         ->first();
