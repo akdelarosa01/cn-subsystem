@@ -57,6 +57,7 @@ class WBSSakidashiIssuanceController extends Controller
             'msg' => "P.O. number [".$req->po."] doesn't exist.",
             'return_status' => "failed"
         ];
+
         $info = DB::connection($this->mssql)
                     ->table('XSLIP as s')
                     ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
@@ -65,62 +66,49 @@ class WBSSakidashiIssuanceController extends Controller
                             DB::raw('h.NAME as prodname'),
                             DB::raw('r.KVOL as POqty'),
                             DB::raw('s.PORDER as porder'),
-                            DB::raw('r.SEDA as branch'))
+                            DB::raw('r.SEDA as branch'),
+                            DB::raw('s.SEIBAN as po'))
                     ->where('s.SEIBAN',$req->po)
                     ->orderBy('r.SEDA','desc')
                     ->first();
 
-        if ($this->com->checkIfExistObject($info) < 1) {
-            $info = DB::connection($this->mssql)
-                        ->table('XSLIP as s')
-                        ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
-                        ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
-                        ->select(DB::raw('s.CODE as code'),
-                                DB::raw('h.NAME as prodname'),
-                                DB::raw('r.KVOL as POqty'),
-                                DB::raw('s.PORDER as porder'),
-                                DB::raw('r.SEDA as branch'))
-                        ->where('s.SEIBAN',$req->po)
-                        ->orderBy('r.SEDA','desc')
-                        ->first();
-        }
         $date = Carbon::now();
         $dt = $date->addDays(2);
         $return_date = $dt->format('m/d/Y');
 
         if ($this->com->checkIfExistObject($info) > 0) {
-                $ypics = DB::connection($this->mssql)
-                                ->select("SELECT hk.CODE as kcode, 
-                                                h.NAME as partname, 
-                                                hk.KVOL as rqdqty, 
-                                                x.ZAIK as actualqty,
-                                                x.RACKNO as location,
-                                                i.VENDOR as supplier, 
-                                                x.WHS100 as whs100, 
-                                                x.WHS102 as whs102
-                                        FROM XSLIP s
-                                        LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
-                                        LEFT JOIN XITEM i ON i.CODE = hk.CODE
-                                        LEFT JOIN XHEAD h ON h.CODE = hk.CODE
-                                        LEFT JOIN (SELECT z.CODE, 
-                                                        ISNULL(z1.ZAIK,0) as WHS100, 
-                                                        ISNULL(z2.ZAIK,0) as WHS102, 
-                                                        SUM(z.ZAIK) as ZAIK,
-                                                        z.RACKNO FROM XZAIK z
-                                                   LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
-                                                   LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z.RACKNO <> ''
-                                                   GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z.RACKNO
-                                        ) x ON x.CODE = hk.CODE
-                                        WHERE s.SEIBAN = '".$req->po."' AND s.PORDER = '".$info->porder."'
-                                        GROUP BY hk.CODE, 
-                                                h.NAME, 
-                                                i.VENDOR, 
-                                                hk.KVOL,
-                                                x.WHS100, 
-                                                x.WHS102, 
-                                                x.RACKNO,
-                                                x.ZAIK");
+            $ypics = DB::connection($this->mssql)
+                            ->select("SELECT hk.CODE as kcode, 
+                                            h.NAME as partname, 
+                                            hk.KVOL as rqdqty, 
+                                            x.ZAIK as actualqty,
+                                            x.RACKNO as location,
+                                            i.VENDOR as supplier, 
+                                            x.WHS100 as whs100, 
+                                            x.WHS102 as whs102
+                                    FROM XSLIP s
+                                    LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                    LEFT JOIN XITEM i ON i.CODE = hk.CODE
+                                    LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                    LEFT JOIN (SELECT z.CODE, 
+                                                    ISNULL(z1.ZAIK,0) as WHS100, 
+                                                    ISNULL(z2.ZAIK,0) as WHS102, 
+                                                    SUM(z.ZAIK) as ZAIK,
+                                                    z.RACKNO FROM XZAIK z
+                                               LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                               LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                               WHERE z.RACKNO <> ''
+                                               GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z.RACKNO
+                                    ) x ON x.CODE = hk.CODE
+                                    WHERE s.SEIBAN = '".$req->po."' AND s.PORDER = '".$info->porder."'
+                                    GROUP BY hk.CODE, 
+                                            h.NAME, 
+                                            i.VENDOR, 
+                                            hk.KVOL,
+                                            x.WHS100, 
+                                            x.WHS102, 
+                                            x.RACKNO,
+                                            x.ZAIK");
             $details = [];
             foreach ($ypics as $key => $yp) {
                 array_push($details,[
