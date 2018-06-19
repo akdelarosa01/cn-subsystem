@@ -203,4 +203,127 @@ class WBSInventoryController extends Controller
         }
         return response()->json($result);
     }
+
+    public function inventory_excel()
+    {
+        $dt = Carbon::now();
+        $date = $dt->format('m-d-y');
+
+        $com_info = $this->com->getCompanyInfo();
+
+        $data = DB::connection($this->mysql)->table('tbl_wbs_inventory')
+                            ->select(
+                                'wbs_mr_id',
+                                'item',
+                                'item_desc',
+                                'qty',
+                                'lot_no',
+                                'location',
+                                'supplier',
+                                'iqc_status',
+                                'received_date'
+                            )->get();
+
+        // return dd($data);
+        
+        Excel::create('WBS_Inventory_List_'.$date, function($excel) use($com_info,$data)
+        {
+            $excel->sheet('Inventory', function($sheet) use($com_info,$data)
+            {
+                $sheet->setHeight(1, 15);
+                $sheet->mergeCells('A1:J1');
+                $sheet->cells('A1:J1', function($cells) {
+                    $cells->setAlignment('center');
+                });
+                $sheet->cell('A1',$com_info['name']);
+
+                $sheet->setHeight(2, 15);
+                $sheet->mergeCells('A2:J2');
+                $sheet->cells('A2:J2', function($cells) {
+                    $cells->setAlignment('center');
+                });
+                $sheet->cell('A2',$com_info['address']);
+
+                $sheet->setHeight(4, 20);
+                $sheet->mergeCells('A4:J4');
+                $sheet->cells('A4:J4', function($cells) {
+                    $cells->setAlignment('center');
+                    $cells->setFont([
+                        'family'     => 'Calibri',
+                        'size'       => '14',
+                        'bold'       =>  true,
+                        'underline'  =>  true
+                    ]);
+                });
+                $sheet->cell('A4',"WBS INVENTORY LIST");
+
+                $sheet->setHeight(6, 15);
+                $sheet->cells('A6:J6', function($cells) {
+                    $cells->setFont([
+                        'family'     => 'Calibri',
+                        'size'       => '11',
+                        'bold'       =>  true,
+                    ]);
+                    // Set all borders (top, right, bottom, left)
+                    $cells->setBorder('thick', 'thick', 'thick', 'thick');
+                });
+                $sheet->cell('A6', "");
+                $sheet->cell('B6', "Control No.");
+                $sheet->cell('C6', "Code");
+                $sheet->cell('D6', "Description");
+                $sheet->cell('E6', "Quantity");
+                $sheet->cell('F6', "Lot No.");
+                $sheet->cell('G6', "Location");
+                $sheet->cell('H6', "Supplier");
+                $sheet->cell('I6', "IQC Status");
+                $sheet->cell('J6', "Received DAte");
+
+                $row = 7;
+                
+                //return dd($com_info);
+
+                $count = 1;
+                $status = '';
+
+                foreach ($data as $key => $wbs) {
+                    $sheet->setHeight($row, 15);
+                    $sheet->cell('A'.$row, $count);
+                    $sheet->cell('B'.$row, $wbs->wbs_mr_id);
+                    $sheet->cell('C'.$row, $wbs->item);
+                    $sheet->cell('D'.$row, $wbs->item_desc);
+                    $sheet->cell('E'.$row, $wbs->qty);
+                    $sheet->cell('F'.$row, $wbs->lot_no);
+                    $sheet->cell('G'.$row, $wbs->location);
+                    $sheet->cell('H'.$row, $wbs->supplier);
+
+                    switch ($wbs->iqc_status) {
+                        case 0:
+                            $status = 'Pending';
+                            break;
+
+                        case 1:
+                            $status = 'Accepted';
+                            break;
+
+                        case 2:
+                            $status = 'Rejected';
+                            break;
+
+                        case 3:
+                            $status = 'On-going';
+                            break;
+                    }
+
+                    $sheet->cell('I'.$row, $status);
+                    $sheet->cell('J'.$row, $this->com->convertDate($wbs->received_date,'m/d/Y h:i A'));
+                    $row++;
+                    $count++;
+                }
+                
+                $sheet->cells('A'.$row.':J'.$row, function($cells) {
+                    $cells->setBorder('thick', 'thick', 'thick', 'thick');
+                });
+            });
+        })->download('xls');
+    }
 }

@@ -487,7 +487,7 @@ class WBSIqcController extends Controller
         }
         else
         {
-            $invoice_no_cond = " AND invoice_no = '" . $invoice_no . "'";
+            $invoice_no_cond = " AND i.invoice_no = '" . $invoice_no . "'";
         }
 
         $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')

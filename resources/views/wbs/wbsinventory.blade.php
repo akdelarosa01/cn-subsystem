@@ -84,7 +84,7 @@
                         			<i class="fa fa-trash"></i> Delete
                         		</button>
 
-                                <a href="{{url('/iqc-matrix-excel')}}" class="btn btn-sm grey-gallery">
+                                <a href="{{url('/wbs-inventory-excel')}}" class="btn btn-sm grey-gallery">
                                     <i class="fa fa-file-excel-o"></i> Export to Excel
                                 </a>
                         	</div>
