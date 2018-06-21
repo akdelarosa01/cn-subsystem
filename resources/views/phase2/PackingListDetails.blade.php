@@ -103,7 +103,7 @@
 																</select>
 														</div>
 														<div class="col-md-12">
-															<textarea id="txa_soldto" name="soldto" class="form-control input-sm" rows="6" maxlength="200" style="resize:none;"><?php if(isset($packinglist)){echo $packinglist[0]->sold_to; } else { echo $yec; } ?></textarea>
+															<textarea id="txa_soldto" name="soldto" class="form-control input-sm" rows="6" maxlength="900" style="resize:none;"><?php if(isset($packinglist)){echo $packinglist[0]->sold_to; } else { echo $yec; } ?></textarea>
 														</div>
 													</div>
 
@@ -139,7 +139,7 @@
 															<div class="col-md-6">
 																<label class="col-md-12 input-sm">Port of Loading:</label>
 																<div class="col-md-12">
-																	<input id="txa_portloading" type="text" name="portloading" maxlength="100" class="form-control input-sm" value="<?php if(isset($packinglist)){echo $packingInfo->port_loading; } else {echo "MANILA, PHILIPPINES";}?>" <?php echo($readonly); ?> >
+																	<input id="txa_portloading" type="text" name="portloading" maxlength="900" class="form-control input-sm" value="<?php if(isset($packinglist)){echo $packingInfo->port_loading; } else {echo "MANILA, PHILIPPINES";}?>" <?php echo($readonly); ?> >
 																</div>
 															</div>
 															<div class="col-md-6">
@@ -184,7 +184,7 @@
 															<div class="col-md-2">
 															</div>
 															<div class="col-md-10">
-																<input id="txt_controlno" type="text" class="form-control input-sm" name="controlno" maxlength="20" value="<?php if(isset($packinglist)){echo $packingInfo->control_no; } ?>" <?php echo($readonly); ?> >
+																<input id="txt_controlno" type="text" class="form-control input-sm" name="controlno" maxlength="900" value="<?php if(isset($packinglist)){echo $packingInfo->control_no; } ?>" <?php echo($readonly); ?> >
 															</div>
 															<label class="col-md-12 input-sm">No. and Date of Invoice #:</label>
 															<div class="col-md-12">
@@ -221,7 +221,7 @@
 																		<label class="col-md-12 input-sm">S / No.:</label>
 																	</div>
 																	<div class="col-md-6">
-																		<input id="txt_s_no" type="text" class="form-control input-sm" name="sno" maxlength="50" value="<?php if(isset($packinglist)){echo $packingInfo->remarks_s_no; } ?>" <?php echo($readonly); ?> >
+																		<input id="txt_s_no" type="text" class="form-control input-sm" name="sno" maxlength="900" value="<?php if(isset($packinglist)){echo $packingInfo->remarks_s_no; } ?>" <?php echo($readonly); ?> >
 																	</div>
 																	<div class="col-md-2">
 																	</div>
@@ -229,7 +229,7 @@
 															</div>
 															<label class="col-md-12 input-sm">Ship To:</label>
 															<div class="col-md-12">
-																<textarea id="txa_shipto" name="shipto" class="form-control input-sm" rows="6" maxlength="200" style="resize:none;" <?php echo($readonly); ?> ><?php 
+																<textarea id="txa_shipto" name="shipto" class="form-control input-sm" rows="6" maxlength="900" style="resize:none;" <?php echo($readonly); ?> ><?php 
 																	if(isset($packinglist)){
 																		echo $packinglist[0]->ship_to;
 																	} else {
@@ -286,7 +286,7 @@
 													<div class="form-group">
 														<label class="col-md-12 input-sm">Case Marks:</label>
 														<div class="col-md-12">
-															<textarea id="txa_casemarks" name="casemarks" class="form-control input-sm" maxlength="200" style="resize:none;" rows="6" <?php echo($readonly); ?> ><?php if(isset($packinglist)){echo $packinglist[0]->case_marks; } else {
+															<textarea id="txa_casemarks" name="casemarks" class="form-control input-sm" maxlength="900" style="resize:none;" rows="6" <?php echo($readonly); ?> ><?php if(isset($packinglist)){echo $packinglist[0]->case_marks; } else {
 																		$ship = 'NITTSU NEC- Logistics., Co. Ltd.'."\n";
 																		$ship .= '1-4-1 OSAKU, SAKURA-SHI'."\n";
 																		$ship .= 'CHIBA 285-0802, JAPAN'."\n";
@@ -301,7 +301,7 @@
 													<div class="form-group">
 														<label class="col-md-12 input-sm">Note / Highlight:</label>
 														<div class="col-md-12">
-															<textarea id="txa_note" name="note" class="form-control input-sm" maxlength="200" style="resize:none;" rows="6" <?php echo($readonly); ?> ><?php if(isset($packinglist)){echo $packinglist[0]->note; } ?></textarea>
+															<textarea id="txa_note" name="note" class="form-control input-sm" maxlength="900" style="resize:none;" rows="6" <?php echo($readonly); ?> ><?php if(isset($packinglist)){echo $packinglist[0]->note; } ?></textarea>
 														</div>
 													</div>
 												</div>
@@ -316,7 +316,7 @@
 															<div class="col-md-9">
 																<label class="col-md-12 input-sm"><strong>PRICON</strong></label>
 																<div class="col-md-12">
-																	<input id="txt_to" type="text" class="form-control input-sm" name="sno" maxlength="50" value="<?php if(isset($packinglist)){echo $packingInfo->to; } else { echo "JAPAN";} ?>" <?php echo($readonly); ?> >
+																	<input id="txt_to" type="text" class="form-control input-sm" name="sno" maxlength="900" value="<?php if(isset($packinglist)){echo $packingInfo->to; } else { echo "JAPAN";} ?>" <?php echo($readonly); ?> >
 																	<input id="txt_freight" type="text" class="form-control input-sm" name="sno" value="<?php if(isset($packinglist)){echo $packingInfo->freight; }else { echo "COLLECT";} ?>" <?php echo($readonly); ?> >
 																</div>
 															</div>
