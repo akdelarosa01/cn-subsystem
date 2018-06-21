@@ -229,7 +229,7 @@
 															</div>
 															<label class="col-md-12 input-sm">Ship To:</label>
 															<div class="col-md-12">
-																<textarea id="txa_shipto" name="shipto" class="form-control input-sm" rows="6" maxlength="200" style="resize:none;" <?php echo($readonly); ?> ><?php 
+																<textarea id="txa_shipto" name="shipto" class="form-control input-sm" rows="6" maxlength="900" style="resize:none;" <?php echo($readonly); ?> ><?php 
 																	if(isset($packinglist)){
 																		echo $packinglist[0]->ship_to;
 																	} else {
