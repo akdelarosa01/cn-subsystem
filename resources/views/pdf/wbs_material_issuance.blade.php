@@ -34,8 +34,7 @@
     </style>
 </head>
 <body>
-
-    <div class="footer fontArial">
+	<div class="footer fontArial">
         <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-size:12px;">
             <tbody>
                 <tr>
@@ -46,11 +45,11 @@
                     <td style="width: 100px;">____________________</td>
                 </tr>
                 <tr>
-                    <td style="width: 100px; padding-left: 30px;">Prepared By: </td>
-                    <td style="width: 100px; padding-left: 30px;">Issued By: </td>
-                    <td style="width: 100px; padding-left: 30px;">Received By: </td>
-                    <td style="width: 100px; padding-left: 30px;">Chedked By: </td>
-                    <td style="width: 100px; padding-left: 30px;">Encoded By: </td>
+                    <th style="width: 100px; padding-left: 30px;">Prepared By: </th>
+                    <th style="width: 100px; padding-left: 30px;">Issued By: </th>
+                    <th style="width: 100px; padding-left: 30px;">Received By: </th>
+                    <th style="width: 100px; padding-left: 30px;">Chedked By: </th>
+                    <th style="width: 100px; padding-left: 30px;">Encoded By: </th>
                 </tr>
             </tbody>
         </table>
@@ -63,7 +62,7 @@
                     <table class="fontArial" style="width: 100%; font-size:10px;" border="0" cellpadding="0" cellspacing="0">
                         <tbody>
                             <tr>
-                                <td>Date:</td>
+                                <th>Date:</th>
                                 <td>{{ $date }}</td>
                             </tr>
                         </tbody>
@@ -73,7 +72,7 @@
                     <table class="fontArial" style="width: 100%; font-size:10px;" align="right" border="0" cellpadding="0" cellspacing="0">
                         <tbody>
                             <tr>
-                                <td>Page:</td>
+                                <th>Page:</th>
                                 <td><span class="pagenum"></span></td>
                             </tr>
                         </tbody>
@@ -91,7 +90,7 @@
                 <h4>{{ $company_info['name'] }}</h4>
                 <p style="line-height: 1.8px; font-size:12px; ">{{ $company_info['address'] }}</p>
                 <p style="line-height: 1.8px; font-size:12px; ">{{ $company_info['tel1'] . ' ' . $company_info['tel2'] }}</p>
-                <h2><ins>PRODUCTION MATERIAL REQUEST</ins></h2>
+                <h2><ins>WAREHOUSE MATERIAL ISSUANCE</ins></h2>
                 </td>
             </tr>
         </tbody>
@@ -100,24 +99,24 @@
     <table class="table table-borderless" style="font-size:12px;">
         <tbody>
             <tr>
-                <td>Request No. :</td>
-                <td class="text-left">{{ $summary->transno }}</td>
-                <td>Requested By :</td>
-                <td class="text-left">{{ $summary->requestedby }}</td>
+                <th>Issuance No. :</th>
+                <td class="text-left">{{ $summary->issuance_no }}</td>
+                <th>Request No. :</th>
+                <td class="text-left">{{ $summary->request_no }}</td>
             </tr>
             <tr>
-                <td>PO No. :</td>
-                <td class="text-left">{{ $summary->pono }}</td>
-                <td>Date Requested :</td>
-                <td class="text-left">{{ $summary->requested_at }}</td>
+                <th>Issued By :</th>
+                <td class="text-left">{{ $summary->create_user }}</td>
+                <th>Date Issued :</th>
+                <td class="text-left">{{ $summary->created_at }}</td>
             </tr>
             <tr>
-                <td>Dispatch Destination :</td>
-                <td class="text-left" colspan="2">{{ $summary->destination }}</td>
+                <th>Total Request :</th>
+                <td class="text-left" colspan="2">{{ $summary->total_req_qty }}</td>
             </tr>
             <tr>
-                <td>Line:</td>
-                <td class="text-left" colspan="2">{{ $summary->line }}</td>
+                <th>Total Issued:</th>
+                <td class="text-left" colspan="2">{{ $total_served_qty }}</td>
             </tr>
         </tbody>
     </table>
@@ -126,14 +125,13 @@
     <table class="table table-bordered" style="font-size:10px;">
         <thead>
             <tr>
-                <th>Item No.</th>
-                <th>Item Description</th>
-                <th>Issued Qty.</th>
-                <th>Request Qty.</th>
-                <th>Served Qty.</th>
-                <th>Classification</th>
-                <th>Remarks</th>
-                <th>Acknowledged By</th>
+				<th>Detail ID</th>
+				<th>Item Code</th>
+				<th>Description</th>
+				<th>Request Qty.</th>
+				<th>Issued Qty.</th>
+				<th>Lot No.</th>
+				<th>Location</th>
             </tr>
         </thead>
         <tbody>
@@ -142,14 +140,13 @@
                 {
             ?>
                     <tr>
-                        <td>{{ $row->code }}</td>
-                        <td>{{ $row->name }}</td>
-                        <td>{{ $row->issuedqty }}</td>
-                        <td>{{ $row->requestqty }}</td>
-                        <td>{{ $row->servedqty }}</td>
-                        <td>{{ $row->classification }}</td>
-                        <td>{{ $row->remarks }}</td>
-                        <td>{{ $row->acknowledgeby }}</td>
+                        <td>{{ $row->detail_id }}</td>
+						<td>{{ $row->item }}</td>
+						<td>{{ $row->item_desc }}</td>
+						<td>{{ $row->request_qty }}</td>
+						<td>{{ $row->issued_qty_t }}</td>
+						<td>{{ $row->lot_no }}</td>
+						<td>{{ $row->location }}</td>
                     </tr>
             <?php
                 }

@@ -313,7 +313,7 @@
                                     </li>
                                     @endif
                                 @elseif ($access->program_code == "3025")
-                                    <?php $url = "/wbswhsmatissuance"; $icon = "fa fa-cubes"; ?>
+                                    <?php $url = "/whs-issuance"; $icon = "fa fa-cubes"; ?>
                                     @if ($access->read_write != "0")
                                     <li>
                                         <a href="{{ url($url) }}"><i class="{{ $icon }}" ></i> {{ $access->program_name }}</a>

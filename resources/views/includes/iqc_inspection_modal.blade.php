@@ -1080,7 +1080,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Date from</span>
-                                    <input type="text" class="form-control date-picker input-sm " id="gfrom" name="gfrom">
+                                    <input type="text" class="form-control date-picker input-sm " id="gfrom" name="gfrom" autocomplete="false">
                                 </div>
                             </div>
                         </div>
@@ -1089,7 +1089,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Date to</span>
-                                    <input type="text" class="form-control date-picker input-sm " id="gto" name="gto">
+                                    <input type="text" class="form-control date-picker input-sm " id="gto" name="gto" autocomplete="false">
                                 </div>
                             </div>
                         </div>

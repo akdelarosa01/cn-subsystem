@@ -2365,6 +2365,13 @@
 <script type="text/javascript">
 	var token = "{{ Session::token() }}";
 	var GroupByURL = "{{ url('/iqc-groupby-values') }}";
+	var GetSingleGroupByURL = "{{ url('/iqc-groupby-dppmgroup1') }}";
+    var GetdoubleGroupByURL = "{{ url('/iqc-groupby-dppmgroup2') }}";
+    var GettripleGroupByURL = "{{ url('/iqc-groupby-dppmgroup3') }}";
+    var GetdoubleGroupByURLdetails = "{{ url('/iqc-groupby-dppmgroup2_Details') }}";
+    var GettripleGroupByURLdetails = "{{ url('/iqc-groupby-dppmgroup3_Details') }}";
+    var pdfURL = "{{ url('/iqcprintreport?') }}";
+    var excelURL = "{{ url('/iqcprintreportexcel')  }}";
 </script>
 
 <script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/iqc_inspection_groupby.js') }}" type="text/javascript"></script>

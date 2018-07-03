@@ -39,6 +39,7 @@
             </div>
         </div>
         <hr>
+        
         <div class="row">
             <div class="col-md-12" id="main_pane">
 
@@ -101,6 +102,15 @@
     var SamplingPlanURL = "{{ url('/get-sampling-plan') }}";
     var getNumOfDefectivesURL  = "{{url('/oqc-num-of-defects')}}";
     var getShiftURL = "{{ url('/oqc-shift') }}";
+    var PDFGroupByReportURL = "{{ url('/oqc-groupby-pdf') }}";
+    var ExcelGroupByReportURL = "{{ url('/oqc-groupby-excel') }}";
+    var GetSingleGroupByURL = "{{ url('/oqc-groupby-dppmgroup1') }}";
+    var GetdoubleGroupByURL = "{{ url('/oqc-groupby-dppmgroup2') }}";
+    var GettripleGroupByURL = "{{ url('/oqc-groupby-dppmgroup3') }}";
+    var GetdoubleGroupByURLdetails = "{{ url('/oqc-groupby-dppmgroup2_Details') }}";
+    var GettripleGroupByURLdetails = "{{ url('/oqc-groupby-dppmgroup3_Details') }}";
+
+    
 </script>
 <script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/common.js') }}" type="text/javascript"></script>
 <script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/oqc_inspection.js') }}" type="text/javascript"></script>

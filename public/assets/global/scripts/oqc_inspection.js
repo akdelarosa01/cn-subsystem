@@ -244,6 +244,7 @@ function clearControls() {
 	$('#accept').val(0);
 	$('#reject').val(1);
 	$('#lot_inspected').val(1);
+	$('#inspector').val(author);
 	$('#shift').val('Shift A');
 }
 

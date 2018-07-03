@@ -99,7 +99,7 @@
                                 <div class="form-group" id="series_name_div">
                                     <label class="control-label col-sm-3">Device Name</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control enter input-sm validate clear" id="series_name" name="series_name">
+                                        <input type="text" class="form-control enter input-sm validate clear" id="series_name" name="series_name" readonly>
                                         <input type="hidden" class="form-control enter input-sm validate clear" id="series_code" name="series_code">
                                         <span class="help-block">
                                             <strong id="series_name_msg"></strong>
@@ -109,7 +109,7 @@
                                 <div class="form-group" id="customer_div">
                                     <label class="control-label col-sm-3">Customer</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control enter input-sm validate clear" id="customer" name="customer">
+                                        <input type="text" class="form-control enter input-sm validate clear" id="customer" name="customer" readonly>
                                         <input type="hidden" class="form-control enter input-sm validate clear" id="customer_code" name="customer_code">
                                         <span class="help-block">
                                             <strong id="customer_msg"></strong>
@@ -177,6 +177,15 @@
                                         </span>
                                     </div>
                                 </div>
+                                <div class="form-group" id="lot_qty_div">
+                                    <label class="control-label col-sm-3">Lot Quantity</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control enter input-sm validate clear" id="lot_qty" name="lot_qty">
+                                        <span class="help-block">
+                                            <strong id="lot_qty_msg"></strong>
+                                        </span>
+                                    </div>
+                                </div>
                             </td>
 
                             <td width="50%">
@@ -191,16 +200,25 @@
                                         </span>
                                     </div>
                                 </div>
+                                <div class="form-group" id="sample_size_div">
+                                    <label class="control-label col-sm-3">Sample Size</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control enter input-sm validate clear" id="sample_size" name="sample_size">
+                                        <span class="help-block">
+                                            <strong id="sample_size_msg"></strong>
+                                        </span>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Accept</label>
                                     <div class="col-sm-9">
-                                        <input type="number" min="0" max="1" class="form-control enter input-sm" id="accept" name="accept">
+                                        <input type="number" min="0" max="1" class="form-control enter input-sm" id="accept" name="accept" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Reject</label>
                                     <div class="col-sm-9">
-                                        <input type="number" min="0" max="1" class="form-control enter input-sm" id="reject" name="reject">
+                                        <input type="number" min="0" max="1" class="form-control enter input-sm" id="reject" name="reject" readonly>
                                     </div>
                                 </div>
                             </td>
@@ -215,7 +233,7 @@
                                 <div class="form-group" id="date_inspected_div">
                                     <label class="control-label col-sm-3">Date Inspected</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control enter input-sm validate" type="date" name="date_inspected" id="date_inspected" />
+                                        <input class="form-control enter input-sm validate clear" type="date" name="date_inspected" id="date_inspected" />
                                         <span class="help-block">
                                             <strong id="date_inspected_msg"></strong>
                                         </span>
@@ -224,17 +242,17 @@
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">WW#</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control input-sm" id="ww" name="ww" readonly>
+                                        <input type="text" class="form-control input-sm clear" id="ww" name="ww" readonly>
                                     </div>
                                     <label class="control-label col-sm-3">FY#</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control input-sm" id="fy" name="fy" readonly>
+                                        <input type="text" class="form-control input-sm clear" id="fy" name="fy" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group" id="time_ins_div">
                                     <label class="control-label col-sm-3">Time Inspected</label>
                                     <div class="col-sm-4">
-                                        <input type="text" data-format="hh:mm A" class="form-control enter input-sm validate" name="time_ins_from" id="time_ins_from"/>
+                                        <input type="text" data-format="hh:mm A" class="form-control enter input-sm validate clear" name="time_ins_from" id="time_ins_from"/>
                                         <span class="help-block">
                                             <strong id="time_ins_msg"></strong>
                                         </span>
@@ -263,7 +281,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">Inspector</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control input-sm" id="inspector" name="inspector" readonly value="{{ Auth::user()->firstname }}" />
+                                        <input type="text" class="form-control input-sm clear" id="inspector" name="inspector" readonly value="{{ Auth::user()->firstname }}" />
                                     </div>
                                 </div>
                                 <div class="form-group" id="submission_div">
@@ -293,7 +311,7 @@
                                 <div class="form-group" id="judgement_div">
                                     <label class="control-label col-sm-3">Judgement</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control enter input-sm validate clear" id="judgement" name="judgement">
+                                        <input type="text" class="form-control enter input-sm validate clear" id="judgement" name="judgement" readonly>
                                         <span class="help-block">
                                             <strong id="judgement_div"></strong>
                                         </span>
@@ -302,24 +320,6 @@
                             </td>
 
                             <td width="50%">
-                                <div class="form-group" id="lot_qty_div">
-                                    <label class="control-label col-sm-3">Lot Quantity</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control enter input-sm validate clear" id="lot_qty" name="lot_qty">
-                                        <span class="help-block">
-                                            <strong id="lot_qty_msg"></strong>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group" id="sample_size_div">
-                                    <label class="control-label col-sm-3">Sample Size</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control enter input-sm validate clear" id="sample_size" name="sample_size">
-                                        <span class="help-block">
-                                            <strong id="sample_size_msg"></strong>
-                                        </span>
-                                    </div>
-                                </div>
                                 <div class="form-group" id="lot_inspected_div">
                                     <label class="control-label col-sm-3">Lot Inspected</label>
                                     <div class="col-sm-9">
@@ -564,7 +564,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Date from</span>
-                                    <input type="text" class="form-control date-picker input-sm " id="gfrom" name="gfrom">
+                                    <input type="text" class="form-control date-picker input-sm grpfield " id="gfrom" name="gfrom">
                                 </div>
                             </div>
                         </div>
@@ -573,7 +573,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Date to</span>
-                                    <input type="text" class="form-control date-picker input-sm " id="gto" name="gto">
+                                    <input type="text" class="form-control date-picker input-sm grpfield " id="gto" name="gto">
                                 </div>
                             </div>
                         </div>
@@ -584,7 +584,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Group By</span>
-                                    <select class="form-control input-sm show-tick" name="field1" id="field1">
+                                    <select class="form-control input-sm grpfield show-tick" name="field1" id="field1">
                                         <option value=""></option>
                                         <option value="id">ID</option>
                                         <option value="date_inspected">Date Inspected</option>
@@ -610,7 +610,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">=</span>
-                                    <select class="form-control input-sm show-tick" name="content1" id="content1">
+                                    <select class="form-control input-sm grpfield show-tick" name="content1" id="content1">
                                         <!-- append here -->
                                     </select>
                                 </div>
@@ -623,7 +623,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Group By</span>
-                                    <select class="form-control input-sm show-tick" name="field2" id="field2">
+                                    <select class="form-control input-sm grpfield show-tick" name="field2" id="field2">
                                         <option value=""></option>
                                         <option value="id">ID</option>
                                         <option value="date_inspected">Date Inspected</option>
@@ -649,7 +649,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">=</span>
-                                    <select class="form-control input-sm show-tick" name="content2" id="content2">
+                                    <select class="form-control input-sm grpfield show-tick" name="content2" id="content2">
                                         <!-- append here -->
                                     </select>
                                 </div>
@@ -662,7 +662,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">Group By</span>
-                                    <select class="form-control input-sm show-tick" name="field3" id="field3">
+                                    <select class="form-control input-sm grpfield show-tick" name="field3" id="field3">
                                         <option value=""></option>
                                         <option value="id">ID</option>
                                         <option value="date_inspected">Date Inspected</option>
@@ -688,7 +688,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">=</span>
-                                    <select class="form-control input-sm show-tick" name="content3" id="content3">
+                                    <select class="form-control input-sm grpfield show-tick" name="content3" id="content3">
                                         <!-- append here -->
                                     </select>
                                 </div>
@@ -698,7 +698,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Calculate</button>
+                    <button type="submit" class="btn btn-success" id="calID">Calculate</button>
+                    <button type="button" class="btn grey-gallery" id="btn_clear_grpby">Clear</button>
                     <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>
                 </div>
             </form>

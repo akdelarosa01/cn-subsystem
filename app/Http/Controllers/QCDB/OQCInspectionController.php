@@ -1097,6 +1097,7 @@ class OQCInspectionController extends Controller
     {
         $data = DB::connection($this->mysql)->table('oqc_inspections')
                 ->select($req->field.' as field')
+                ->orderBy($req->field)
                 ->distinct()
                 ->get();
 
@@ -1230,54 +1231,118 @@ class OQCInspectionController extends Controller
                 # code...
                 break;
         }
-        $size = DB::connection($this->mysql)->table('oqc_sampling_plan_sample_size')
-                    ->where('sample_size_code',$code)
-                    ->select($severity_size.' as size')
-                    ->first();
-        $plan = DB::connection($this->mysql)->table('oqc_aql_ac_re')
-                    ->where('size',$size->size)
-                    ->where('type_of_inspection',$type)
-                    ->select('size',
-                            DB::raw("`".$req->aql."_ac` as accept"),
-                            DB::raw("`".$req->aql."_re` as reject"))
-                    ->first();
-        if ($plan->accept == null) {
-            $splan = DB::connection($this->mysql)->table('oqc_aql_ac_re')
-                    ->where('size',$plan->reject)
-                    ->where('type_of_inspection',$type)
-                    ->select('size',
-                            DB::raw("`".$req->aql."_ac` as accept"),
-                            DB::raw("`".$req->aql."_re` as reject"))
-                    ->first();
 
-            if ($req->lot_qty >= $splan->size) {
+        if (is_numeric($req->aql)) {
+            $size = DB::connection($this->mysql)->table('oqc_sampling_plan_sample_size')
+                        ->where('sample_size_code',$code)
+                        ->select($severity_size.' as size')
+                        ->first();
+            $plan = DB::connection($this->mysql)->table('oqc_aql_ac_re')
+                        ->where('size',$size->size)
+                        ->where('type_of_inspection',$type)
+                        ->select('size',
+                                DB::raw("`".$req->aql."_ac` as accept"),
+                                DB::raw("`".$req->aql."_re` as reject"))
+                        ->first();
+            if ($plan->accept == null) {
+                $splan = DB::connection($this->mysql)->table('oqc_aql_ac_re')
+                        ->where('size',$plan->reject)
+                        ->where('type_of_inspection',$type)
+                        ->select('size',
+                                DB::raw("`".$req->aql."_ac` as accept"),
+                                DB::raw("`".$req->aql."_re` as reject"))
+                        ->first();
+
+                if ($req->lot_qty >= $splan->size) {
+                    $data = [
+                        'size' => $splan->size,
+                        'accept' => $splan->accept,
+                        'reject' => $splan->reject
+                    ];
+                } else {
+                    $data = [
+                        'size' => $req->lot_qty,
+                        'accept' => $splan->accept,
+                        'reject' => $splan->reject
+                    ];
+                }
+                
+                return response()->json($data);
+            }
+
+            if ($req->lot_qty >= $plan->size) {
                 $data = [
-                    'size' => $splan->size,
-                    'accept' => $splan->accept,
-                    'reject' => $splan->reject
+                    'size' => $plan->size,
+                    'accept' => $plan->accept,
+                    'reject' => $plan->reject
                 ];
             } else {
                 $data = [
                     'size' => $req->lot_qty,
-                    'accept' => $splan->accept,
-                    'reject' => $splan->reject
+                    'accept' => $plan->accept,
+                    'reject' => $plan->reject
                 ];
             }
-            
-            return response()->json($data);
+        } else {
+            //return response()->json($data = ['gago' => 'gago']);
+            return $this->nonNumericAQL($req);
+        }
+        
+
+        return response()->json($data);
+    }
+
+    public function nonNumericAQL($req)
+    {
+        $data = [
+            'ins_lvl' => 'II',
+            'size' => 0,
+            'accept' => 0,
+            'reject' => 1
+        ];
+
+        if ($req->lot_qty >= 1 && $req->lot_qty <= 8) {
+            $data = [
+                'ins_lvl' => 'II',
+                'size' => 2,
+                'accept' => 0,
+                'reject' => 1
+            ];
         }
 
-        if ($req->lot_qty >= $plan->size) {
+        if ($req->lot_qty >= 9 && $req->lot_qty <= 15) {
             $data = [
-                'size' => $plan->size,
-                'accept' => $plan->accept,
-                'reject' => $plan->reject
+                'ins_lvl' => 'II',
+                'size' => 3,
+                'accept' => 0,
+                'reject' => 1
             ];
-        } else {
+        }
+
+        if ($req->lot_qty >= 16 && $req->lot_qty <= 25) {
             $data = [
-                'size' => $req->lot_qty,
-                'accept' => $plan->accept,
-                'reject' => $plan->reject
+                'ins_lvl' => 'II',
+                'size' => 5,
+                'accept' => 0,
+                'reject' => 1
+            ];
+        }
+
+        if ($req->lot_qty >= 26 && $req->lot_qty <= 50) {
+            $data = [
+                'ins_lvl' => 'II',
+                'size' => 8,
+                'accept' => 0,
+                'reject' => 1
+            ];
+        }
+
+        if ($req->lot_qty >= 51) {
+            $data = [
+                'ins_lvl' => 'II',
+                'size' => 13,
+                'accept' => 0,
+                'reject' => 1
             ];
         }
 
@@ -1323,5 +1388,4 @@ class OQCInspectionController extends Controller
     {
         return date('H:i:s',strtotime($time));
     }
-
 }
