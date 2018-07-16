@@ -98,7 +98,7 @@ $(function() {
 						if (datas.status == 'success') {
 							getLocalMaterialData();
 							$('#progress-close').prop('disabled', false);
-							$('#progress-msg').html("Items were successfully uploaded.");
+							$('#progress-msg').html(datas.msg);
 						} else {
 							$('#progress-close').prop('disabled', false);
 							$('#progressbar-color').removeClass('progress-bar-success');

@@ -213,10 +213,11 @@ class WBSLocalMaterialReceivingController extends Controller
             ];
         });
 
+        $items = [];
+
         foreach ($fields as $key => $field) {
-            $this->saveToBatch($field);
             $data = [
-                'msg' => "Data was successfully saved.",
+                'msg' => $this->saveToBatch($field),
                 'status' => 'success'
             ];
         }
@@ -239,10 +240,13 @@ class WBSLocalMaterialReceivingController extends Controller
 
     private function saveToBatch($data)
     {
+        $msg = '';
+        $item = preg_replace('/\s+/', '', $data['item']);
+
         if ($this->checkItemIfExist($data) > 0) {
-            # code...
+            $msg = "Some Items were already received.";
         } else {
-            if ($this->checkNR($this->getItemCode($data['item']))) {
+            if ($this->checkNR($this->getItemCode($item))) {
                 $iqc_status = 1;
                 $for_kitting = 1;
                 $not_req = 1;
@@ -252,21 +256,21 @@ class WBSLocalMaterialReceivingController extends Controller
                 $not_req = 0;
             }
 
-            if ($this->getItemCode($data['item']) == '' || $this->getItemCode($data['item']) == null) {
-                # code...
+            if ($this->getItemCode($item) == '' || $this->getItemCode($item) == null) {
+                $msg = "Items were not registered in item master.";
             } else {
                 $loc_batch_id = DB::connection($this->mysql)->table('tbl_wbs_local_receiving_batch')->insertGetId([
                     'wbs_loc_id' => $data['receivingno'],
                     'invoice_no' => $data['invoiceno'],
-                    'item' => $this->getItemCode($data['item']),
-                    'item_desc' => $this->getItemName($data['item']),
+                    'item' => $item,
+                    'item_desc' => $this->getItemName($item),
                     'qty' => str_replace(',','',$data['qty']),
                     'box' => $data['package_category'],
                     'box_qty' => str_replace(',','',$data['package_qty']),
                     'lot_no' => $data['lotno'],
-                    'location' => $this->getLocation($data['item']),
+                    'location' => $this->getLocation($item),
                     'supplier' => strtoupper($data['supplier']),
-                    'drawing_num' => $this->getDrawingNum($data['item']),
+                    'drawing_num' => $this->getDrawingNum($item),
                     'iqc_status' => $iqc_status,
                     'is_printed' => 0,
                     'for_kitting' => $for_kitting,
@@ -282,15 +286,15 @@ class WBSLocalMaterialReceivingController extends Controller
                 DB::connection($this->mysql)->table('tbl_wbs_inventory')->insert([
                     'wbs_mr_id' => $data['receivingno'],
                     'invoice_no' => $data['invoiceno'],
-                    'item' => $this->getItemCode($data['item']),
-                    'item_desc' => $this->getItemName($data['item']),
+                    'item' => $item,
+                    'item_desc' => $this->getItemName($item),
                     'qty' => str_replace(',','',$data['qty']),
                     'box' => $data['package_category'],
                     'box_qty' => str_replace(',','',$data['package_qty']),
                     'lot_no' => $data['lotno'],
-                    'location' => $this->getLocation($data['item']),
+                    'location' => $this->getLocation($item),
                     'supplier' => strtoupper($data['supplier']),
-                    'drawing_num' => $this->getDrawingNum($data['item']),
+                    'drawing_num' => $this->getDrawingNum($item),
                     'iqc_status' => $iqc_status,
                     'is_printed' => 0,
                     'for_kitting' => $for_kitting,
@@ -303,6 +307,9 @@ class WBSLocalMaterialReceivingController extends Controller
                     'updated_at' => date('Y-m-d h:i:s'),
                     'loc_batch_id' => $loc_batch_id
                 ]);
+
+
+                $msg = "Items were successfully uploaded and received.";
             }
 
             DB::connection($this->mysql)->table('tbl_wbs_local_receiving')
@@ -311,6 +318,8 @@ class WBSLocalMaterialReceivingController extends Controller
                     'updated_at' => date('Y-m-d h:i:s')
                 ]);
         }
+        \Log::info($msg.' '.date('Y-m-d g:i:s a'));
+        return $msg;
     }
 
     public function updateBatchItem(Request $req)
@@ -737,14 +746,15 @@ class WBSLocalMaterialReceivingController extends Controller
                 ->select('CODE')
                 ->where('NAME',$name)
                 ->first();
-        if ($this->com->checkIfExistObject($db) < 1) {
+
+        if (count((array)$db) < 1) {
             $db = DB::connection($this->mssql)->table('XHEAD')
                 ->select('CODE')
                 ->where('CODE',$name)
                 ->first();
         }
 
-        if ($this->com->checkIfExistObject($db) > 0 ) {
+        if (count((array)$db) > 0 ) {
             return $db->CODE;
         }
     }
@@ -762,9 +772,10 @@ class WBSLocalMaterialReceivingController extends Controller
 
     private function checkItemIfExist($data)
     {
+        $item = preg_replace('/\s+/', '', $data['item']);
         $db = DB::connection($this->mysql)->table('tbl_wbs_local_receiving_batch')
                 ->where('wbs_loc_id',$data['receivingno'])
-                ->where('item',$this->getItemCode($data['item']))
+                ->where('item',$this->getItemCode($item))
                 ->where('lot_no',$data['lotno'])
                 ->count();
         return $db;
