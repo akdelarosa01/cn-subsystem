@@ -450,49 +450,49 @@ function makeRequestDetailsTable(arr) {
             }, searchable: false, orderable: false },
 
             { data: function(x) {
-                return x.detailid+"<input type='hidden' name='detailid[]' value='"+x.detailid+"'>";
+                return x.detailid+"<input type='hidden' name='req_detailid[]' value='"+x.detailid+"'>";
             }},
 
             { data: function(x) {
-                return x.code+"<input type='hidden' name='code[]' value='"+x.code+"'>";
+                return x.code+"<input type='hidden' name='req_code[]' value='"+x.code+"'>";
             }},
 
             { data: function(x) {
-                return x.name+"<input type='hidden' name='name[]' value='"+x.name+"'>";
+                return x.name+"<input type='hidden' name='req_name[]' value='"+x.name+"'>";
             }},
 
             { data: function(x) {
-                return x.classification+"<input type='hidden' name='classification[]' class='reqd_details' value='"+x.classification+"'>"+
-                		"<input type='hidden' name='lot_no[]' value='"+x.lot_no+"'>";
+                return x.classification+"<input type='hidden' name='req_classification[]' class='reqd_details' value='"+x.classification+"'>"+
+                		"<input type='hidden' name='req_lot_no[]' value='"+x.lot_no+"'>";
             }},
 
             { data: function(x) {
-                return x.issuedqty+"<input type='hidden' name='issuedqty[]' value='"+x.issuedqty+"'>";
+                return x.issuedqty+"<input type='hidden' name='req_issuedqty[]' value='"+x.issuedqty+"'>";
             }},
 
             { data: function(x) {
-                return x.requestqty+"<input type='hidden' name='requestqty[]' class='reqd_details' value='"+x.requestqty+"'>";
+                return x.requestqty+"<input type='hidden' name='req_requestqty[]' class='reqd_details' value='"+x.requestqty+"'>";
             }},
 
             { data: function(x) {
-                return x.servedqty+"<input type='hidden' name='servedqty[]' value='"+x.servedqty+"'>";
+                return x.servedqty+"<input type='hidden' name='req_servedqty[]' value='"+x.servedqty+"'>";
             }},
 
             { data: function(x) {
-                return x.requestedby+"<input type='hidden' name='requestedby[]' value='"+x.requestedby+"'>";
+                return x.requestedby+"<input type='hidden' name='req_requestedby[]' value='"+x.requestedby+"'>";
             }},
 
             { data: function(x) {
-                return x.last_served_by+"<input type='hidden' name='last_served_by[]' value='"+x.last_served_by+"'>";
+                return x.last_served_by+"<input type='hidden' name='req_last_served_by[]' value='"+x.last_served_by+"'>";
             }},
 
             { data: function(x) {
-                return x.last_served_date+"<input type='hidden' name='last_served_date[]' value='"+x.last_served_date+"'>";
+                return x.last_served_date+"<input type='hidden' name='req_last_served_date[]' value='"+x.last_served_date+"'>";
             }},
 
             { data: function(x) {
-                return x.remarks+"<input type='hidden' name='remarks[]' value='"+x.remarks+"'>"+
-                		"<input type='hidden' name='location[]' value='"+x.location+"'>";
+                return x.remarks+"<input type='hidden' name='req_remarks[]' value='"+x.remarks+"'>"+
+                		"<input type='hidden' name='req_location[]' value='"+x.location+"'>";
             }},
 
             { data: function(x) {
@@ -580,7 +580,7 @@ function getSelections() {
 	});
 }
 
-function getData(req_no='',to = '') {
+function getData(req_no,to) {
 	$.ajax({
 		url: getDataURL,
 		type: 'GET',
@@ -632,19 +632,19 @@ function save() {
 		line_destination: $('#line_destination').val(),
 		statuspmr: $('#statuspmr').val(),
 		remarkspmr: $('#remarkspmr').val(),
-		detailid: $('input[name="detailid[]"]').map(function(){return $(this).val();}).get(),
-		code: $('input[name="code[]"]').map(function(){return $(this).val();}).get(),
-		name: $('input[name="name[]"]').map(function(){return $(this).val();}).get(),
-		lot_no: $('input[name="lot_no[]"]').map(function(){return $(this).val();}).get(),
-		classification: $('input[name="classification[]"]').map(function(){return $(this).val();}).get(),
-		issuedqty: $('input[name="issuedqty[]"]').map(function(){return $(this).val();}).get(),
-		requestqty: $('input[name="requestqty[]"]').map(function(){return $(this).val();}).get(),
-		servedqty: $('input[name="servedqty[]"]').map(function(){return $(this).val();}).get(),
-		requestedby: $('input[name="requestedby[]"]').map(function(){return $(this).val();}).get(),
-		last_served_by: $('input[name="last_served_by[]"]').map(function(){return $(this).val();}).get(),
-		last_served_date: $('input[name="last_served_date[]"]').map(function(){return $(this).val();}).get(),
-		remarks: $('input[name="remarks[]"]').map(function(){return $(this).val();}).get(),
-		location: $('input[name="location[]"]').map(function(){return $(this).val();}).get(),
+		detailid: $('input[name="req_detailid[]"]').map(function(){return $(this).val();}).get(),
+		code: $('input[name="req_code[]"]').map(function(){return $(this).val();}).get(),
+		name: $('input[name="req_name[]"]').map(function(){return $(this).val();}).get(),
+		lot_no: $('input[name="req_lot_no[]"]').map(function(){return $(this).val();}).get(),
+		classification: $('input[name="req_classification[]"]').map(function(){return $(this).val();}).get(),
+		issuedqty: $('input[name="req_issuedqty[]"]').map(function(){return $(this).val();}).get(),
+		requestqty: $('input[name="req_requestqty[]"]').map(function(){return $(this).val();}).get(),
+		servedqty: $('input[name="req_servedqty[]"]').map(function(){return $(this).val();}).get(),
+		requestedby: $('input[name="req_requestedby[]"]').map(function(){return $(this).val();}).get(),
+		last_served_by: $('input[name="req_last_served_by[]"]').map(function(){return $(this).val();}).get(),
+		last_served_date: $('input[name="req_last_served_date[]"]').map(function(){return $(this).val();}).get(),
+		remarks: $('input[name="req_remarks[]"]').map(function(){return $(this).val();}).get(),
+		location: $('input[name="req_location[]"]').map(function(){return $(this).val();}).get(),
 	}
 
 	$.ajax({
