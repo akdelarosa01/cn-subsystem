@@ -134,7 +134,7 @@ class WBSProductionMaterialRequestController extends Controller
                     'name' => $prod->name,
                     'issuedqty' => (isset($x->issuedqty)) ? $x->issuedqty : "0.0000",
                     'lot_no' => (isset($x->lotno)) ? $x->lotno : "",
-                    'location' => $prod->location
+                    'location' => (isset($prd->location)) ? $prd->location : ""
                 ]);
             }
         }
