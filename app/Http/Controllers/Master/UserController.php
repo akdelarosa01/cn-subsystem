@@ -163,7 +163,9 @@ class UserController extends Controller
         $user->lastname = $req->lname;
         $user->firstname = $req->fname;
         $user->middlename = $req->mname;
+        $user->password = bcrypt($req->pword);
         $user->productline = $req->productline;
+        $user->actual_password = $req->pword;
         $user->locked = $req->locked;
         $user->create_pg = $pg_code;
         $user->create_user = Auth::user()->user_id;

@@ -66,7 +66,7 @@
 											<div class="form-group">
 												<label class="control-label col-sm-4">Password</label>
 												<div class="col-sm-8">
-													<input class="form-control input-sm" type="password" name="pword" id="pword" value="{{$userdetails->actual_password}}" disabled/>
+													<input class="form-control input-sm" type="password" name="pword" id="pword" value="{{$userdetails->actual_password}}"/>
 												</div>
 											</div>
 											<div class="form-group">
