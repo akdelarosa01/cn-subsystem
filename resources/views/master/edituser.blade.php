@@ -60,7 +60,7 @@
 											<div class="form-group">
 												<label class="control-label col-sm-4">User ID</label>
 												<div class="col-sm-8">
-													<input class="form-control input-sm" type="text" name="user_id" id="user_id" value="{{$userdetails->user_id}}" disabled/>
+													<input class="form-control input-sm" type="text" name="user_id" id="user_id" value="{{$userdetails->user_id}}"/>
 												</div>
 											</div>
 											<div class="form-group">

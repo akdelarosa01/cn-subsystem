@@ -559,11 +559,23 @@ class IQCInspectionController extends Controller
 
     private function insertHistory($lots,$req)
     {
+        $array_lots = explode(',',$lots);
 
-        $lot_qty = 0;
+        foreach ($array_lots as $key => $lot) {
+            $lot_qty = $this->getLotQty($req->invoice_no,$req->partcode,$lot);
+            $status = 0;
+            $kitting = 0;
 
-        if ($req->is_batching > 0) {
-            $imploded_lots = implode(',', $lots);
+            if ($req->judgement == 'Accepted') {
+                $status = 1;
+                $kitting = 1;
+            } 
+
+            if ($req->judgement == 'Rejected') {
+                $status = 2;
+                $kitting = 0;
+            }
+
             DB::connection($this->mysql)->table('iqc_inspections_history')
                 ->insert([
                     'invoice_no' => $req->invoice_no,
@@ -573,8 +585,8 @@ class IQCInspectionController extends Controller
                     'app_date' => $req->app_date,
                     'app_time' => $req->app_time,
                     'app_no' => $req->app_no,
-                    'lot_no' => $imploded_lots,
-                    'lot_qty' => $req->lot_qty,
+                    'lot_no' => $lot,
+                    'lot_qty' => $lot_qty,
                     'type_of_inspection' => $req->type_of_inspection,
                     'severity_of_inspection' => $req->severity_of_inspection,
                     'inspection_lvl' => $req->inspection_lvl,
@@ -598,48 +610,7 @@ class IQCInspectionController extends Controller
                     'dbcon' => Auth::user()->productline,
                     'created_at' => Carbon::now(),
                 ]);
-        } else {
-            foreach ($array_lots as $key => $lot) {
-                $lot_qty = $this->getLotQty($req->invoice,$req->partcode,$lot);
-
-                DB::connection($this->mysql)->table('iqc_inspections_history')
-                    ->insert([
-                        'invoice_no' => $req->invoice_no,
-                        'partcode' => $req->partcode,
-                        'partname' => $req->partname,
-                        'supplier' => $req->supplier,
-                        'app_date' => $req->app_date,
-                        'app_time' => $req->app_time,
-                        'app_no' => $req->app_no,
-                        'lot_no' => $lot,
-                        'lot_qty' => $lot_qty,
-                        'type_of_inspection' => $req->type_of_inspection,
-                        'severity_of_inspection' => $req->severity_of_inspection,
-                        'inspection_lvl' => $req->inspection_lvl,
-                        'aql' => $req->aql,
-                        'accept' => $req->accept,
-                        'reject' => $req->reject,
-                        'date_ispected' => $req->date_inspected,
-                        'ww' => $req->ww,
-                        'fy' => $req->fy,
-                        'shift' => $req->shift,
-                        'time_ins_from' => $req->time_ins_from,
-                        'time_ins_to' => $req->time_ins_to,
-                        'inspector' => $req->inspector,
-                        'submission' => $req->submission,
-                        'judgement' => $req->judgement,
-                        'lot_inspected' => $req->lot_inspected,
-                        'lot_accepted' => $req->lot_accepted,
-                        'sample_size' => $req->sample_size,
-                        'no_of_defects' => $req->no_of_defects,
-                        'remarks' => $req->remarks,
-                        'dbcon' => Auth::user()->productline,
-                        'created_at' => Carbon::now(),
-                    ]);
-            }
-        }
-
-            
+        } 
     }
 
     private function requalifyInventory($app_no,$partcode,$lot)
@@ -1725,11 +1696,40 @@ class IQCInspectionController extends Controller
         $dt = Carbon::now();
         $company_info = $this->com->getCompanyInfo();
         $date = substr($dt->format('  M j, Y  h:i A '), 2);
+        $header = DB::connection($this->mysql)->table('iqc_inspection_excel')
+                    ->select('invoice_no',
+                            'supplier',
+                            'app_no',
+                            'app_date',
+                            'app_time',
+                            'family',
+                            'severity_of_inspection',
+                            'inspection_lvl',
+                            'type_of_inspection',
+                            'aql',
+                            'accept',
+                            'reject',
+                            'classification')
+                    ->groupBy('invoice_no',
+                            'supplier',
+                            'app_no',
+                            'app_date',
+                            'app_time',
+                            'family',
+                            'severity_of_inspection',
+                            'inspection_lvl',
+                            'type_of_inspection',
+                            'aql',
+                            'accept',
+                            'reject',
+                            'classification')
+                    ->get();
 
         $details = DB::connection($this->mysql)->table('iqc_inspection_excel')->get();
 
         $data = [
             'company_info' => $company_info,
+            'header' => $header,
             'details' => $details,
             'date' => $date,
         ];

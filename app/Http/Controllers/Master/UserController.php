@@ -160,6 +160,7 @@ class UserController extends Controller
 
         #instantiate query
         $user = User::find($id);
+        $user->user_id = $req->user_id;
         $user->lastname = $req->lname;
         $user->firstname = $req->fname;
         $user->middlename = $req->mname;

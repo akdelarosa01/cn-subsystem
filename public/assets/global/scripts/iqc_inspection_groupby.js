@@ -347,11 +347,11 @@ $( function() {
         clearGrpByFields();
     });
 
-    $('#btn_pdf_groupby').on('click', function() {
+    $('#btn_pdf_groupby').live('click', function() {
         window.location.href= pdfURL;
     });
 
-    $('#btn_excel_groupby').on('click', function() {
+    $('#btn_excel_groupby').live('click', function() {
         window.location.href= excelURL;
     });
 });

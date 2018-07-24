@@ -207,12 +207,12 @@
 							<div class="form-group">
 								<label class="control-label col-sm-3">Time Inspected</label>
 								<div class="col-sm-4">
-									<input type="text" class="form-control required input-sm actual timepicker" name="time_ins_from" id="time_ins_from"/> {{-- timepicker timepicker-no-seconds --}}
+									<input type="text" class="form-control required input-sm actual" name="time_ins_from" id="time_ins_from"/> {{-- timepicker timepicker-no-seconds --}}
 									<div id="er_time_ins_from"></div>
 								</div>
 								<div class="col-sm-1"></div>
 								<div class="col-sm-4">
-									<input type="text" class="form-control required input-sm actual timepicker" name="time_ins_to" id="time_ins_to"/> {{-- timepicker timepicker-no-seconds --}}
+									<input type="text" class="form-control required input-sm actual" name="time_ins_to" id="time_ins_to"/> {{-- timepicker timepicker-no-seconds --}}
 									<div id="er_time_ins_to"></div>
 								</div>
 							</div>

@@ -235,12 +235,14 @@
 			}
 		});
 
-		// $('#time_ins_from').on('change', function() {
-		// 	var time = setTime($(this).val());
-		// 	$(this).val(time);
-		// });
+		$('#time_ins_from').on('change', function() {
+			var time = setTime($(this).val());
+			$(this).val(time);
+		});
 
 		$('#time_ins_to').on('change', function() {
+			var time = setTime($(this).val());
+			$(this).val(time);
 			getShift($('#time_ins_from').val(),$(this).val(),'#shift');
 		});
 
@@ -799,7 +801,7 @@
 
 	function setTime(time) {
 		var h = time.substring(0,2);
-		var m = time.substring(3,5);
+		var m = time.substring(2,5);
 		var a = time.substring(6,8);
 
 		if (m == undefined || m == '' || m == null) {

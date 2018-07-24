@@ -7867,114 +7867,160 @@
 		tfoot {display: table-row-group;}
 		tr {page-break-inside: avoid;}
     </style>
+    <style type="text/css">
+	    .page
+	    {
+	    	overflow: hidden;
+	        page-break-after: always;
+	        page-break-inside: avoid;
+	    }
+	</style>
 </head>
-    <body>
-    	<div class="container">
-    		<div class="row">
-			    <table class="fontArial" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-			        <tbody>
-			            <tr>
-			                <td align="center">
-			                <h4>{{ $company_info['name'] }}</h4>
-			                <p style="line-height: 1.8px; font-size:12px; ">{{ $company_info['address'] }}</p>
-			                <p style="line-height: 1.8px; font-size:12px; "> {{ $company_info['tel1'] . ' ' . $company_info['tel2'] }}</p>
-			                <h2><ins>IQC INSPECTION SUMMARY</ins></h2>
-			                </td>
-			            </tr>
-			        </tbody>
-			    </table>
-    		</div>
 
-    		<div class="row">
-    			<div class="col-xs-12">
-    				<table class="table table-striped table-bordered table-condensed" style="font-size:10px">
-    					<thead>
-                            <tr>
-                                <td width="3.33%">invoice_no</td>
-								<td width="3.33%">partcode</td>
-								<td width="3.33%">partname</td>
-								<td width="3.33%">supplier</td>
-								<td width="3.33%">app_date</td>
-								<td width="3.33%">app_time</td>
-								<td width="3.33%">app_no</td>
-								<td width="3.33%">lot_no</td>
-								<td width="3.33%">lot_qty</td>
-								<td width="3.33%">type_of_inspection</td>
-								<td width="3.33%">severity_of_inspection</td>
-								<td width="3.33%">inspection_lvl</td>
-								<td width="3.33%">aql</td>
-								<td width="3.33%">accept</td>
-								<td width="3.33%">reject</td>
-								<td width="3.33%">date_inspected</td>
-								<td width="3.33%">ww</td>
-								<td width="3.33%">fy</td>
-								<td width="3.33%">shift</td>
-								<td width="3.33%">time_ins_from</td>
-								<td width="3.33%">time_ins_to</td>
-								<td width="3.33%">inspector</td>
-								<td width="3.33%">submission</td>
-								<td width="3.33%">judgement</td>
-								<td width="3.33%">lot_inspected</td>
-								<td width="3.33%">lot_accepted</td>
-								<td width="3.33%">sample_size</td>
-								<td width="3.33%">no_of_defects</td>
-								<td width="3.33%">remarks</td>
-								<td width="3.33%">classification</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        	@foreach ($details as $qc)
-                        		<tr>
-				                    <td width="3.33%">{{ $qc->invoice_no }}</td>
-									<td width="3.33%">{{ $qc->partcode }}</td>
-									<td width="3.33%">{{ $qc->partname }}</td>
-									<td width="3.33%">{{ $qc->supplier }}</td>
-									<td width="3.33%">{{ $qc->app_date }}</td>
-									<td width="3.33%">{{ $qc->app_time }}</td>
-									<td width="3.33%">{{ $qc->app_no }}</td>
-									<td width="3.33%">{{ $qc->lot_no }}</td>
-									<td width="3.33%">{{ $qc->lot_qty }}</td>
-									<td width="3.33%">{{ $qc->type_of_inspection }}</td>
-									<td width="3.33%">{{ $qc->severity_of_inspection }}</td>
-									<td width="3.33%">{{ $qc->inspection_lvl }}</td>
-									<td width="3.33%">{{ $qc->aql }}</td>
-									<td width="3.33%">{{ $qc->accept }}</td>
-									<td width="3.33%">{{ $qc->reject }}</td>
-									<td width="3.33%">{{ $qc->date_inspected }}</td>
-									<td width="3.33%">{{ $qc->ww }}</td>
-									<td width="3.33%">{{ $qc->fy }}</td>
-									<td width="3.33%">{{ $qc->shift }}</td>
-									<td width="3.33%">{{ $qc->time_ins_from }}</td>
-									<td width="3.33%">{{ $qc->time_ins_to }}</td>
-									<td width="3.33%">{{ $qc->inspector }}</td>
-									<td width="3.33%">{{ $qc->submission }}</td>
-									<td width="3.33%">{{ $qc->judgement }}</td>
-									<td width="3.33%">{{ $qc->lot_inspected }}</td>
-									<td width="3.33%">{{ $qc->lot_accepted }}</td>
-									<td width="3.33%">{{ $qc->sample_size }}</td>
-									<td width="3.33%">{{ $qc->no_of_defects }}</td>
-									<td width="3.33%">{{ $qc->remarks }}</td>
-									<td width="3.33%">{{ $qc->classification }}</td>
-				                </tr>
-                        	@endforeach
-                        </tbody>
-    				</table>
-    			</div>
-    		</div>
-    		<br>
+<body>
+	<?php
+		if(count($header) > 0) {
+			foreach ($header as $key => $x) {
+	?>
+		    	<div class="container page">
+		    		<div class="row">
+					    <table class="fontArial" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+					        <tbody>
+					            <tr>
+					                <td align="center">
+					                <h4>{{ $company_info['name'] }}</h4>
+					                <p style="line-height: 1.8px; font-size:12px; ">{{ $company_info['address'] }}</p>
+					                <p style="line-height: 1.8px; font-size:12px; "> {{ $company_info['tel1'] . ' ' . $company_info['tel2'] }}</p>
+					                <h2><ins>IQC INSPECTION SUMMARY</ins></h2>
+					                </td>
+					            </tr>
+					        </tbody>
+					    </table>
+		    		</div>
 
-    		<div class="row">
-    			<div class="col-xs-12">
-    				<table class="table" style="font-size:10px">
-                        <tbody>
-                        	<tr>
-		                        <td>Date: {{ $date }}</td>
-		                    </tr>
-                        </tbody>
-    				</table>
-    			</div>
-    		</div>
-    	</div>
+		    		<div class="row">
+		    			<div class="col-xs-12">
+		    				<table class="table" style="font-size: 10px">
+		    					<tr>
+		                            <th class="align-left">Invoice No.</td>
+		                            <td>{{ $x->invoice_no }}</td>
+
+		                            <th class="align-left">Application No.</td>
+		                            <td>{{ $x->app_no }}</td>
+
+		                            <th class="align-left">Severity of Inspection</td>
+		                            <td>{{ $x->severity_of_inspection }}</td>
+
+		                            <th class="align-left">AQL</td>
+		                            <td>{{ $x->aql }}</td>
+		                            
+		                        </tr>
+		                        <tr>
+		                            <th class="align-left">Family</td>
+		                            <td class="align-left">{{ $x->family }}</td>
+
+		                            <th class="align-left">Application Date</td>
+		                            <td>{{ $x->app_date }}</td>
+
+		                            <th class="align-left">Inspection Level</td>
+		                            <td>{{ $x->inspection_lvl }}</td>
+
+		                            <th class="align-left">Ac</td>
+		                            <td>{{ $x->accept }}</td>
+		                        </tr>
+		                        <tr>
+		                            <th class="align-left">Supplier</td>
+		                            <td>{{ $x->supplier }}</td>
+
+		                            <th class="align-left">Aplication Time</td>
+		                            <td>{{ $x->app_time }}</td>
+
+		                            <th class="align-left">Type of Inspection</td>
+		                            <td>{{ $x->type_of_inspection }}</td>
+
+		                            <th class="align-left">Re</td>
+		                            <td>{{ $x->reject }}</td>
+		                            
+		                        </tr>
+		    				</table>
+		    			</div>
+		    		</div>
+		    		<br>
+
+		    		<div class="row">
+		    			<div class="col-xs-12">
+		    				<table class="table table-striped table-bordered table-condensed" style="font-size:10px">
+		    					<thead>
+		                            <tr>
+		                            	<td>FY - WW</td>
+										<td>Part Code</td>
+										<td>Part Name</td>
+										<td>Lot No.</td>
+										<td>Lot Qty</td>
+										<td>Date Inspected</td>
+										<td>Shift</td>
+										<td>From</td>
+										<td>To</td>
+										<td>Inspector</td>
+										<td>Submission</td>
+										<td>Judgement</td>
+										<td>Lot Inspected</td>
+										<td>Lot Accepted</td>
+										<td>Sample Size</td>
+										<td>No. of Defects</td>
+										<td>Remarks</td>
+		                            </tr>
+		                        </thead>
+		                        <tbody>
+		                        	@foreach ($details as $qc)
+		                        		<?php
+			                        		if ($qc->invoice_no == $x->invoice_no) {
+		                        		?>
+			                        		<tr>
+			                        			<td>{{ $qc->fy.' - '.$qc->ww }}</td>
+												<td>{{ $qc->partcode }}</td>
+												<td>{{ $qc->partname }}</td>
+												<td>{{ $qc->lot_no }}</td>
+												<td>{{ $qc->lot_qty }}</td>
+												<td>{{ $qc->date_inspected }}</td>
+												<td>{{ $qc->shift }}</td>
+												<td>{{ $qc->time_ins_from }}</td>
+												<td>{{ $qc->time_ins_to }}</td>
+												<td>{{ $qc->inspector }}</td>
+												<td>{{ $qc->submission }}</td>
+												<td>{{ $qc->judgement }}</td>
+												<td>{{ $qc->lot_inspected }}</td>
+												<td>{{ $qc->lot_accepted }}</td>
+												<td>{{ $qc->sample_size }}</td>
+												<td>{{ $qc->no_of_defects }}</td>
+												<td>{{ $qc->remarks }}</td>
+							                </tr>
+						                <?php
+						                	}
+						                ?>
+		                        	@endforeach
+		                        </tbody>
+		    				</table>
+		    			</div>
+		    		</div>
+		    		<br>
+
+		    		<div class="row">
+		    			<div class="col-xs-12">
+		    				<table class="table" style="font-size:10px">
+		                        <tbody>
+		                        	<tr>
+				                        <td>Date: {{ $date }}</td>
+				                    </tr>
+		                        </tbody>
+		    				</table>
+		    			</div>
+		    		</div>
+		    	</div>
+    <?php
+			}
+		}
+	?>
     
 	</body>
 </html>
