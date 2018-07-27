@@ -13,7 +13,7 @@
 	</style>
 </head>
 <body>
-	<h3 class="title">Items that will expire within a month</h3>
+	<h3 class="title">CN Items that will expire within a month</h3>
 	<table class="tg">
 		<tr>
 			<th class="tg-amwm">Item</th>

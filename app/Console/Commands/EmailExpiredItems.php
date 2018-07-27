@@ -44,7 +44,7 @@ class EmailExpiredItems extends Command
      */
     public function handle()
     {
-        $this->email('mysqlwbsts','sqlsrvbu','Items_to_Expire_TS');
+        $this->email('mysqlwbscn','sqlsrvcn','Items_to_Expire_CN');
         //$this->email('mysqlcn','Items_to_Expire_CN');
     }
 
@@ -157,8 +157,8 @@ class EmailExpiredItems extends Command
 
                 Mail::send('email.mail', ['data'=>$data], function ($mail) use ($recipients,$pathToFile) {
                     $mail->to($recipients)
-                        ->from('ak.delarosa@seiko-it.com.ph')
-                        ->subject('WBS: Items will expire in a month');
+                        ->from('pmi.subsystem@gmail.com')
+                        ->subject('WBS: Items will expire in a month (CN)');
                     $mail->attach($pathToFile);
                 });
                 \Log::info('send at '.date('Y-m-d g:i:s a'));

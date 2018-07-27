@@ -761,8 +761,20 @@ Route::group(['middleware' => 'web'], function () {
                 'name' => 'delete-item-return'
             ]);
 
+            Route::post('/search-return', [
+                'uses' => 'WBS\WBSProdMatReturnController@searchReturns',
+                'name' => 'search-return'
+            ]);
 
+            Route::get('/excel-return', [
+                'uses' => 'WBS\WBSProdMatReturnController@printExcel',
+                'name' => 'excel-return'
+            ]);
 
+            Route::post('/delete-control-return', [
+                'uses' => 'WBS\WBSProdMatReturnController@deleteControlNo',
+                'name' => 'delete-control-return'
+            ]);
 
         /* WBS Report */
             Route::get('/wbsreports', [

@@ -1,3 +1,4 @@
+var returns = [];
 $(function() {
 	getMaterialReturnData();
 	checkAllCheckboxesInTable('.group-checkable','.checkboxes');
@@ -56,42 +57,21 @@ $(function() {
 		if (total_returned_qty > $('#return_qty').val()) {
 			msg("Actual quantity already exceeded from return quantity.",'failed');
 		} else {
-			var tbl_details_body = '';
-			tbl_details_body = '<tr>'+
-									'<td width="4.09%"></td>'+
-	            					'<td width="9.09%">'+$('#issuance_no').val()+
-	            						'<input type="hidden" name="details_issuanceno[]" value="'+$('#issuance_no').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="9.09%">'+$('#item').val()+
-	            						'<input type="hidden" name="details_item[]" value="'+$('#item').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="16.09%">'+$('#item_desc').val()+
-	            						'<input type="hidden" name="details_item_desc[]" value="'+$('#item_desc').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="9.09%">'+$('#lot_no').val()+
-	            						'<input type="hidden" name="details_lot_no[]" value="'+$('#lot_no').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="7.09%">'+$('#issued_qty').val()+
-	            						'<input type="hidden" name="details_issued_qty[]" value="'+$('#issued_qty').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="7.09%">'+$('#required_qty').val()+
-	            						'<input type="hidden" name="details_required_qty[]" value="'+$('#required_qty').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="7.09%">'+$('#return_qty').val()+
-	            						'<input type="hidden" name="details_return_qty[]" value="'+$('#return_qty').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="9.09%">'+$('#actual_returned_qty').val()+
-	            						'<input type="hidden" name="details_actual_qty[]" value="'+$('#actual_returned_qty').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="15.09%">'+$('#detail_remarks').val()+
-	            						'<input type="hidden" name="details_remarks[]" value="'+$('#detail_remarks').val()+'"/>'+
-	            					'</td>'+
-	            					'<td width="7.09%">'+
-										'<input type="hidden" name="details_id[]" value="'+$('#detail_id').val()+'"//>'+
-									'</td>'+
-	            				'</tr>';
-	       	$('#tbl_details_body').append(tbl_details_body);
-	       	$('#DetailsModal').modal('hide');
+			returns.push({
+				id: '',
+				issuanceno: $('#issuance_no').val(),
+				item: $('#item').val(),
+				item_desc: $('#item_desc').val(),
+				lot_no: $('#lot_no').val(),
+				issued_qty: $('#issued_qty').val(),
+				required_qty: $('#required_qty').val(),
+				return_qty: $('#return_qty').val(),
+				actual_returned_qty: $('#actual_returned_qty').val(),
+				remarks: $('#detail_remarks').val(),
+			});
+
+			makeReturnTable(returns);
+			$('#DetailsModal').modal('hide');
 		}
 	});
 
@@ -104,12 +84,8 @@ $(function() {
 		getItemDetails($(this).val());
 	});
 
-	$('#btn_search').on('click', function() {
-		
-	});
-
 	$('#btn_excel').on('click', function() {
-		
+		$('#reportModal').modal('show');
 	});
 
 	$('#tbl_details_body').on('click', '.brcodebtn', function() {
@@ -124,11 +100,47 @@ $(function() {
 	});
 
 	$('#btn_delete_details').on('click', function() {
+		$('#delete_id').val('details');
+		$('#delete_modal').modal('show');
+	});
+
+	$('#btn_delete_control').on('click', function() {
+		$('#delete_id').val('control');
 		$('#delete_modal').modal('show');
 	});
 
 	$('#btn_confirm_delete').on('click', function() {
-		delete_items('.checkboxes',deleteDetailsURL);
+		if ($('#delete_id').val() == 'details') {
+			delete_items('.checkboxes',deleteDetailsURL);
+		} else {
+			delete_control();
+		}
+	});
+
+	$('#btn_search').on('click', function() {
+		$('#searchModal').modal('show');
+	});
+
+	$('#frm_search').on('submit', function(e) {
+		e.preventDefault();
+		$('#loading').modal('show');
+		$.ajax({
+			url: $(this).attr('action'),
+			type: 'POST',
+			dataType: 'JSON',
+			data: $(this).serialize(),
+		}).done(function(data, textStatus, xhr) {
+			makeSearchTable(data)
+		}).fail(function(xhr, textStatus, errorThrown) {
+			console.log("error");
+		}).always(function() {
+			$('#loading').modal('hide');
+		});
+	});
+
+	$('#tbl_search_body').on('click', '.btn_search_detail', function(e) {
+		getMaterialReturnData('',$(this).attr('data-controlno'));
+		$('#searchModal').modal('hide');
 	});
 
 });
@@ -175,31 +187,17 @@ function getDataInfo(data) {
 function getDataDetails(data) {
 	var tbl_details_body = "";
 	var total_returned_qty = 0;
-	$('#tbl_details_body').html(tbl_details_body);
+
+	returns = [];
+
+	returns = data;
+
+	makeReturnTable(returns);
+	
 	$.each(data, function(i, x) {
-		tbl_details_body = '<tr>'+
-								'<td width="4.09%">'+
-									'<input type="checkbox" class="checkboxes" name="check_id[]" data-qty="'+x.actual_returned_qty+'" value="'+x.id+'"/>'+
-								'</td>'+
-            					'<td width="9.09%">'+x.issuanceno+'<input type="hidden" name="details_issuanceno[]" value="'+x.issuanceno+'"/></td>'+
-            					'<td width="9.09%">'+x.item+'<input type="hidden" name="details_item[]" value="'+x.item+'"/></td>'+
-            					'<td width="16.09%">'+x.item_desc+'<input type="hidden" name="details_item_desc[]" value="'+x.item_desc+'"/></td>'+
-            					'<td width="9.09%">'+x.lot_no+'<input type="hidden" name="details_lot_no[]" value="'+x.lot_no+'"/></td>'+
-            					'<td width="7.09%">'+x.issued_qty+'<input type="hidden" name="details_issued_qty[]" value="'+x.issued_qty+'"/></td>'+
-            					'<td width="7.09%">'+x.required_qty+'<input type="hidden" name="details_required_qty[]" value="'+x.required_qty+'"/></td>'+
-            					'<td width="7.09%">'+x.return_qty+'<input type="hidden" name="details_return_qty[]" value="'+x.return_qty+'"/></td>'+
-            					'<td width="9.09%">'+x.actual_returned_qty+'<input type="hidden" name="details_actual_qty[]" value="'+x.actual_returned_qty+'"/></td>'+
-            					'<td width="15.09%">'+x.remarks+'<input type="hidden" name="details_remarks[]" value="'+x.remarks+'"/></td>'+
-            					'<td width="7.09%">'+
-									'<a href="javascript:;" class="btn btn-link grey-gallery brcodebtn" data-id="'+x.id+'">'+
-										'<i class="fa fa-barcode"></i>'+
-									'</a>'+
-									'<input type="hidden" name="details_id[]" value="'+x.id+'"/>'+
-								'</td>'+
-            				'</tr>';
-       	$('#tbl_details_body').append(tbl_details_body);
       	total_returned_qty += x.actual_returned_qty;
 	});
+
 	$('#total_returned_qty').val(total_returned_qty);
 }
 
@@ -265,6 +263,7 @@ function viewState() {
 
 	$('#btn_add_details').hide();
 	$('#btn_delete_details').hide();
+	$('#btn_delete_control').hide();
 }
 
 function addState() {
@@ -283,6 +282,7 @@ function addState() {
 
 	$('#btn_add_details').hide();
 	$('#btn_delete_details').hide();
+	$('#btn_delete_control').hide();
 
     $('#ret_info_id').val('');
     $('#controlno').val("");
@@ -315,6 +315,7 @@ function editState() {
 
 	$('#btn_add_details').show();
 	$('#btn_delete_details').show();
+	$('#btn_delete_control').show();
 }
 
 function printBRcode(id) {
@@ -364,6 +365,134 @@ function delete_now(url,data) {
 		msg(data.msg,data.status);
 		getMaterialReturnData('',$('#controlno').val());
 	}).fail(function(data,textStatus,jqXHR) {
+		$('#delete_modal').modal('hide');
 		msg("There's an error occurred while processing.",'error');
 	});
+}
+
+function delete_control() {
+	var data = {
+		_token: token,
+		controlno: $('#controlno').val()
+	};
+
+	$.ajax({
+		url: deleteControlNoURL,
+		type: 'POST',
+		dataType: 'JSON',
+		data: data,
+	}).done(function(data,textStatus,jqXHR) {
+		$('#delete_modal').modal('hide');
+		msg(data.msg,data.status);
+		getMaterialReturnData();
+	}).fail(function(data,textStatus,jqXHR) {
+		$('#delete_modal').modal('hide');
+		msg("There's an error occurred while processing.",'error');
+	});
+}
+
+
+function makeReturnTable(arr) {
+	$('#tbl_details').dataTable().fnClearTable();
+    $('#tbl_details').dataTable().fnDestroy();
+    $('#tbl_details').dataTable({
+        data: arr,
+        bLengthChange : false,
+        scrollY: "200px",
+	    paging: false,
+	    searching: false,
+        columns: [
+        	{ data: function(x) {
+        		if (x.id != '') {
+        			return '<input type="checkbox" class="checkboxes" name="check_id[]" data-qty="'+x.actual_returned_qty+'" value="'+x.id+'">';
+        		} else {
+        			return '';
+        		}
+        	} },
+	        { data: function(x) {
+	        	return x.issuanceno + '<input type="hidden" name="details_issuanceno[]" value="'+x.issuanceno+'">';
+	        } },
+			{ data: function(x) {
+				return x.item + '<input type="hidden" name="details_item[]" value="'+x.item+'">';
+			} },
+			{ data: function(x) {
+				return x.item_desc + '<input type="hidden" name="details_item_desc[]" value="'+x.item_desc+'">';
+			} },
+			{ data: function(x) {
+				return x.lot_no + '<input type="hidden" name="details_lot_no[]" value="'+x.lot_no+'">';
+			} },
+			{ data: function(x) {
+				return x.issued_qty + '<input type="hidden" name="details_issued_qty[]" value="'+x.issued_qty+'">';
+			} },
+			{ data: function(x) {
+				return x.required_qty + '<input type="hidden" name="details_required_qty[]" value="'+x.required_qty+'">';
+			} },
+			{ data: function(x) {
+				return x.return_qty + '<input type="hidden" name="details_return_qty[]" value="'+x.return_qty+'">';
+			} },
+			{ data: function(x) {
+				return x.actual_returned_qty + '<input type="hidden" name="details_actual_qty[]" value="'+x.actual_returned_qty+'">';
+			} },
+			{ data: function(x) {
+				return x.remarks + '<input type="hidden" name="details_remarks[]" value="'+x.remarks+'">';
+			} },
+			{ data: function(x) {
+				if (x.id != '') {
+					return '<button type="button" class="btn btn-link grey-gallery brcodebtn" data-id="'+x.id+'">'+
+								'<i class="fa fa-barcode"></i>'+
+							'</button>'+
+							'<input type="hidden" name="details_id[]" value="'+x.id+'">';
+				} else {
+					return '';
+				}
+				
+			} },
+        ],
+        columnDefs: [
+        	{ width: "4.09%", targets: 0 },
+			{ width: "9.09%", targets: 1 },
+			{ width: "9.09%", targets: 2 },
+			{ width: "16.09%", targets: 3 },
+			{ width: "9.09%", targets: 4 },
+			{ width: "7.09%", targets: 5 },
+			{ width: "7.09%", targets: 6 },
+			{ width: "7.09%", targets: 7 },
+			{ width: "9.09%", targets: 8 },
+			{ width: "15.09%", targets: 9 },
+			{ width: "7.09%", targets: 10 },
+        ]
+    });
+}
+
+function makeSearchTable(arr) {
+	$('#tbl_search').dataTable().fnClearTable();
+    $('#tbl_search').dataTable().fnDestroy();
+    $('#tbl_search').dataTable({
+        data: arr,
+        bLengthChange : false,
+        scrollY: "250px",
+        searching: false,
+	    paging: false,
+        columns: [
+            { data: function(x) {
+                return "<button type='button' class='btn btn-sm btn-primary btn_search_detail' "+
+                				"data-controlno='"+x.controlno+"'>"+
+                			"<i class='fa fa-eye'></i>"+
+                		"</button>";
+            }, searchable: false, orderable: false },
+
+            { data: 'controlno' },
+            { data: 'po' },
+            { data: 'issuanceno' },
+            { data: 'item' },
+            { data: 'create_user' },
+            { data: 'created_at' },
+            { data: 'update_user' },
+            { data: 'updated_at' },
+        ]
+    });
+}
+
+function summaryReport() {
+	window.location.href = excelURL + '?from=' + $('#from').val() + '&&to=' + $('#to').val();
 }
