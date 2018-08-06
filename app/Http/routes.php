@@ -147,6 +147,11 @@ Route::group(['middleware' => 'web'], function () {
                 'name' => 'wbsmr-refresh'
             ]);
 
+            Route::get('/getReceivingSupplier', [
+                'uses' => 'WBS\WBSMaterialReceivingController@getReceivingSupplier',
+                'name' => 'getReceivingSupplier'
+            ]);
+
         /*WBS LOCAL MATERIAL RECEIVING*/
             Route::get('/wbslocmat', [
                 'uses' => 'WBS\WBSLocalMaterialReceivingController@index',

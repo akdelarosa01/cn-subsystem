@@ -2516,4 +2516,15 @@ class WBSMaterialReceivingController extends Controller
 
         return $data;
     }
+
+    public function getReceivingSupplier(Request $req)
+    {
+        $name = $this->com->getDropdownByName($req->name);
+        if (count((array)$name) > 0) {
+            return response()->json($name);
+        } else {
+            $id = $this->com->getDropdownById(41);
+            return response()->json($id);
+        }
+    }
 }

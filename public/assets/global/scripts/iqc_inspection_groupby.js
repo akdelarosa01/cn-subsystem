@@ -1,5 +1,4 @@
 $( function() {
-    
     $('#field1').on('change',function(){
         GroupByValues($(this).val(),$('#content1'));
     });
@@ -21,13 +20,13 @@ $( function() {
         e.preventDefault();
         openloading();
         $('#group_by_pane').html('<div class="btn-group pull-right">'+
-                                '<button class="btn btn-danger btn-sm" id="btn_close_groupby">'+
+                                '<button type="button" class="btn btn-danger btn-sm" id="btn_close_groupby">'+
                                     '<i class="fa fa-times"></i> Close'+
                                 '</button>'+
-                                '<button class="btn btn-info btn-sm" id="btn_pdf_groupby">'+
+                                '<button type="button" class="btn btn-info btn-sm btn_pdf_groupby" id="btn_pdf_groupby">'+
                                     '<i class="fa fa-file-pdf-o"></i> PDF'+
                                 '</button>'+
-                                '<button class="btn btn-success btn-sm" id="btn_excel_groupby">'+
+                                '<button type="button" class="btn btn-success btn-sm btn_excel_groupby" id="btn_excel_groupby">'+
                                     '<i class="fa fa-file-excel-o"></i> Excel'+
                                 '</button></div><br><br>');
 
@@ -43,12 +42,13 @@ $( function() {
                     if(returnData.length > 0){
                         var form = returnData;
                         var desFirst = deparam(datas);
+                        console.log(desFirst);
                         $.ajax({
                                 url: GetSingleGroupByURL,
                                 type: 'GET',
                                 dataType: 'JSON',
                                 data:{ _token:token,
-                                        data:form,
+                                        data: JSON.stringify(form),
                                         firstData:desFirst.field1,
                                         gto:desFirst.gto,
                                         gfrom:desFirst.gfrom
@@ -96,7 +96,7 @@ $( function() {
                                 type: 'GET',
                                 dataType: 'JSON',
                                 data:{ _token:token,
-                                        data:form,
+                                        data: form,
                                         firstData:desFirst.field1,
                                         secondData:desFirst.field2,
                                         gto:desFirst.gto,
@@ -127,8 +127,8 @@ $( function() {
                                                             type: 'GET',
                                                             dataType: 'JSON',
                                                             data:{ _token:token,
-                                                                    content1:g1,
-                                                                    content2:g2,
+                                                                    content1:JSON.stringify(g1),
+                                                                    content2:JSON.stringify(g2),
                                                                     firstData:desFirst.field1,
                                                                     secondData:desFirst.field2,
                                                                     gto:desFirst.gto,
@@ -179,6 +179,9 @@ $( function() {
                     if(returnData.length > 0){
                         var form = returnData;
                         var desFirst = deparam(datas);
+
+                        //console.log(desFirst);
+
                         $.ajax({
                                 url: GettripleGroupByURL,
                                 type: 'GET',
@@ -227,35 +230,37 @@ $( function() {
                                                 }
                                                 g3 = uniqueField2;
                                         }
+                                            var data = {
+                                                _token:token,
+                                                firstData:desFirst.field1,
+                                                secondData:desFirst.field2,
+                                                thirdData:desFirst.field3,
+                                                gto:desFirst.gto,
+                                                gfrom:desFirst.gfrom,
+                                                content1:JSON.stringify(g1),
+                                                content2:JSON.stringify(g2),
+                                                content3:JSON.stringify(g3),
+                                            };
                                                         $.ajax({
-                                                        url: GettripleGroupByURLdetails,
-                                                        type: 'GET',
-                                                        dataType: 'JSON',
-                                                        data:{ _token:token,
-                                                                content1:g1,
-                                                                content2:g2,
-                                                                content3:g3,
-                                                                firstData:desFirst.field1,
-                                                                secondData:desFirst.field2,
-                                                                thirdData:desFirst.field3,
-                                                                gto:desFirst.gto,
-                                                                gfrom:desFirst.gfrom,
-                                                        },
-                                                        success:function(returDetails){
-                                                            thirdTable(returDetails.returnData,
-                                                                desFirst,
-                                                                returDetails.LARListG1,
-                                                                returDetails.rejectednumListG1,
-                                                                returDetails.DPPMListG1,
-                                                                returDetails.LARList_2nd,
-                                                                returDetails.rejectednumList_2nd,
-                                                                returDetails.DPPMList_2nd,
-                                                                returDetails.LARList_3rd,
-                                                                returDetails.rejectednumList_3rd,
-                                                                returDetails.DPPMList_3rd
-                                                                );
-                                                        },
-                                                        error: function (xhr, ajaxOptions, thrownError) {
+                                                            url: GettripleGroupByURLdetails,
+                                                            type: 'GET',
+                                                            dataType: 'JSON',
+                                                            data: data,
+                                                            success:function(returDetails){
+                                                                thirdTable(returDetails.returnData,
+                                                                    desFirst,
+                                                                    returDetails.LARListG1,
+                                                                    returDetails.rejectednumListG1,
+                                                                    returDetails.DPPMListG1,
+                                                                    returDetails.LARList_2nd,
+                                                                    returDetails.rejectednumList_2nd,
+                                                                    returDetails.DPPMList_2nd,
+                                                                    returDetails.LARList_3rd,
+                                                                    returDetails.rejectednumList_3rd,
+                                                                    returDetails.DPPMList_3rd
+                                                                    );
+                                                            },
+                                                            error: function (xhr, ajaxOptions, thrownError) {
                                                                 alert(xhr.status);
                                                                 alert(thrownError);
                                                             }
@@ -318,7 +323,6 @@ $( function() {
         $('#lot_accepted').val($(this).attr('data-lot_accepted'));
         $('#sample_size').val($(this).attr('data-sample_size'));
         $('#no_of_defects').val($(this).attr('data-no_of_defects'));
-        $('#classification').val($(this).attr('data-classification'));
         $('#remarks').val($(this).attr('data-remarks'));
 
         $('#no_defects_label').hide();
@@ -355,6 +359,13 @@ $( function() {
         window.location.href= excelURL;
     });
 });
+
+function toObject(arr) {
+    var rv = {};
+    for (var i = 0; i < arr.length; ++i)
+        rv[i] = arr[i];
+    return rv;
+}
 
 function deparam(query) {
     var pairs, i, keyValuePair, key, value, map = {};
@@ -806,6 +817,13 @@ function secondTable(req,datas,LAR,REJ,DPPM,LARg1,REJg1,DPPMg1){
                 gp1 += "</div>";
             gp1 += "</div>";
         $('#group_by_pane').append(gp1);
+
+        // var pahabolbol = datas.field1 + ": "+req[x]["0"]["0"].chosenfield;
+        // pahabolbol += "  LAR : "+Larc+"% ("+MushRoomHead.accepted+"/"+MushRoomHead.total+") &emsp;";
+        // pahabolbol += "DPPM: "+MushRoomHead.DPPM+" &emsp;";
+        // pahabolbol += "("+MushRoomHead.poop+"/"+MushRoomHead.shit+")";
+        // document.getElementById("butthead"+x).innerHTML = pahabolbol;
+
     }
     closeloading();
 }
@@ -1022,6 +1040,72 @@ function thirdTable(req,datas,LARg1,REJg1,DPPMg1,LAR_2nd,REJ_2nd,DPPM_2nd,LAR_3r
                 gp1 += "</div>";
             gp1 += "</div>";
         $('#group_by_pane').append(gp1);
+
+        // for(var x=0;x<req.length;x++){
+        //     var maintotal = 0, mainreject=0;
+        //     for(y=0;y<req[x].length;y++){
+        //         var twoaccepted=0, twotal = 0, tworeject=0;
+        //         for(z=0;z<req[x][y].length;z++){
+        //                 var kup="";
+                        
+        //                 if(DPPM_3rd[x][y][z]["0"].DPPM != null){
+        //                     kup = datas.field3 + ": "+req[x][y][z]["0"].chosenfield3;
+        //                     var acc =(req[x][y][z].length == 1)?1:req[x][y][z].length - REJ_3rd[x][y][z]["0"].rejects;
+        //                     kup += "LAR : "+LAR_3rd[x][y][z]["0"].LAR+"% ("+acc+"/"+req[x][y][z].length+") &emsp;"
+        //                     kup += "DPPM: "+DPPM_3rd[x][y][z]["0"].DPPM+" &emsp;";
+        //                     kup += "("+DPPM_3rd[x][y][z]["0"].num_of_defects+"/"+DPPM_3rd[x][y][z]["0"].sample_size+")";
+        //                     document.getElementById("kups"+x+y+z).innerHTML = kup;
+                      
+        //                 }
+        //                 else{
+        //                     kup += datas.field3 + ": "+req[x][y][z]["0"].chosenfield3+"  &emsp;";
+        //                     var acc =(req[x][y][z].length == 1)?1:req[x][y][z].length - REJ_3rd[x][y][z]["0"].rejects;
+        //                     kup += "LAR : "+LAR_3rd[x][y][z]["0"].LAR+"% ("+acc+"/"+req[x][y][z].length+") &emsp;"
+        //                     kup += "DPPM: 0.00 &emsp;(0/0)</a>";
+        //                     document.getElementById("kups"+x+y+z).innerHTML = kup;
+                          
+        //                 }
+        //                 twotal+=req[x][y][z].length;
+        //         }
+        //         var kupy = "";
+        //         var MushRoomHead = GETDPPMthird(req,DPPM_2nd,REJ_2nd,x,y,2);
+        //         var n = ((MushRoomHead.poop/MushRoomHead.shit)*1000000 != "NaN")?(MushRoomHead.poop/MushRoomHead.shit)*1000000:0;
+        //         var acc = (req[x][y].length == 1)?1:req[x][y].length - REJ_2nd[x][y]["0"].rejects;
+        //         var Larc = ((acc/req[x][y].length)*100).toFixed(2);
+        //         if(!isNaN(n)){
+        //             kupy = datas.field2 + ": "+req[x][y]["0"]["0"].chosenfield2+"  &emsp;";
+        //             kupy += "LAR : "+Larc+"% ("+twotal+"/"+twotal+") &emsp;"
+        //             kupy += "DPPM: "+n.toFixed(2)+" &emsp;";
+        //             kupy += "("+MushRoomHead.poop+"/"+MushRoomHead.shit+")";
+        //         }
+        //         else{
+        //             kupy += datas.field2 + ": "+req[x][y]["0"]["0"].chosenfield2+"  &emsp;"
+        //             kupy += "LAR : "+Larc+"% ("+twotal+"/"+twotal+") &emsp;"
+        //             kupy += "DPPM: 0.00 &emsp;(0/0)";
+        //         }
+        //         maintotal += twotal;
+
+        //         document.getElementById("kups"+x+y).innerHTML = kupy;
+        //     }
+
+        //     var MushRoomHead = GETDPPMthird(req,DPPM_2nd,REJ_2nd,x,0,1);
+        //     var n = ((MushRoomHead.poop/MushRoomHead.shit)*1000000 != "NaN")?(MushRoomHead.poop/MushRoomHead.shit)*1000000:0;
+        //     var acc = (req[x].length == 1)?1:req[x].length - REJg1[x]["0"].rejects;
+        //     var Larc = ((MushRoomHead.accepted/MushRoomHead.total)*100).toFixed(2);
+        //     var gp1="";
+        //     if(!isNaN(n)){
+        //         gp1 = datas.field1 + ": "+req[x]["0"]["0"]["0"].chosenfield;
+        //         gp1 += "LAR : "+Larc+"% ("+maintotal+"/"+maintotal+") &emsp;"
+        //         gp1 += "DPPM: "+n.toFixed(2)+" &emsp;";
+        //         gp1 += "("+MushRoomHead.poop+"/"+MushRoomHead.shit+")";
+        //     }
+        //     else{
+        //         gp1 = datas.field1 + ": "+req[x]["0"]["0"]["0"].chosenfield;
+        //         gp1 += "LAR : "+Larc+"% ("+maintotal+"/"+maintotal+") &emsp;"
+        //         gp1 += "DPPM: 0.00 &emsp;(0/0)";
+        //     }
+        //     document.getElementById("kups"+x).innerHTML = gp1;
+        // }
     }
     closeloading();
 }

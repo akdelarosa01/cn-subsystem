@@ -61,7 +61,7 @@
                             <div class="form-group">
                                 <label for="inputname" class="control-label col-md-3">Supplier</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control input-sm clearbatch" id="add_inputSupplier" placeholder="Supplier" name="supplier" <?php echo($readonly); ?> />
+                                    <select class="form-control input-sm clearbatch" id="add_inputSupplier" placeholder="Supplier" name="supplier" <?php echo($readonly); ?>></select>
                                 </div>
                             </div>
                         </form>
@@ -138,7 +138,7 @@
                     <div class="form-group">
                         <label for="inputname" class="control-label col-md-3">Supplier</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control input-sm clearbatch" id="edit_inputSupplier" placeholder="Supplier" name="supplier" <?php echo($readonly); ?> />
+                            <select class="form-control input-sm clearbatch" id="edit_inputSupplier" placeholder="Supplier" name="supplier" <?php echo($readonly); ?>></select>
                         </div>
                     </div>
                 </form>

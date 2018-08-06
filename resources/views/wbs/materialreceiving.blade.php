@@ -338,6 +338,9 @@
         getLatestRecord();
         ViewState();
 
+        supplierDropdown('#add_inputSupplier');
+        supplierDropdown('#edit_inputSupplier');
+
         $('#btn_addnew').on('click', function() {
             clear();
             $('#invoiceno').prop('readonly',false);
@@ -1962,6 +1965,29 @@
             $('#loading').modal('hide');
             failedMsg("There's some error while processing.");
         });
+    }
+
+    function supplierDropdown(el) {
+        var opt = '<option value="">-- Select Supplier --</option>';
+        $(el).html(opt);
+        $.ajax({
+            url: "{{url('/getReceivingSupplier')}}",
+            type: 'GET',
+            dataType: 'JSON',
+            data: {
+                _token: "{{Session::token()}}",
+                name: "Supplier"
+            },
+        }).done(function( data, textStatus,jqXHR) {
+            $.each(data, function(i, x) {
+                opt = '<option value="'+x.description+'">'+x.description+'</option>';
+                $(el).append(opt);
+            });
+        }).fail(function( data, textStatus,jqXHR) {
+            $('#loading').modal('hide');
+            failedMsg("There's some error while processing.");
+        });
+        
     }
 </script>
 @endpush
