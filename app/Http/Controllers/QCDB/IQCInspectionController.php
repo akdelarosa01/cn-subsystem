@@ -300,10 +300,10 @@ class IQCInspectionController extends Controller
         if ($req->save_status == 'ADD') {
             if ($req->is_batching > 0) {
                 $this->insertToInspectionBatching($req,$req->lot_no);
-                $this->insertHistory($req->lot_no,$req);
+                //$this->insertHistory($req->lot_no,$req);
             } else {
                 $this->insertToInspection($req,$req->lot_no);
-                $this->insertHistory($req->lot_no,$req);
+                //$this->insertHistory($req->lot_no,$req);
             }
 
             $query = true;
@@ -312,10 +312,10 @@ class IQCInspectionController extends Controller
             if (is_string($req->lot_no)) {
                 $lots = explode(',',$req->lot_no);
                 $this->updateInspection($req,$lots);
-                $this->insertHistory($lots,$req);
+                //$this->insertHistory($lots,$req);
             } else {
                 $this->updateInspection($req,$req->lot_no);
-                $this->insertHistory($req->lot_no,$req);
+                //$this->insertHistory($req->lot_no,$req);
             }
             // if ($this->checkInspection($req) > 0) {
             //     if ($req->batching > 0) {
