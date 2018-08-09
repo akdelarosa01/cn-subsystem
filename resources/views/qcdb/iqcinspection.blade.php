@@ -1244,6 +1244,8 @@
 			$('#app_time').val(details.app_time);
 			$('#app_no').val(details.receive_no);
 
+			console.log(data.lot);
+
 			$('#lot_no').select2({
 				tags: true,
 				data: data.lot,
@@ -1282,11 +1284,21 @@
         }).done( function(data, textStatus, jqXHR) {
 			var details = data.details;
 
+			var lots = [];
+
+			$.each(data.lot, function(i, x) {
+				var lot = x.id
+				lots.push(lot.replace(' ',''));
+			});
+
+			// console.log(lots);
 			$('#lot_no').select2({
 				tags: true,
 				data: data.lot,
 				placeholder: 'Select Lot Number'
 			});
+
+			$('#lot_no').select2({maximumSelectionLength: 1000,tags:lots});
         }).fail( function(data, textStatus, jqXHR) {
              msg("There's some error while processing.",'failed');
         });

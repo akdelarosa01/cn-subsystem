@@ -658,6 +658,13 @@ class IQCInspectionController extends Controller
                     ->where('not_for_iqc',0)
                     ->select('lot_no as id','lot_no as text')
                     ->get();
+
+            if ($this->checkIfExistObject($db) > 0 && $this->checkIfExistObject($lot) > 0) {
+                return $data = [
+                    'lot' => $lot,
+                    'details' => $db
+                ];
+            }
         } // else {
         //     $db = DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch as b')
         //             ->join('tbl_wbs_local_receiving as m','m.receive_no','=','b.wbs_loc_id')
