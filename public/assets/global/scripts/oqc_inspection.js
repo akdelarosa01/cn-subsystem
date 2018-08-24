@@ -170,17 +170,29 @@ $( function() {
 
 	$('#app_time').on('change', function() {
 		var time = setTime($(this).val());
-		$(this).val(time);
+		if (time.includes('::')) {
+			$(this).val(time.replace('::',':'));
+		} else {
+			$(this).val(time);
+		}
 	});
 
 	$('#time_ins_from').on('change', function() {
 		var time = setTime($(this).val());
-		$(this).val(time);
+		if (time.includes('::')) {
+			$(this).val(time.replace('::',':'));
+		} else {
+			$(this).val(time);
+		}
 	});
 
 	$('#time_ins_to').on('change', function() {
 		var time = setTime($(this).val());
-		$(this).val(time);
+		if (time.includes('::')) {
+			$(this).val(time.replace('::',':'));
+		} else {
+			$(this).val(time);
+		}
 		getShift();
 	});
 
@@ -672,7 +684,8 @@ function delete_now(deleteUrl,datatableURL,data,table,dataColumn) {
 	});
 }
 
-function setTime(time) {
+function setTime(time_input) {
+	var time = time_input.replace('::',':');
 	var h = time.substring(0,2);
 	var m = time.substring(2,5);
 	var a = time.substring(6,8);

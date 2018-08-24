@@ -1102,7 +1102,7 @@ class WBSMaterialKittingController extends Controller
 
         $mk_data = $this->getKitInfoByID($id);
 
-        if(count($mk_data) > 0)
+        if(count((array)$mk_data) > 0)
         {
             $issuanceno = $mk_data->issuance_no;
             $pono       = $mk_data->po_no;
@@ -1469,7 +1469,7 @@ class WBSMaterialKittingController extends Controller
                         <div class="rTableCell mediumText">Transfer Slip:</div>
                         <div class="rTableCell mediumText width-30"><strong>'.$issuanceno.'</strong></div>
                         <div class="rTableCell mediumText"></div>
-                        <div class="rTableCell mediumText">Dispatch By: ____________</div>
+                        <div class="rTableCell mediumText"></div>
                         <div class="rTableCell mediumText"></div>
                         <div class="rTableCell mediumText"></div>
                     </div> ';
@@ -1577,7 +1577,7 @@ class WBSMaterialKittingController extends Controller
                             <div class="rTableCell mediumText">Transfer Slip:</div>
                             <div class="rTableCell mediumText width-30"><strong>'.$issuanceno.'</strong></div>
                             <div class="rTableCell mediumText"></div>
-                            <div class="rTableCell mediumText">Dispatch By: ____________</div>
+                            <div class="rTableCell mediumText"></div>
                             <div class="rTableCell mediumText"></div>
                             <div class="rTableCell mediumText"></div>
                        </div> ';

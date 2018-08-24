@@ -1090,14 +1090,15 @@ class WBSSakidashiIssuanceController extends Controller
                                                 <div class="rTableRow">
                                                     <div class="rTableCell smallText">ISSUED BY:</div>
                                                     <div class="rTableCell smallText">RECEIVED BY:</div>
-                                                    <div class="rTableCell smallText">DISPATCH BY:</div>
+                                                    
                                                     <div class="rTableCell smallText">DATE:</div>
+                                                    <div class="rTableCell smallText"></div>
                                                 </div>
                                                 <div class="rTableRow">
                                                     <div class="rTableCell smallText">'. $incharge .'</div>
                                                     <div class="rTableCell smallText">_______________</div>
                                                     <div class="rTableCell smallText">_______________</div>
-                                                    <div class="rTableCell smallText">_______________</div>
+                                                    <div class="rTableCell smallText"></div>
                                                 </div>
 
                                             </div>

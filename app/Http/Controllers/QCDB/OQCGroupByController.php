@@ -512,7 +512,6 @@ class OQCGroupByController extends Controller
         //return response()->json($list3);
     }
 
-
     public function DPPMTablesv2($req){
         $ins="";
         if (!empty($req->gfrom) && !empty($req->gto)) {

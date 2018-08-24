@@ -182,6 +182,7 @@
 <script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/common.js') }}" type="text/javascript"></script>
 <script type="text/javascript">
     $(function() {
+    	//$('#time_ins_from').mask('AA:AA AA', {placeholder: '__:__ __'});
 		getIQCInspection("{{url('/iqcdbgetiqcdata')}}");
 		getOnGoing();
 
@@ -237,23 +238,40 @@
 
 		$('#time_ins_from').on('change', function() {
 			var time = setTime($(this).val());
-			$(this).val(time);
+			if (time.includes('::')) {
+				$(this).val(time.replace('::',':'));
+			} else {
+				$(this).val(time);
+			}
 		});
 
 		$('#time_ins_to').on('change', function() {
 			var time = setTime($(this).val());
-			$(this).val(time);
+			if (time.includes('::')) {
+				$(this).val(time.replace('::',':'));
+			} else {
+				$(this).val(time);
+			}
 			getShift($('#time_ins_from').val(),$(this).val(),'#shift');
 		});
 
 		$('#time_ins_from_man').on('change', function() {
 			var time = setTime($(this).val());
-			$(this).val(time);
+
+			if (time.includes('::')) {
+				$(this).val(time.replace('::',':'));
+			} else {
+				$(this).val(time);
+			}
 		});
 		
 		$('#time_ins_to_man').on('change', function() {
 			var time = setTime($(this).val());
-			$(this).val(time);
+			if (time.includes('::')) {
+				$(this).val(time.replace('::',':'));
+			} else {
+				$(this).val(time);
+			}
 		});
 
 		// INSPECTION SIDE
@@ -799,7 +817,8 @@
 		});
     });
 
-	function setTime(time) {
+	function setTime(time_input) {
+		var time = time_input.replace('::',':');
 		var h = time.substring(0,2);
 		var m = time.substring(2,5);
 		var a = time.substring(6,8);
@@ -829,37 +848,48 @@
 			}
 			switch(h) {
 				case '13':
-					return "01"+":"+m+" "+a;
+					var time_now = "01"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '14':
-					return "02"+":"+m+" "+a;
+					var time_now = "02"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '15':
-					return "03"+":"+m+" "+a;
+					var time_now = "03"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '16':
-					return "04"+":"+m+" "+a;
+					var time_now = "04"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '17':
-					return "05"+":"+m+" "+a;
+					var time_now = "05"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '18':
-					return "06"+":"+m+" "+a;
+					var time_now = "06"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '19':
-					return "07"+":"+m+" "+a;
+					var time_now = "07"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '20':
-					return "08"+":"+m+" "+a;
+					var time_now = "08"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '21':
-					return "09"+":"+m+" "+a;
+					var time_now = "09"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '22':
-					return "10"+":"+m+" "+a;
+					var time_now = "10"+":"+m+" "+a;
+					return time_now;
 					break;
 				case '23':
-					return "11"+":"+m+" "+a;
+					var time_now = "11"+":"+m+" "+a;
+					return time_now;
 					break;
 				default:
 					return time;
