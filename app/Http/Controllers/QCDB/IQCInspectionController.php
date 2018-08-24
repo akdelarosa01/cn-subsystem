@@ -559,22 +559,8 @@ class IQCInspectionController extends Controller
 
     private function insertHistory($lots,$req)
     {
-        $array_lots = explode(',',$lots);
-
-        foreach ($array_lots as $key => $lot) {
-            $lot_qty = $this->getLotQty($req->invoice_no,$req->partcode,$lot);
-            $status = 0;
-            $kitting = 0;
-
-            if ($req->judgement == 'Accepted') {
-                $status = 1;
-                $kitting = 1;
-            } 
-
-            if ($req->judgement == 'Rejected') {
-                $status = 2;
-                $kitting = 0;
-            }
+        foreach ($lots as $key => $lot) {
+            $lot_qty = $this->getLotQty($req->invoice,$req->partcode,$lot);
 
             DB::connection($this->mysql)->table('iqc_inspections_history')
                 ->insert([
@@ -610,7 +596,7 @@ class IQCInspectionController extends Controller
                     'dbcon' => Auth::user()->productline,
                     'created_at' => Carbon::now(),
                 ]);
-        } 
+        }
     }
 
     private function requalifyInventory($app_no,$partcode,$lot)
