@@ -435,6 +435,10 @@ WBS | Pricon Microelectronics, Inc.
                 serverSide: true,
                 deferRender: true,
                 ajax: url,
+                lengthMenu: [
+                    [5, 10, 20, 100, -1],
+                    [5, 10, 20, 100,"All"]
+                ],
                 columns: [
                     {data: function(data){
                             return '<input type="checkbox" class="chk" value="'+data.id+'" data-id="'+data.id+'" data-code="'+data.item+'"/>';
