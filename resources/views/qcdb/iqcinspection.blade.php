@@ -907,6 +907,11 @@
             processing: true,
             serverSide: true,
             ajax: url,
+            lengthMenu: [
+	            [5, 10, 20, 100, -1],
+	            [5, 10, 20, 100,"All"]
+	        ],
+	        pageLength: 100, 
             columns: [
                 {data: function(data){
                         return '<input type="checkbox" class="iqc_checkitems" value="'+data.id+'"/>';
@@ -976,6 +981,11 @@
             processing: true,
             serverSide: true,
             ajax: "{{url('/iqcdbgetongoing')}}",
+            lengthMenu: [
+	            [5, 10, 20, 100, -1],
+	            [5, 10, 20, 100,"All"]
+	        ],
+	        pageLength: 100, 
             columns: [
                 {data: function(data){
                         return '<input type="checkbox" class="ongiong_checkitems" value="'+data.id+'"/>';
