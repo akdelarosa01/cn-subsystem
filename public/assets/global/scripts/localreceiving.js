@@ -1,3 +1,4 @@
+var items_arr = [];
 $(function() {
 	getLocalMaterialData();
 	checkAllCheckboxesInTable('.group-checkable','.checkboxes');
@@ -327,68 +328,87 @@ function LocalInfo(data) {
 }
 
 function LocalBatch(data) {
-	var tbl_batch_body = '';
-	$('#tbl_batch_body').html(tbl_batch_body);
-	console.log(data);
-	if (isEmptyObject(data) !== true) {
-		var cnt = 1;
-		$.each(data, function(i, x) {
-			var not_iqc = '';
-			var printed = '';
+	items_arr = [];
+	items_arr = data;
 
-			if (x.not_for_iqc == 1) {
-				not_iqc = 'checked';
-			}
+	makeBatchTable(items_arr);
+}
 
-			if (x.is_printed == 1) {
-				printed = 'checked';
-			}
+function makeBatchTable(arr) {
+	$('#tbl_batch').dataTable().fnClearTable();
+    $('#tbl_batch').dataTable().fnDestroy();
+    $('#tbl_batch').dataTable({
+        data: arr,
+        bLengthChange : false,
+        scrollY: "200px",
+	    paging: false,
+	    searching: false,
+        columns: [
+        	{ data: function(x) {
+        		if (x.id != '') {
+        			return '<input type="checkbox" class="checkboxes chk_batch_item" value="'+x.id+'"/>';
+        		} else {
+        			return '';
+        		}
+        	} },
+	        { data: function(x) {
+	        	return '<a href="javascript:;" class="btn btn-sm blue edit_batch" data-id="'+x.id+'" data-item="'+x.item+'" data-item_desc="'+x.item_desc+'" '+
+                    		'data-qty="'+x.qty+'" data-box="'+x.box+'" data-box_qty="'+x.box_qty+'" data-lot_no="'+x.lot_no+'" '+
+                    		'data-location="'+x.location+'" data-supplier="'+x.supplier+'" data-nr="'+x.not_for_iqc+'">'+
+                    		'<i class="fa fa-edit"></i>'+
+                    	'</a>';
+	        } },
 
-			tbl_batch_body = '<tr>'+
-	                            '<td class="table-checkbox" width="4.1%">'+
-	                                '<input type="checkbox" class="checkboxes chk_batch_item" value="'+x.id+'"/>'+
-	                            '</td>'+
-	                            '<td width="5.1%">'+
-	                            	'<a href="javascript:;" class="btn btn-sm blue edit_batch" data-id="'+x.id+'" data-item="'+x.item+'" data-item_desc="'+x.item_desc+'" '+
-	                            		'data-qty="'+x.qty+'" data-box="'+x.box+'" data-box_qty="'+x.box_qty+'" data-lot_no="'+x.lot_no+'" '+
-	                            		'data-location="'+x.location+'" data-supplier="'+x.supplier+'" data-nr="'+x.not_for_iqc+'">'+
-	                            		'<i class="fa fa-edit"></i>'+
-	                            	'</a>'+
-	                            '</td>'+
-	                            '<td width="4.1%">'+cnt+'</td>'+
-	                            '<td width="7.1%">'+x.item+'</td>'+
-	                            '<td width="16.1%">'+x.item_desc+'</td>'+
-	                            '<td width="7.1%">'+x.qty+'</td>'+
-	                            '<td width="10.1%">'+x.box+'</td>'+
-	                            '<td width="7.1%">'+x.box_qty+'</td>'+
-	                            '<td width="7.1%">'+x.lot_no+'</td>'+
-	                            '<td width="7.1%">'+x.location+'</td>'+
-	                            '<td width="7.1%">'+x.supplier+'</td>'+
-	                            '<td width="6.1%">'+
-	                            	'<input type="checkbox" class="not_for_iqc" name="not_for_iqc[]" value="1" '+not_iqc+'>'+
-	                            '</td>'+
-	                            '<td width="5.1%">'+
-	                            	'<input type="checkbox" class="is_printed" name="is_printed[]" value="1" '+printed+'>'+
-	                            '</td>'+
-	                            '<td width="5.1%">'+
-	                            	'<a href="javascript:;" class="btn input-sm grey-gallery barcode_item_batch" data-txnno="'+$('#invoice_no').val()+
-	                            	'" data-txndate="'+$('#receivingdate').val()+'" data-itemno="'+x.item+'" data-itemdesc="'+x.item_desc+'" data-qty="'+x.qty+
-	                            	'" data-bcodeqty="'+x.box_qty+'" data-lotno="'+x.lot_no+'" data-location="'+x.location+'">'+
-                                        '<i class="fa fa-barcode"></i>'+
-                                    '<a>'
-	                            '</td>'+
-	                        '</tr>';
-	        $('#tbl_batch_body').append(tbl_batch_body);
-	        cnt++
-		});
-	} else {
-		tbl_batch_body = '<tr>'+
-			                '<td width="100%" colspan="14" class="text-center">'+
-			                	'No data displayed.'+
-			                '</td>'+
-			            '</tr>';
-		$('#tbl_batch_body').append(tbl_batch_body);
-	}
+			{ data: 'item' },
+			{ data: 'item_desc' },
+			{ data: 'qty' },
+			{ data: 'box' },
+			{ data: 'box_qty' },
+			{ data: 'lot_no' },
+			{ data: 'location' },
+			{ data: 'supplier' },
+
+			{ data: function(x) {
+				var not_iqc = '';
+				if (x.not_for_iqc == 1) {
+					not_iqc = 'checked';
+				}
+
+				return '<input type="checkbox" class="not_for_iqc" name="not_for_iqc[]" value="1" '+not_iqc+'>';
+			} },
+
+			{ data: function(x) {
+				var printed = '';
+				if (x.is_printed == 1) {
+					printed = 'checked';
+				}
+
+				return '<input type="checkbox" class="is_printed" name="is_printed[]" value="1" '+printed+'>';
+			} },
+			{ data: function(x) {
+				return '<a href="javascript:;" class="btn input-sm grey-gallery barcode_item_batch" data-txnno="'+$('#invoice_no').val()+
+	                    	'" data-txndate="'+$('#receivingdate').val()+'" data-itemno="'+x.item+'" data-itemdesc="'+x.item_desc+'" data-qty="'+x.qty+
+	                    	'" data-bcodeqty="'+x.box_qty+'" data-lotno="'+x.lot_no+'" data-location="'+x.location+'">'+
+                            '<i class="fa fa-barcode"></i>'+
+                        '<a>';
+			} }
+        ],
+        columnDefs: [
+        	{ width: "4.1%", targets: 0 },
+			{ width: "5.1%", targets: 1 },
+			{ width: "7.1%", targets: 2 },
+			{ width: "14.1%", targets: 3 },
+			{ width: "5.1%", targets: 4 },
+			{ width: "7.1%", targets: 5 },
+			{ width: "7.1%", targets: 6 },
+			{ width: "22.1%", targets: 7 },
+			{ width: "7.1%", targets: 8 },
+			{ width: "7.1%", targets: 9 },
+			{ width: "6.1%", targets: 10 },
+			{ width: "4.1%", targets: 11 },
+			{ width: "4.1%", targets: 12 }
+        ]
+    });
 }
 
 function viewstate() {

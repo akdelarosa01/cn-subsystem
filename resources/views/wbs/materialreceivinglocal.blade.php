@@ -177,25 +177,24 @@
 
                         <div class="row">
                         	<div class="col-md-12">
-                        		<table class="table table-bordered table-fixedheader table-striped" id="tbl_batch" style="font-size:10px;">
+                        		<table class="table table-bordered table-striped" id="tbl_batch" style="font-size:10px;">
                                     <thead id="th_batch">
                                         <tr>
                                             <td class="table-checkbox" width="4.1%">
                                                 <input type="checkbox" class="group-checkable"/>
                                             </td>
                                             <td width="5.1%"></td>
-                                            <td width="4.1%">ID</td>
-                                            <td width="7.1%">Item No.</td>
-                                            <td width="16.1%">Item Description</td>
-                                            <td width="7.1%">Quantity</td>
-                                            <td width="10.1%">Package Category</td>
+                                            <td width="7.1%">Code.</td>
+                                            <td width="14.1%">Description</td>
+                                            <td width="5.1%">Qty.</td>
+                                            <td width="7.1%">Pckg. ctgry</td>
                                             <td width="7.1%">Pckg. Qty.</td>
-                                            <td width="7.1%">Lot No.</td>
+                                            <td width="22.1%">Lot No.</td>
                                             <td width="7.1%">Location</td>
                                             <td width="7.1%">Supplier</td>
                                             <td width="6.1%">Not Reqd</td>
-                                            <td width="5.1%">Printed</td>
-                                            <td width="5.1%"></td>
+                                            <td width="4.1%">Printed</td>
+                                            <td width="4.1%"></td>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl_batch_body"></tbody>
