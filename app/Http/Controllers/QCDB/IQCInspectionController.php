@@ -655,7 +655,7 @@ class IQCInspectionController extends Controller
             $lot = DB::connection($this->wbs)->table('tbl_wbs_inventory')
                     ->where('invoice_no',$req->invoiceno)
                     ->where('item',$req->item)
-                    ->where('not_for_iqc',0)
+                    // ->where('not_for_iqc',0)
                     ->select('lot_no as id','lot_no as text')
                     ->get();
 
@@ -1110,19 +1110,22 @@ class IQCInspectionController extends Controller
 
                 foreach ($lot_nos as $key => $lot) {
                     $checkInv = DB::connection($this->wbs)->update(
-                                        "UPDATE tbl_wbs_inventory SET iqc_status='0'
+                                        "UPDATE tbl_wbs_inventory SET iqc_status='0',not_for_iqc='0'
                                         WHERE invoice_no='".$iqc->invoice_no."' AND item='".$iqc->partcode."' AND lot_no='".$lot."'"
                                     );
                                     
-
-                    $checkBatch = DB::connection($this->wbs)->update(
-                                        "UPDATE tbl_wbs_material_receiving_batch SET iqc_status='0'
+                    if (strpos($iqc->app_no, 'loc') !== false) {
+                        $checkBatch = DB::connection($this->wbs)->update(
+                                        "UPDATE tbl_wbs_local_receiving_batch SET iqc_status='0',not_for_iqc='0'
                                         WHERE invoice_no='".$iqc->invoice_no."' AND item='".$iqc->partcode."' AND lot_no='".$lot."'"
                                     );
-                    $checkBatch = DB::connection($this->wbs)->update(
-                                        "UPDATE tbl_wbs_local_receiving_batch SET iqc_status='0'
+                    } else {
+                        $checkBatch = DB::connection($this->wbs)->update(
+                                        "UPDATE tbl_wbs_material_receiving_batch SET iqc_status='0',not_for_iqc='0'
                                         WHERE invoice_no='".$iqc->invoice_no."' AND item='".$iqc->partcode."' AND lot_no='".$lot."'"
                                     );
+                    }
+                    
                 }
                 //if ($checkBatch == true) {
                     $delete = DB::connection($this->mysql)->table('iqc_inspections')
@@ -1157,12 +1160,41 @@ class IQCInspectionController extends Controller
         $query = false;
 
         foreach ($req->id as $key => $id) {
-            $delete = DB::connection($this->mysql)->table('iqc_inspections')
+            $iqc = DB::connection($this->mysql)->table('iqc_inspections')
                         ->where('id',$id)
-                        ->delete();
-            if ($delete == true) {
+                        ->first();
+
+            if (count((array)$iqc) > 0) {
+                $lot_nos = explode(',', $iqc->lot_no);
+
+                foreach ($lot_nos as $key => $lot) {
+                    $checkInv = DB::connection($this->wbs)->update(
+                                        "UPDATE tbl_wbs_inventory SET iqc_status='0',not_for_iqc='0'
+                                        WHERE invoice_no='".$iqc->invoice_no."' AND item='".$iqc->partcode."' AND lot_no='".$lot."'"
+                                    );
+                                    
+                    if (strpos($iqc->app_no, 'loc') !== false) {
+                        $checkBatch = DB::connection($this->wbs)->update(
+                                        "UPDATE tbl_wbs_local_receiving_batch SET iqc_status='0',not_for_iqc='0'
+                                        WHERE invoice_no='".$iqc->invoice_no."' AND item='".$iqc->partcode."' AND lot_no='".$lot."'"
+                                    );
+                    } else {
+                        $checkBatch = DB::connection($this->wbs)->update(
+                                        "UPDATE tbl_wbs_material_receiving_batch SET iqc_status='0',not_for_iqc='0'
+                                        WHERE invoice_no='".$iqc->invoice_no."' AND item='".$iqc->partcode."' AND lot_no='".$lot."'"
+                                    );
+                    }
+                    
+                }
+                //if ($checkBatch == true) {
+                    $delete = DB::connection($this->mysql)->table('iqc_inspections')
+                                ->where('id',$id)
+                                ->delete();
+                    //$query = true;
+                //}
                 $query = true;
             }
+
         }
 
 
@@ -1182,6 +1214,7 @@ class IQCInspectionController extends Controller
                 ->select('partcode as id','partcode as text')
                 ->distinct()
                 ->get();
+
         if ($this->checkIfExistObject($db) > 0) {
             return $db;
         }

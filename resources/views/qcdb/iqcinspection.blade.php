@@ -286,7 +286,7 @@
 
 			getFiscalYear();
 			getIQCworkWeek();
-			$('#classification').val(['Appearance Inspection']);
+			//$('#classification').val(['Appearance Inspection']);
 
 			$('#accept').val(0);
 			$('#reject').val(1);
@@ -443,7 +443,9 @@
 			$('#app_date').val($(this).attr('data-app_date'));
 			$('#app_time').val($(this).attr('data-app_time'));
 			$('#app_no').val($(this).attr('data-app_no'));
+
 			$('#lot_no').val([$(this).attr('data-lot_no')]);
+
 			$('#lot_qty').val($(this).attr('data-lot_qty'));
 			$('#type_of_inspection').val([$(this).attr('data-type_of_inspection')]);
 			$('#severity_of_inspection').val([$(this).attr('data-severity_of_inspection')]);
@@ -505,7 +507,9 @@
 			$('#app_date').val($(this).attr('data-app_date'));
 			$('#app_time').val($(this).attr('data-app_time'));
 			$('#app_no').val($(this).attr('data-app_no'));
-			$('#lot_no').val($(this).attr('data-lot_no').split(','));
+
+			$('#lot_no').val([$(this).attr('data-lot_no')]);
+			// $('#lot_no').val($(this).attr('data-lot_no').split(','));
 			$('#lot_qty').val($(this).attr('data-lot_qty'));
 			$('#type_of_inspection').val([$(this).attr('data-type_of_inspection')]);
 			$('#severity_of_inspection').val([$(this).attr('data-severity_of_inspection')]);
@@ -911,7 +915,7 @@
 	            [5, 10, 20, 100, -1],
 	            [5, 10, 20, 100,"All"]
 	        ],
-	        pageLength: 100, 
+	        pageLength: 10, 
             columns: [
                 {data: function(data){
                         return '<input type="checkbox" class="iqc_checkitems" value="'+data.id+'"/>';
@@ -985,7 +989,7 @@
 	            [5, 10, 20, 100, -1],
 	            [5, 10, 20, 100,"All"]
 	        ],
-	        pageLength: 100, 
+	        pageLength: 10, 
             columns: [
                 {data: function(data){
                         return '<input type="checkbox" class="ongiong_checkitems" value="'+data.id+'"/>';
@@ -1345,12 +1349,18 @@
     }
 
 	function calculateLotQty(lotno) {
+		var items = $('#partcode').val();
+
+		if (items == '') {
+			items = $('#partcodelbl').val();
+		}
+
 		var url = "{{url('/iqccalculatelotqty')}}";
 		var token = "{{Session::token()}}";
 		var data = {
 			_token:token,
 			invoiceno: $('#invoice_no').val(),
-			item: $('#partcode').val(),
+			item: items,
 			lot_no: lotno
 		};
 
