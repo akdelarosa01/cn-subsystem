@@ -1185,10 +1185,10 @@
 				placeholder: "Select Supplier"
 			});
 
-			$('#classification').select2({
-				data: data.classification,
-				placeholder: "Select Classification"
-			});
+			// $('#classification').select2({
+			// 	data: data.classification,
+			// 	placeholder: "Select Classification"
+			// });
 
 			$('#family').select2({
 				data: data.family,

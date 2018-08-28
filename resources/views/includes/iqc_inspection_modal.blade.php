@@ -9,18 +9,18 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-6">
-							<div class="form-group">
+							{{-- <div class="form-group">
 								<label class="control-label col-sm-3">Classification</label>
-								<div class="col-sm-9">
-									<input type="text" class="form-control input-sm clear" id="classification" name="classification" >
+								<div class="col-sm-9"> --}}
+									<input type="hidden" id="classification" name="classification" value="Appearance Inspection">
 									{{-- <select class="form-control input-sm clear" id="classification" name="classification">
 										<option value=""></option>
 										<option value="Visual Inspection">Visual Inspection (Temporary Invoice)</option>
 										<option value="Pkg. & Raw Material">Packaging & Raw Material</option>
 										<option value="Material Qualification">Material Qualification</option>
 									</select> --}}
-								</div>
-							</div>
+								{{-- </div>
+							</div> --}}
 							<div class="form-group">
 								<label class="control-label col-sm-3">Invoice No.</label>
 								<div class="col-sm-9">

@@ -89,6 +89,51 @@ class UpdateIQCInspectionFired
                 'for_kitting' => 0
             ]);
 
+        $wbs = DB::connection($event->con)->table('tbl_wbs_inventory')
+                ->where('iqc_status',3)->get();
+
+        if (count((array)$wbs) > 0) {
+            foreach ($wbs as $key => $inv) {
+                if (strpos($event->con, 'cn') !== false) {
+                    $iqc = DB::connection('mysqlcn')->table('iqc_inspections')
+                                ->where('invoice_no',$inv->invoice_no)
+                                ->where('partcode',$inv->item)
+                                ->where('lot_no',$inv->lot_no)
+                                ->where('judgement','<>','On-Going')
+                                ->get();
+
+                    if (count((array)$iqc) > 0) {
+                        $status = 0;
+                        if (isset($iqc->judgement)) {
+                            switch ($iqc->judgement) {
+                                case 'Accepted':
+                                    $status = 1;
+                                    break;
+
+                                case 'Rejected':
+                                    $status = 2;
+                                    break;
+                                
+                                default:
+                                    $status = 1;
+                                    break;
+                            }
+                            DB::connection($event->con)->table('tbl_wbs_inventory')
+                                ->where('invoice_no',$inv->invoice_no)
+                                ->where('item',$inv->item)
+                                ->where('lot_no',$inv->lot_no)
+                                ->update(['iqc_status',$status]);
+                        }
+                        
+                    }
+                }
+                
+            }
+        }
+
+        
+
+
         \Log::info('IQC Inspection Updated at '.date('Y-m-d g:i:s a'));
     }
 }
