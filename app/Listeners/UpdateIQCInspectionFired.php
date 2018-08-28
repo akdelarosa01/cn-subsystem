@@ -99,7 +99,7 @@ class UpdateIQCInspectionFired
                                 ->where('invoice_no',$inv->invoice_no)
                                 ->where('partcode',$inv->item)
                                 ->where('lot_no',$inv->lot_no)
-                                ->where('judgement','<>','On-Going')
+                                ->where('judgement','<>','On-going')
                                 ->get();
 
                     if (count((array)$iqc) > 0) {
