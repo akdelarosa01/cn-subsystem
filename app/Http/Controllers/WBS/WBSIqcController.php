@@ -525,14 +525,11 @@ class WBSIqcController extends Controller
                             DB::raw('i.app_by as app_by'),
                         ])
                     ->groupBy(
-                            'b.qty',
-                            'l.qty',
                             'i.item',
                             'i.item_desc',
                             'i.supplier',
                             'i.lot_no',
                             'i.drawing_num',
-                            'i.wbs_mr_id',
                             'i.invoice_no',
                             'i.iqc_result',
                             'i.updated_at',
