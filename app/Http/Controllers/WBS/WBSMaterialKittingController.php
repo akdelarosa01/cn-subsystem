@@ -76,6 +76,7 @@ class WBSMaterialKittingController extends Controller
                                 DB::raw('r.SEDA as branch'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('r.SEDA','desc')
+                        ->orderBy('s.PORDER','desc')
                         ->first();
 
             if (count((array)$info) > 0) {
@@ -980,6 +981,7 @@ class WBSMaterialKittingController extends Controller
                                 DB::raw('r.SEDA as branch'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('r.SEDA','desc')
+                        ->orderBy('s.PORDER','desc')
                         ->first();
 
         if(count((array)$mk_data) > 0)
@@ -996,6 +998,7 @@ class WBSMaterialKittingController extends Controller
                                 DB::raw('s.SEIBAN as po'))
                         ->where('s.SEIBAN',$req->po)
                         ->orderBy('r.SEDA','desc')
+                        ->orderBy('s.PORDER','desc')
                         ->first();
                     
             // heto yung sa details...
