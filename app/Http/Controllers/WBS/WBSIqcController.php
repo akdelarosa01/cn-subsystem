@@ -523,7 +523,26 @@ class WBSIqcController extends Controller
                             DB::raw('i.app_date as app_date'),
                             DB::raw('i.app_time as app_time'),
                             DB::raw('i.app_by as app_by'),
-                        ]);
+                        ])
+                    ->groupBy(
+                            'i.item',
+                            'i.item_desc',
+                            'i.supplier',
+                            'i.lot_no',
+                            'i.drawing_num',
+                            'i.wbs_mr_id',
+                            'i.invoice_no',
+                            'i.iqc_result',
+                            'i.updated_at',
+                            'i.update_user',
+                            'i.iqc_status',
+                            'i.ins_date',
+                            'i.ins_time',
+                            'i.ins_by',
+                            'i.app_date',
+                            'i.app_time',
+                            'i.app_by'
+                        );
 
         return Datatables::of($iqc)
                         ->editColumn('id', function ($data) {
