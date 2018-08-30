@@ -502,7 +502,7 @@ class WBSIqcController extends Controller
                             . $recno_cond
                             . $invoice_no_cond)
                     ->orderBy('i.created_at','desc')
-                    ->orderBy('b.qty','desc')
+                    ->orderBy('b.qty','asc')
                     ->select([
                             DB::raw('i.id as id'),
                             DB::raw('i.item as item'),
