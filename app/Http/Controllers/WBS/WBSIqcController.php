@@ -497,7 +497,7 @@ class WBSIqcController extends Controller
                     ->whereRaw("IFNULL(b.qty,(SELECT b.qty FROM tbl_wbs_local_receiving_batch as b
                                                     where b.id = i.loc_batch_id)) as qty")
                     ->whereRaw(
-                            . $receivedate_cond
+                            $receivedate_cond
                             . $item_cond
                             . $status_cond
                             . $lotno_cond
