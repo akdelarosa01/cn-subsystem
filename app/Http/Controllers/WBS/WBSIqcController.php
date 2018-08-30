@@ -494,24 +494,21 @@ class WBSIqcController extends Controller
         $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')
                     ->leftJoin('tbl_wbs_material_receiving_batch as b','i.mat_batch_id','=','b.id')
                     ->leftJoin('tbl_wbs_local_receiving_batch as l','i.loc_batch_id','=','l.id')
-                    ->whereRaw("IFNULL(b.qty,(SELECT b.qty FROM tbl_wbs_local_receiving_batch as b
-                                                    where b.id = i.loc_batch_id)) as qty")
-                    ->whereRaw(
-                            $receivedate_cond
+                    ->whereRaw("1=1"
+                            . $receivedate_cond
                             . $item_cond
                             . $status_cond
                             . $lotno_cond
                             . $recno_cond
                             . $invoice_no_cond)
                     ->orderBy('i.created_at','desc')
-                    ->orderBy('b.qty','asc')
                     ->select([
                             DB::raw('i.id as id'),
                             DB::raw('i.item as item'),
                             DB::raw('i.item_desc as item_desc'),
                             DB::raw('i.supplier as supplier'),
-                            DB::raw("IFNULL(b.qty,(SELECT b.qty FROM tbl_wbs_local_receiving_batch as b
-                                                    where b.id = i.loc_batch_id)) as qty"),
+                            DB::raw("IFNULL(b.qty,(SELECT loc.qty FROM tbl_wbs_local_receiving_batch as loc
+                                                    where loc.id = i.loc_batch_id)) as qty"),
                             DB::raw('i.lot_no as lot_no'),
                             DB::raw('i.drawing_num as drawing_num'),
                             DB::raw('i.wbs_mr_id as wbs_mr_id'),
@@ -528,6 +525,8 @@ class WBSIqcController extends Controller
                             DB::raw('i.app_by as app_by'),
                         ])
                     ->groupBy(
+                            'b.qty',
+                            'l.qty',
                             'i.item',
                             'i.item_desc',
                             'i.supplier',
