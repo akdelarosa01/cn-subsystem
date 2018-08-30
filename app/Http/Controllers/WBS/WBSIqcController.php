@@ -494,7 +494,7 @@ class WBSIqcController extends Controller
         $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')
                     ->leftJoin('tbl_wbs_material_receiving_batch as b','i.mat_batch_id','=','b.id')
                     ->leftJoin('tbl_wbs_local_receiving_batch as l','i.loc_batch_id','=','l.id')
-                    ->whereRaw("1=1"
+                    ->whereRaw("b.qty is not null AND l.qty is not null"
                             . $receivedate_cond
                             . $item_cond
                             . $status_cond
@@ -530,6 +530,7 @@ class WBSIqcController extends Controller
                             'i.supplier',
                             'i.lot_no',
                             'i.drawing_num',
+                            'i.wbs_mr_id',
                             'i.invoice_no',
                             'i.iqc_result',
                             'i.updated_at',
