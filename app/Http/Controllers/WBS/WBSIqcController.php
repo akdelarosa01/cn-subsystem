@@ -79,9 +79,14 @@ class WBSIqcController extends Controller
         $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')
                     ->leftJoin('tbl_wbs_material_receiving_batch as b','i.mat_batch_id','=','b.id')
                     ->leftJoin('tbl_wbs_local_receiving_batch as l','i.loc_batch_id','=','l.id')
-                    ->where('i.iqc_status',$req->status)
-                    ->where('i.not_for_iqc',0)
-                    // ->where('b.qty','>',0)
+                    ->whereRaw("i.qty = (IFNULL(b.qty,(
+                                                SELECT b.qty
+                                                FROM tbl_wbs_local_receiving_batch as b
+                                                where b.id = i.loc_batch_id
+                                            ))) 
+                                AND i.iqc_status='".$req->status."' 
+                                AND i.not_for_iqc=0")
+                    ->orderBy('i.created_at','desc')
                     ->orderBy('i.created_at','desc')
                     ->select([
                             DB::raw('i.id as id'),
@@ -494,13 +499,16 @@ class WBSIqcController extends Controller
         $iqc = DB::connection($this->wbs)->table('tbl_wbs_inventory as i')
                     ->leftJoin('tbl_wbs_material_receiving_batch as b','i.mat_batch_id','=','b.id')
                     ->leftJoin('tbl_wbs_local_receiving_batch as l','i.loc_batch_id','=','l.id')
-                    ->whereRaw("1=1"
-                            . $receivedate_cond
-                            . $item_cond
-                            . $status_cond
-                            . $lotno_cond
-                            . $recno_cond
-                            . $invoice_no_cond)
+                    ->whereRaw("i.qty = (IFNULL(b.qty,(
+                                                SELECT b.qty
+                                                FROM tbl_wbs_local_receiving_batch as b
+                                                where b.id = i.loc_batch_id
+                                            )))". $receivedate_cond
+                                                . $item_cond
+                                                . $status_cond
+                                                . $lotno_cond
+                                                . $recno_cond
+                                                . $invoice_no_cond)
                     ->orderBy('i.created_at','desc')
                     ->select([
                             DB::raw('i.id as id'),
@@ -523,26 +531,7 @@ class WBSIqcController extends Controller
                             DB::raw('i.app_date as app_date'),
                             DB::raw('i.app_time as app_time'),
                             DB::raw('i.app_by as app_by'),
-                        ])
-                    ->groupBy(
-                            'i.item',
-                            'i.item_desc',
-                            'i.supplier',
-                            'i.lot_no',
-                            'i.drawing_num',
-                            'i.wbs_mr_id',
-                            'i.invoice_no',
-                            'i.iqc_result',
-                            'i.updated_at',
-                            'i.update_user',
-                            'i.iqc_status',
-                            'i.ins_date',
-                            'i.ins_time',
-                            'i.ins_by',
-                            'i.app_date',
-                            'i.app_time',
-                            'i.app_by'
-                        );
+                        ]);
 
         return Datatables::of($iqc)
                         ->editColumn('id', function ($data) {
