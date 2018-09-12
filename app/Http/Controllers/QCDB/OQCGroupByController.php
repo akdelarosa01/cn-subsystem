@@ -50,1112 +50,247 @@ class OQCGroupByController extends Controller
 
     public function CalculateDPPM(Request $req)
     {
-        DB::connection($this->mysql)->table('oqc_inspection_excel')->truncate();
-        $data =  $this->DPPMTablesv2($req);
+        $g1 = (!isset($req->field1) || $req->field1 == '' || $req->field1 == null)? '': $req->field1;
+        $g2 = (!isset($req->field2) || $req->field2 == '' || $req->field2 == null)? '': $req->field2;
+        $g3 = (!isset($req->field3) || $req->field3 == '' || $req->field3 == null)? '': $req->field3;
+        $content1 = (!isset($req->content1) || $req->content1 == '' || $req->content1 == null)? '%': $req->content1;
+        $content2 = (!isset($req->content2) || $req->content2 == '' || $req->content2 == null)? '%': $req->content2;
+        $content3 = (!isset($req->content3) || $req->content3 == '' || $req->content3 == null)? '%': $req->content3;
+
+        DB::connection($this->mysql)
+            ->select(
+                DB::raw(
+                    "CALL GetOQCGroupBy(
+                    '".$this->com->convertDate($req->gfrom,'Y-m-d')."',
+                    '".$this->com->convertDate($req->gto,'Y-m-d')."',
+                    '".$g1."',
+                    '".$content1."',
+                    '".$g2."',
+                    '".$content2."',
+                    '".$g3."',
+                    '".$content3."')"
+                )
+            );
+
+        $data = [];
+        $node1 = [];
+        $node2 = [];
+        $node3 = [];
+        $details = [];
+
+        $check = DB::connection($this->mysql)->table('oqc_inspection_group')->count();
+
+        if ($check > 0) {
+            if ($g1 !== '') {
+                $grp1_query = DB::connection($this->mysql)->table('oqc_inspection_group')
+                                ->select('g1','L1','DPPM1')
+                                ->groupBy($g1)
+                                ->orderBy('g1')
+                                ->get();
+                
+                foreach ($grp1_query as $key => $gr1) {
+                    if ($g2 == '') {
+                        $details_query = DB::connection($this->mysql)->table('oqc_inspection_group')
+                                        ->select('assembly_line',
+                                                'lot_no',
+                                                'app_date',
+                                                'app_time',
+                                                'prod_category',
+                                                'po_no',
+                                                'device_name',
+                                                'customer',
+                                                'po_qty',
+                                                'family',
+                                                'type_of_inspection',
+                                                'severity_of_inspection',
+                                                'inspection_lvl',
+                                                'aql',
+                                                'accept',
+                                                'reject',
+                                                'date_inspected',
+                                                'ww',
+                                                'fy',
+                                                'time_ins_from',
+                                                'time_ins_to',
+                                                'shift',
+                                                'inspector',
+                                                'submission',
+                                                'coc_req',
+                                                'judgement',
+                                                'lot_qty',
+                                                'sample_size',
+                                                'lot_inspected',
+                                                'lot_accepted',
+                                                'num_of_defects',
+                                                'remarks',
+                                                'type',
+                                                'modid')
+                                        ->where('g1',$gr1->g1)
+                                        ->get();
+
+                        array_push($node1, [
+                            'group' => $gr1->g1,
+                            'LAR' => $gr1->L1,
+                            'DPPM' => $gr1->DPPM1,
+                            'field' => $g1,
+                            'details' => $details_query
+                        ]);
+                    } else {
+
+                        $grp2_query = DB::connection($this->mysql)->table('oqc_inspection_group')
+                                        ->select('g1','g2','L2','DPPM2')
+                                        ->where('g1',$gr1->g1)
+                                        ->groupBy($g2)
+                                        ->orderBy('g2')
+                                        ->get();
+
+                        foreach ($grp2_query as $key => $gr2) {
+                            if ($g3 == '') {
+                                $details_query = DB::connection($this->mysql)->table('oqc_inspection_group')
+                                                    ->select('assembly_line',
+                                                            'lot_no',
+                                                            'app_date',
+                                                            'app_time',
+                                                            'prod_category',
+                                                            'po_no',
+                                                            'device_name',
+                                                            'customer',
+                                                            'po_qty',
+                                                            'family',
+                                                            'type_of_inspection',
+                                                            'severity_of_inspection',
+                                                            'inspection_lvl',
+                                                            'aql',
+                                                            'accept',
+                                                            'reject',
+                                                            'date_inspected',
+                                                            'ww',
+                                                            'fy',
+                                                            'time_ins_from',
+                                                            'time_ins_to',
+                                                            'shift',
+                                                            'inspector',
+                                                            'submission',
+                                                            'coc_req',
+                                                            'judgement',
+                                                            'lot_qty',
+                                                            'sample_size',
+                                                            'lot_inspected',
+                                                            'lot_accepted',
+                                                            'num_of_defects',
+                                                            'remarks',
+                                                            'type',
+                                                            'modid')
+                                                    ->where('g1',$gr1->g1)
+                                                    ->where('g2',$gr2->g2)
+                                                    ->get();
+                                array_push($node2, [
+                                    'g1' => $gr1->g1,
+                                    'group' => $gr2->g2,
+                                    'LAR' => $gr2->L2,
+                                    'DPPM' => $gr2->DPPM2,
+                                    'field' => $g2,
+                                    'details' => $details_query
+                                ]);
+                            } else {
+
+                               $grp3_query = DB::connection($this->mysql)->table('oqc_inspection_group')
+                                                ->select('g1','g2','g3','L3','DPPM3')
+                                                ->where('g1',$gr1->g1)
+                                                ->where('g2',$gr2->g2)
+                                                ->groupBy($g3)
+                                                ->orderBy('g3')
+                                                ->get();
+
+                                foreach ($grp3_query as $key => $gr3) {
+                                    $details_query = DB::connection($this->mysql)->table('oqc_inspection_group')
+                                                        ->select('assembly_line',
+                                                                'lot_no',
+                                                                'app_date',
+                                                                'app_time',
+                                                                'prod_category',
+                                                                'po_no',
+                                                                'device_name',
+                                                                'customer',
+                                                                'po_qty',
+                                                                'family',
+                                                                'type_of_inspection',
+                                                                'severity_of_inspection',
+                                                                'inspection_lvl',
+                                                                'aql',
+                                                                'accept',
+                                                                'reject',
+                                                                'date_inspected',
+                                                                'ww',
+                                                                'fy',
+                                                                'time_ins_from',
+                                                                'time_ins_to',
+                                                                'shift',
+                                                                'inspector',
+                                                                'submission',
+                                                                'coc_req',
+                                                                'judgement',
+                                                                'lot_qty',
+                                                                'sample_size',
+                                                                'lot_inspected',
+                                                                'lot_accepted',
+                                                                'num_of_defects',
+                                                                'remarks',
+                                                                'type',
+                                                                'modid')
+                                                        ->where('g1',$gr1->g1)
+                                                        ->where('g2',$gr2->g2)
+                                                        ->where('g3',$gr3->g3)
+                                                        ->get();
+                                    array_push($node3, [
+                                        'g1' => $gr1->g1,
+                                        'g2' => $gr2->g2,
+                                        'group' => $gr3->g3,
+                                        'LAR' => $gr3->L3,
+                                        'DPPM' => $gr3->DPPM3,
+                                        'field' => $g3,
+                                        'details' => $details_query
+                                    ]);
+                                }
+
+                                array_push($node2, [
+                                    'g1' => $gr1->g1,
+                                    'group' => $gr2->g2,
+                                    'LAR' => $gr2->L2,
+                                    'DPPM' => $gr2->DPPM2,
+                                    'field' => $g2,
+                                    'details' => []
+                                ]);
+                            }
+                        }
+
+                        array_push($node1, [
+                            'group' => $gr1->g1,
+                            'LAR' => $gr1->L1,
+                            'DPPM' => $gr1->DPPM1,
+                            'field' => $g1,
+                            'details' => []
+                        ]);
+                    }
+                }
+            }
+
+            $data = [
+                'node1' => $node1,
+                'node2' => $node2,
+                'node3' => $node3
+            ];
+        } else {
+            $data = [
+                'msg' => "No data generated.",
+                'status' => 'failed'
+            ];
+        }
+
+            
+        
+        
         return response()->json($data);
-    }
-
-    public function dppmgroup1(Request $req){
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $sub_date_inspected =   " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                    "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-        $ins="";
-        $list = array();
-        $LARresult;
-        $LARList = array();
-        $DPPMresult;
-        $DPPMList = array();
-        $rejectednum;
-        $rejectednumList = array();
-        $DPPM;
-        $DPPMList = array();
-        for($x=0;$x<count($req->data);$x++){
-             $chosen = $req->data[$x]['chosenfield'];
-                $ins = DB::connection($this->mysql)
-                                ->select("SELECT *,".$req->firstData." as group_one
-                                        FROM oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND ".$req->firstData." = '".$chosen."'"
-                                    );
-                $this->insertToReportsv2($ins,"group1");    //FOR REPORTS
-
-                $LARresult = DB::connection($this->mysql)
-                                ->select("SELECT ROUND((SUM(lot_accepted)/COUNT(*))*(100),2) AS LAR
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND ".$req->firstData." = '".$chosen."'"
-                                    );
-                $rejectednum = DB::connection($this->mysql)
-                                ->select("SELECT COUNT(*) AS rejects
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND judgement = 'Reject'
-                                        AND ".$req->firstData." = '".$chosen."'"
-                                    );
-                $DPPM = DB::connection($this->mysql)
-                                ->select("SELECT ROUND((SUM(num_of_defects)/SUM(sample_size)) * 1000000,2) AS DPPM, SUM(num_of_defects) as num_of_defects ,SUM(sample_size) as sample_size
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND judgement = 'Reject'
-                                        AND ".$req->firstData." = '".$chosen."'"
-                                    );
-                
-                array_push($list, $ins);
-                array_push($LARList, $LARresult);
-                array_push($rejectednumList, $rejectednum);
-                array_push($DPPMList, $DPPM);
-        }
-         return response()->json([
-            'returnData' => $list,
-            'LARList' => $LARList,
-            'rejectednumList' => $rejectednumList,
-            'DPPMList' => $DPPMList,
-         ]);
-    }
-
-    public function dppmgroup2(Request $req){
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $sub_date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-            $ins = DB::connection($this->mysql)
-                                ->select("SELECT *,".$req->secondData." as chosenfield2
-                                        FROM oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        GROUP BY ".$req->secondData.""
-                                    );
-
-
-        return response()->json($ins);
-    }
-
-    public function dppmgroup3(Request $req){
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $sub_date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-            $ins = DB::connection($this->mysql)
-                                ->select("SELECT *,".$req->secondData." as chosenfield2,".$req->thirdData." as chosenfield3
-                                        FROM oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        GROUP BY ".$req->secondData.", ".$req->thirdData." "
-                                    );
-        return response()->json($ins);
-    }
-
-    public function dppmgroup2_Details(Request $req){
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $sub_date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-        $insG1="";
-        $listG1 = array();
-        $LARresultG1;
-        $LARListG1 = array();
-        $DPPMresultG1;
-        $DPPMListG1 = array();
-        $rejectednumG1;
-        $rejectednumListG1 = array();
-        $DPPMG1;
-        $DPPMListG1 = array();
-        for($x=0;$x<count($req->content1);$x++){
-                $insG1 = DB::connection($this->mysql)
-                                ->select("SELECT *,".$req->firstData." as group_one
-                                        FROM oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-
-                $LARresultG1 = DB::connection($this->mysql)
-                                ->select("SELECT ROUND((SUM(lot_accepted)/COUNT(*))*(100),2) AS LAR
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-                $rejectednumG1 = DB::connection($this->mysql)
-                                ->select("SELECT COUNT(*) AS rejects
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND judgement = 'Reject'
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-                $DPPMG1 = DB::connection($this->mysql)
-                                ->select("SELECT ROUND((SUM(num_of_defects)/SUM(sample_size)) * 1000000,2) AS DPPM, SUM(num_of_defects) as num_of_defects ,SUM(sample_size) as sample_size
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND judgement = 'Reject'
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-                
-                array_push($listG1, $insG1);
-                array_push($LARListG1, $LARresultG1);
-                array_push($rejectednumListG1, $rejectednumG1);
-                array_push($DPPMListG1, $DPPMG1);
-        }
-
-        $ins="";
-        $list = array();
-        $list2 = array();
-        
-        $LARresult;
-        $LARList = array();
-        $LARList2 = array();
-
-        $DPPMresult;
-        $DPPMList = array();
-        $DPPMList2 = array();
-
-        $rejectednum;
-        $rejectednumList = array();
-        $rejectednumList2 = array();
-
-        for($x=0;$x<count($req->content1);$x++){
-            $list = array();
-            $LARList = array();
-            $DPPMList = array();
-            $rejectednumList = array();
-                for($y=0;$y<count($req->content2);$y++)
-                {
-                        $ins = DB::connection($this->mysql)
-                                        ->select("SELECT *,".$req->firstData." as chosenfield ,".$req->secondData." as chosenfield2 
-                                                FROM oqc_inspections
-                                                WHERE 1=1 ".$sub_date_inspected."
-                                                AND ".$req->firstData." = '".$req->content1[$x]."'
-                                                AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                            );
-
-                        $LARresult = DB::connection($this->mysql)
-                            ->select("SELECT ROUND((SUM(lot_accepted)/COUNT(*))*(100),2) AS LAR
-                                    FROM pmi_ts.oqc_inspections
-                                    WHERE 1=1 ".$sub_date_inspected."
-                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                    AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                );
-
-                        $rejectednum = DB::connection($this->mysql)
-                            ->select("SELECT COUNT(*) AS rejects
-                                    FROM pmi_ts.oqc_inspections
-                                    WHERE 1=1 ".$sub_date_inspected."
-                                    AND judgement = 'Reject'
-                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                    AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                );
-
-                        $DPPM = DB::connection($this->mysql)
-                            ->select("SELECT ROUND((SUM(num_of_defects)/SUM(sample_size)) * 1000000,2) AS DPPM, SUM(num_of_defects) as num_of_defects ,SUM(sample_size) as sample_size
-                                    FROM pmi_ts.oqc_inspections
-                                    WHERE 1=1 ".$sub_date_inspected."
-                                    AND judgement = 'Reject'
-                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                    AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                );
-
-                        if(count($ins) > 0){
-                            $this->insertToReportsv2($ins,"group2");
-                            array_push($list, $ins);
-                            array_push($LARList, $LARresult);
-                            array_push($rejectednumList, $rejectednum);
-                            array_push($DPPMList, $DPPM);
-                        }
-                }
-            if(count($list) > 0){
-                array_push($list2, $list);
-                array_push($LARList2, $LARList);
-                array_push($rejectednumList2, $rejectednumList);
-                array_push($DPPMList2, $DPPMList);
-            }
-         }
-     
-     return response()->json([
-            'returnData' => $list2,
-            'LARList' => $LARList2,
-            'rejectednumList' => $rejectednumList2,
-            'DPPMList' => $DPPMList2,
-            'LARListG1' => $LARListG1,
-            'rejectednumListG1' => $rejectednumListG1,
-            'DPPMListG1' => $DPPMListG1
-         ]);
-    }
-
-    public function dppmgroup3_Details(Request $req){
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $sub_date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-        $insG1="";
-        $listG1 = array();
-        $LARresultG1;
-        $LARListG1 = array();
-        $DPPMresultG1;
-        $DPPMListG1 = array();
-        $rejectednumG1;
-        $rejectednumListG1 = array();
-        $DPPMG1;
-        $DPPMListG1 = array();
-        for($x=0;$x<count($req->content1);$x++){
-                $insG1 = DB::connection($this->mysql)
-                                ->select("SELECT *,".$req->firstData." as group_one
-                                        FROM oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-
-                $LARresultG1 = DB::connection($this->mysql)
-                                ->select("SELECT ROUND((SUM(lot_accepted)/COUNT(*))*(100),2) AS LAR
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-                $rejectednumG1 = DB::connection($this->mysql)
-                                ->select("SELECT COUNT(*) AS rejects
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND judgement = 'Reject'
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-                $DPPMG1 = DB::connection($this->mysql)
-                                ->select("SELECT ROUND((SUM(num_of_defects)/SUM(sample_size)) * 1000000,2) AS DPPM, SUM(num_of_defects) as num_of_defects ,SUM(sample_size) as sample_size
-                                        FROM pmi_ts.oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected."
-                                        AND judgement = 'Reject'
-                                        AND ".$req->firstData." = '".$req->content1[$x]."'"
-                                    );
-                
-                array_push($listG1, $insG1);
-                array_push($LARListG1, $LARresultG1);
-                array_push($rejectednumListG1, $rejectednumG1);
-                array_push($DPPMListG1, $DPPMG1);
-        }
-
-        $ins="";
-        $list = array();
-        $list2 = array();
-        
-        $LARresult;
-        $LARList = array();
-        $LARList_2nd = array();
-
-        $DPPMresult;
-        $DPPMList = array();
-        $DPPMList_2nd = array();
-
-        $rejectednum;
-        $rejectednumList = array();
-        $rejectednumList_2nd = array();
-
-        for($x=0;$x<count($req->content1);$x++){
-            $list = array();
-            $LARList = array();
-            $DPPMList = array();
-            $rejectednumList = array();
-                for($y=0;$y<count($req->content2);$y++)
-                {
-                        $ins = DB::connection($this->mysql)
-                                        ->select("SELECT *,".$req->firstData." as chosenfield ,".$req->secondData." as chosenfield2 
-                                                FROM oqc_inspections
-                                                WHERE 1=1 ".$sub_date_inspected."
-                                                AND ".$req->firstData." = '".$req->content1[$x]."'
-                                                AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                            );
-
-                        $LARresult = DB::connection($this->mysql)
-                            ->select("SELECT ROUND((SUM(lot_accepted)/COUNT(*))*(100),2) AS LAR
-                                    FROM pmi_ts.oqc_inspections
-                                    WHERE 1=1 ".$sub_date_inspected."
-                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                    AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                );
-
-                        $rejectednum = DB::connection($this->mysql)
-                            ->select("SELECT COUNT(*) AS rejects
-                                    FROM pmi_ts.oqc_inspections
-                                    WHERE 1=1 ".$sub_date_inspected."
-                                    AND judgement = 'Reject'
-                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                    AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                );
-
-                        $DPPM = DB::connection($this->mysql)
-                            ->select("SELECT ROUND((SUM(num_of_defects)/SUM(sample_size)) * 1000000,2) AS DPPM, SUM(num_of_defects) as num_of_defects ,SUM(sample_size) as sample_size
-                                    FROM pmi_ts.oqc_inspections
-                                    WHERE 1=1 ".$sub_date_inspected."
-                                    AND judgement = 'Reject'
-                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                    AND ".$req->secondData." = '".$req->content2[$y]."'"
-                                );
-
-                        if(count($ins) > 0){
-                            array_push($list, $ins);
-                            array_push($LARList, $LARresult);
-                            array_push($rejectednumList, $rejectednum);
-                            array_push($DPPMList, $DPPM);
-                        }
-                }
-            if(count($list) > 0){
-                array_push($list2, $list);
-                array_push($LARList_2nd, $LARList);
-                array_push($rejectednumList_2nd, $rejectednumList);
-                array_push($DPPMList_2nd, $DPPMList);
-            }
-         }
-
-
-        //=========================//
-        $ins_3rd="";
-        $list_3rd = array();
-        $list2_3rd = array();
-        $list3_3rd = array();
-
-        $LARresult;
-        $LARList = array();
-        $LARList2 = array();
-        $LARList3 = array();
-
-        $DPPMresult;
-        $DPPMList = array();
-        $DPPMList2 = array();
-        $DPPMList3 = array();
-
-        $rejectednum;
-        $rejectednumList = array();
-        $rejectednumList2 = array();
-        $rejectednumList3 = array();
-
-            for($x=0;$x<count($req->content1);$x++){
-                $list2_3rd = array();
-                $LARList2 = array();
-                $DPPMList2 = array();
-                $rejectednumList2 = array();
-                    for($y=0;$y<count($req->content2);$y++)
-                    {
-                        $list_3rd = array();
-                        $LARList = array();
-                        $DPPMList = array();
-                        $rejectednumList = array();
-                        for($z=0;$z<count($req->content3);$z++)
-                        {
-                            $ins_3rd = DB::connection($this->mysql)
-                                            ->select("SELECT *,".$req->firstData." as chosenfield ,".$req->secondData." as chosenfield2,".$req->thirdData." as chosenfield3 
-                                                    FROM oqc_inspections
-                                                    WHERE 1=1 ".$sub_date_inspected."
-                                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                                    AND ".$req->secondData." = '".$req->content2[$y]."'
-                                                    AND ".$req->thirdData." = '".$req->content3[$z]."'"
-                                                    // GROUP BY ".$req->thirdData.""
-                                                );
-                            $LARresult = DB::connection($this->mysql)
-                                            ->select("SELECT ROUND((SUM(lot_accepted)/COUNT(*))*(100),2) AS LAR
-                                                    FROM pmi_ts.oqc_inspections
-                                                    WHERE 1=1 ".$sub_date_inspected."
-                                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                                    AND ".$req->secondData." = '".$req->content2[$y]."'
-                                                    AND ".$req->thirdData." = '".$req->content3[$z]."'"
-                                                );
-
-                            $rejectednum = DB::connection($this->mysql)
-                                            ->select("SELECT COUNT(*) AS rejects
-                                                    FROM pmi_ts.oqc_inspections
-                                                    WHERE 1=1 ".$sub_date_inspected."
-                                                    AND judgement = 'Reject'
-                                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                                    AND ".$req->secondData." = '".$req->content2[$y]."'
-                                                    AND ".$req->thirdData." = '".$req->content3[$z]."'"
-                                                );
-
-                            $DPPM = DB::connection($this->mysql)
-                                            ->select("SELECT ROUND((SUM(num_of_defects)/SUM(sample_size)) * 1000000,2) AS DPPM, SUM(num_of_defects) as num_of_defects ,SUM(sample_size) as sample_size
-                                                    FROM pmi_ts.oqc_inspections
-                                                    WHERE 1=1 ".$sub_date_inspected."
-                                                    AND judgement = 'Reject'
-                                                    AND ".$req->firstData." = '".$req->content1[$x]."'
-                                                    AND ".$req->secondData." = '".$req->content2[$y]."'
-                                                    AND ".$req->thirdData." = '".$req->content3[$z]."'"
-                                                );
-                        if(count($ins_3rd) > 0){
-                            $this->insertToReportsv2($ins_3rd,"group3");
-                            array_push($list_3rd, $ins_3rd);
-                            array_push($LARList , $LARresult);
-                            array_push($DPPMList , $DPPM);
-                            array_push($rejectednumList , $rejectednum);
-
-                        }
-                    }
-                    if(count($list_3rd) > 0 ){
-                    array_push($list2_3rd, $list_3rd);
-                    array_push($LARList2, $LARList);
-                    array_push($DPPMList2, $DPPMList);
-                    array_push($rejectednumList2, $rejectednumList);
-                    }
-                }
-                if(count($list2_3rd) > 0){
-                array_push($list3_3rd, $list2_3rd);
-                array_push($LARList3, $LARList2);
-                array_push($DPPMList3 , $DPPMList2);
-                array_push($rejectednumList3 , $rejectednumList2);
-                }
-            }
-     
-
-        return response()->json([
-            'returnData' => $list3_3rd,
-            'LARList_3rd' => $LARList3,
-            'DPPMList_3rd' => $DPPMList3,
-            'rejectednumList_3rd' => $rejectednumList3,
-            'LARList_2nd' => $LARList_2nd,
-            'rejectednumList_2nd' => $rejectednumList_2nd,
-            'DPPMList_2nd' => $DPPMList_2nd,
-            'LARListG1' => $LARListG1,
-            'rejectednumListG1' => $rejectednumListG1,
-            'DPPMListG1' => $DPPMListG1
-         ]);
-        //return response()->json($list3);
-    }
-
-    public function DPPMTablesv2($req){
-        $ins="";
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $date_inspected = " AND main.date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-            $sub_date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-        if(!empty($req->field3) && !empty($req->content3)){
-            $ins = DB::connection($this->mysql)
-                    ->select("SELECT *,".$req->field1." as chosenfield
-                            FROM oqc_inspections
-                            WHERE 1=1 ".$sub_date_inspected."
-                            AND ".$req->field1." = '".$req->content1."'
-                            AND ".$req->field2." = '".$req->content2."'
-                            AND ".$req->field3." = '".$req->content3."'
-                            GROUP BY ".$req->field1.""
-                        );
-        }
-        else if(!empty($req->field2) && !empty($req->content2)){
-            $ins = DB::connection($this->mysql)
-                    ->select("SELECT *,".$req->field1." as chosenfield
-                            FROM oqc_inspections
-                            WHERE 1=1 ".$sub_date_inspected."
-                            AND ".$req->field1." = '".$req->content1."'
-                            AND ".$req->field2." = '".$req->content2."'
-                            GROUP BY ".$req->field1.""
-                        );
-        }
-        else if(!empty($req->field1) && !empty($req->content1)){
-            $ins = DB::connection($this->mysql)
-                    ->select("SELECT *,".$req->field1." as chosenfield
-                            FROM oqc_inspections
-                            WHERE 1=1 ".$sub_date_inspected."
-                            AND ".$req->field1." = '".$req->content1."'
-                            GROUP BY ".$req->field1.""
-                        );
-        }
-        
-        else{
-            $ins = DB::connection($this->mysql)
-                    ->select("SELECT *,".$req->field1." as chosenfield
-                            FROM oqc_inspections
-                            WHERE 1=1 ".$sub_date_inspected."
-                            GROUP BY ".$req->field1.""
-                        );
-        }
-        return $ins;
-    }
-
-    private function DPPMTables($req,$join)
-    {
-        $g1 = ''; $g2 = ''; $g3 = '';
-        $g1c = ''; $g2c = ''; $g3c = '';
-        $date_inspected = ''; $sub_date_inspected = '';
-        $groupBy = []; $inVal; $wherein1 = []; $wherein2 = []; $wherein3 = [];
-        $node1 = []; $node2 = []; $node3 = [];
-
-        // wheres
-        if (!empty($req->gfrom) && !empty($req->gto)) {
-            $date_inspected = " AND main.date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-            $sub_date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
-        }
-
-        DB::connection($this->mysql)->table('oqc_inspection_excel')->truncate();
-
-        if (!empty($req->field1)) {
-            $g1 = $req->field1;
-            $g2 = $req->field2;
-
-            if ($req->content1 == '' && $req->content2 == '') {
-                $in = DB::connection($this->mysql)
-                        ->select("SELECT ".$g1." as description,date_inspected, ".$g2." as g2
-                                FROM oqc_inspections
-                                WHERE 1=1 ".$sub_date_inspected." 
-                                GROUP BY ".$g1.",".$g2
-                            );
-
-                
-                foreach ($in as $key => $flds) {
-                    array_push($wherein1,$flds->description);
-                    array_push($wherein2,$flds->g2);
-                }
-
-                $inVal = implode("','",$wherein1);
-                $inVal2 = implode("','",$wherein2);
-
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g1." as field1,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,date_inspected,".$g1."
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            AND ".$g1." IN ('".$inVal."') AND ".$g2." IN ('".$inVal2."')
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS acc ON acc.".$g1." = main.".$g1."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,date_inspected,".$g1."
-                                            FROM oqc_inspections
-                                            WHERE ".$g1." IN ('".$inVal."') AND ".$g2." IN ('".$inVal2."') ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g1."
-                                        ) AS ins ON ins.".$g1." = main.".$g1."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1." IN ('".$inVal."') AND ".$g2." IN ('".$inVal2."')".
-                                        "GROUP BY main.".$g1."");
-                
-            }
-
-            if ($req->content1 == '') {
-                $in = DB::connection($this->mysql)
-                        ->select("SELECT ".$g1." as description,date_inspected
-                                FROM oqc_inspections
-                                WHERE 1=1 ".$sub_date_inspected." 
-                                GROUP BY ".$g1
-                            );
-
-                
-                foreach ($in as $key => $flds) {
-                    array_push($wherein1,$flds->description);
-                }
-
-                $inVal = implode("','",$wherein1);
-
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g1." as field1,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,date_inspected,".$g1."
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            AND ".$g1." IN ('".$inVal."')
-                                            GROUP BY ".$g1."
-                                        ) AS acc ON acc.".$g1." = main.".$g1."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,date_inspected,".$g1."
-                                            FROM oqc_inspections
-                                            WHERE ".$g1." IN ('".$inVal."') ".$sub_date_inspected." 
-                                            GROUP BY ".$g1."
-                                        ) AS ins ON ins.".$g1." = main.".$g1."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1." IN ('".$inVal."') ".
-                                        "GROUP BY main.".$g1."");
-                
-            } else {
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g1." as field1,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,date_inspected,".$g1."
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept'  ".$sub_date_inspected." 
-                                            AND ".$g1."='".$req->content1."'
-                                            GROUP BY ".$g1."
-                                        ) AS acc ON acc.".$g1." = main.".$g1."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,date_inspected,".$g1."
-                                            FROM oqc_inspections
-                                            WHERE ".$g1."='".$req->content1."' ".$sub_date_inspected." 
-                                            GROUP BY ".$g1."
-                                        ) AS ins ON ins.".$g1." = main.".$g1."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."'
-                                         GROUP BY main.".$g1."");
-                
-            }
-
-            $lar = 0;
-            $dppm = 0;
-
-            $inVal2 = implode("','",$wherein2);
-
-            foreach ($query as $key => $qy) {
-                if ($qy->no_of_accepted >= 0 && $qy->no_of_lots_inspected >= 0) {
-                    if ($qy->no_of_accepted == 0 || $qy->no_of_lots_inspected == 0) {
-                        $lar = 0*100;
-                    } else {
-                        $lar = ($qy->no_of_accepted / $qy->no_of_lots_inspected)*100;
-                    }
-                }
-
-                if ($qy->no_of_defects >= 0 && $qy->sample_size >= 0) {
-                    if ($qy->no_of_defects == 0 || $qy->sample_size == 0) {
-                        $dppm = 0*1000000;
-                    } else {
-                        $dppm = ($qy->no_of_defects / $qy->sample_size)*1000000;
-                    }
-                }
-
-                $details = [];
-
-                if ($req->field2 !== '' && $req->field1 !== '') {
-                    if ($req->content1 == '' && $req->content2 == '') {
-                        if (isset($wherein1[$key])) {
-                            $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND main.".$g1." = '".$wherein1[$key]."'
-                                        AND main.".$g2." IN ('".$inVal2."')");
-                        }
-                        
-                    } else {
-                        $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND
-                                        main.".$g1."='".$req->content1."'");
-                    }
-                    $this->insertToReports($details);
-                }
-
-
-                if ($req->field2 == '') {
-                    if ($req->content1 == '') {
-                        if (isset($wherein1[$key])) {
-                            $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND main.".$g1." = '".$wherein1[$key]."'");
-                        }
-                        
-                    } else {
-                        $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND
-                                        main.".$g1."='".$req->content1."'");
-                    }
-                    $this->insertToReports($details);
-                }
-
-                array_push($node1,[
-                    'group' => $req->field1,
-                    'group_val' => $qy->field1,
-                    'no_of_accepted' => $qy->no_of_accepted,
-                    'no_of_lots_inspected' => $qy->no_of_lots_inspected,
-                    'no_of_defects' => $qy->no_of_defects,
-                    'sample_size' => $qy->sample_size,
-                    'LAR' => number_format($lar,2),
-                    'DPPM' => number_format($dppm,2),
-                    'details' => $details,
-                    'wherein' => $wherein1
-                ]);
-            }
-        }
-
-        if (!empty($req->field2)) {
-            $g2 = $req->field2;
-            $wherein2 = [];
-
-            if ($req->content2 == '' && $req->content1 == '') {
-                $in = DB::connection($this->mysql)
-                        ->select("SELECT ".$g2." as description,date_inspected,".$g1." as g1
-                                FROM oqc_inspections
-                                WHERE 1=1 ".$sub_date_inspected." 
-                                GROUP BY ".$g1.",".$g2
-                            );
-
-                $wherein1 = [];
-                foreach ($in as $key => $flds) {
-                    array_push($wherein2,$flds->description);
-                    array_push($wherein1,$flds->g1);
-                }
-
-
-
-                $inVal = implode("','",$wherein2);
-                $inVal1 = implode("','",$wherein1);
-
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g2." as field2,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted ,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected ,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,".$g2.",date_inspected
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS acc ON acc.".$g2." = main.".$g2."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,".$g2.",date_inspected
-                                            FROM oqc_inspections
-                                            WHERE ".$g1." IN ('".$inVal1."') AND ".$g2." IN ('".$inVal."') ".$sub_date_inspected."
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS ins ON ins.".$g2." = main.".$g2."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1." IN ('".$inVal1."') AND main.".$g2." IN ('".$inVal."') ".
-                                        "GROUP BY main.".$g1.",main.".$g2."");
-            }
-
-            if ($req->content2 == '') {
-                $in = DB::connection($this->mysql)
-                        ->select("SELECT ".$g2." as description,date_inspected,".$g1."
-                                FROM oqc_inspections
-                                WHERE ".$g1." = '".$req->content1."'
-                                ".$sub_date_inspected." 
-                                GROUP BY ".$g1.",".$g2
-                            );
-
-                
-                foreach ($in as $key => $flds) {
-                    array_push($wherein2,$flds->description);
-                }
-
-                $inVal = implode("','",$wherein2);
-
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g2." as field2,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted ,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected ,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,".$g2.",date_inspected
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS acc ON acc.".$g2." = main.".$g2."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,".$g2.",date_inspected
-                                            FROM oqc_inspections
-                                            WHERE ".$g2." IN ('".$inVal."') ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS ins ON ins.".$g2." = main.".$g2."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."' AND main.".$g2." IN ('".$inVal."') ".
-                                        "GROUP BY main.".$g1.",main.".$g2."");
-            } else {
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g2." as field2,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted ,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected ,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,".$g2."
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            AND ".$g2."='".$req->content2."'
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS acc ON acc.".$g2." = main.".$g2."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,".$g2."
-                                            FROM oqc_inspections
-                                            WHERE ".$g2."='".$req->content2."' AND date_inspected BETWEEN 
-                                            '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'
-                                            GROUP BY ".$g1.",".$g2."
-                                        ) AS ins ON ins.".$g2." = main.".$g2."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."' AND main.".$g2."='".$req->content2."'
-                                         GROUP BY main.".$g1.",main.".$g2."");
-            }
-
-            $lar = 0;
-            $dppm = 0;
-            foreach ($query as $key => $qy) {
-                if ($qy->no_of_accepted >= 0 && $qy->no_of_lots_inspected >= 0) {
-                    if ($qy->no_of_accepted == 0 || $qy->no_of_lots_inspected == 0) {
-                        $lar = 0*100;
-                    } else {
-                        $lar = ($qy->no_of_accepted / $qy->no_of_lots_inspected)*100;
-                    }
-                }
-
-                if ($qy->no_of_defects >= 0 && $qy->sample_size >= 0) {
-                    if ($qy->no_of_defects == 0 || $qy->sample_size == 0) {
-                        $dppm = 0*1000000;
-                    } else {
-                        $dppm = ($qy->no_of_defects / $qy->sample_size)*1000000;
-                    }
-                }
-
-                $details = [];
-                
-
-                if ($req->field3 == '') {
-                    if ($req->content1 == '' && $req->content2 == '') {
-                        $in = DB::connection($this->mysql)
-                                ->select("SELECT ".$req->field1." 
-                                        FROM oqc_inspections
-                                        WHERE 1=1 ".$sub_date_inspected." 
-                                        GROUP BY ".$req->field1
-                                    );
-
-                        $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND 
-                                        main.".$g1." IN (".$in.")
-                                        AND main.".$g2." = '".$wherein2[$key]."'");
-                    }
-
-                    if ($req->content2 == '') {
-                        if (isset($wherein2[$key])) {
-                            $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."'
-                                        AND main.".$g2." = '".$wherein2[$key]."'");
-                        }
-                        
-                    } else {
-                        $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND
-                                        main.".$g1."='".$req->content1."'
-                                        AND main.".$g2."='".$req->content2."'");
-                    }
-                    $this->insertToReports($details);
-                }
-
-
-                array_push($node2,[
-                    'group' => $req->field2,
-                    'group_val' => $qy->field2,
-                    'no_of_accepted' => $qy->no_of_accepted,
-                    'no_of_lots_inspected' => $qy->no_of_lots_inspected,
-                    'no_of_defects' => $qy->no_of_defects,
-                    'sample_size' => $qy->sample_size,
-                    'LAR' => number_format($lar,2),
-                    'DPPM' => number_format($dppm,2),
-                    'details' => $details,
-                    'wherein' => $wherein2
-                ]);
-            }
-        }
-
-        if (!empty($req->field3)) {
-            $g3 = $req->field3;
-
-            if ($req->content3 == '' && $req->content2 !== '') {
-                $in = DB::connection($this->mysql)
-                        ->select("SELECT ".$g3." as description,".$g1.",".$g2."
-                                FROM oqc_inspections
-                                WHERE ".$g1." = '".$req->content1."' AND ".$g2." = '".$req->content2."'
-                                 ".$sub_date_inspected." 
-                                GROUP BY ".$g1.",".$g2.",".$g3
-                            );
-
-                
-                foreach ($in as $key => $flds) {
-                    array_push($wherein3,$flds->description);
-                }
-
-                $inVal = implode("','",$wherein3);
-
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g3." as field3,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted ,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected ,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,".$g3.",date_inspected
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g2.",".$g3."
-                                        ) AS acc ON acc.".$g3." = main.".$g3."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,".$g3.",date_inspected
-                                            FROM oqc_inspections
-                                            WHERE ".$g3." IN ('".$inVal."') ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g2.",".$g3."
-                                        ) AS ins ON ins.".$g3." = main.".$g3."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."' 
-                                        AND main.".$g2."='".$req->content2."' AND main.".$g3." IN ('".$inVal."') ".
-                                        "GROUP BY main.".$g1.",main.".$g2.",main.".$g3);
-            } else {
-                $query = DB::connection($this->mysql)
-                            ->select("SELECT main.".$g3." as field3,
-                                            IFNULL(acc.no_of_accepted,0) as no_of_accepted ,
-                                            IFNULL(ins.no_of_lots_inspected,0) as no_of_lots_inspected ,
-                                            IFNULL(SUM(main.num_of_defects),0) as no_of_defects,
-                                            IFNULL(SUM(main.sample_size),0) as sample_size
-                                        FROM oqc_inspections as main
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_accepted,".$g3."
-                                            FROM oqc_inspections
-                                            WHERE judgement = 'Accept' ".$sub_date_inspected." 
-                                            AND ".$g3."='".$req->content3."'
-                                            GROUP BY ".$g1.",".$g2.",".$g3."
-                                        ) AS acc ON acc.".$g3." = main.".$g3."
-
-                                        LEFT JOIN (
-                                            SELECT COUNT(id) as no_of_lots_inspected,".$g3."
-                                            FROM oqc_inspections
-                                            WHERE ".$g3."='".$req->content3."' ".$sub_date_inspected." 
-                                            GROUP BY ".$g1.",".$g2.",".$g3."
-                                        ) AS ins ON ins.".$g3." = main.".$g3."
-
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."' AND main.".$g2."='".$req->content2."'
-                                         AND main.".$g3."='".$req->content3."'
-                                         GROUP BY main.".$g1.",main.".$g2.",main.".$g3);
-            }
-
-            $lar = 0;
-            $dppm = 0;
-            foreach ($query as $key => $qy) {
-                if ($qy->no_of_accepted >= 0 && $qy->no_of_lots_inspected >= 0) {
-                    if ($qy->no_of_accepted == 0 || $qy->no_of_lots_inspected == 0) {
-                        $lar = 0*100;
-                    } else {
-                        $lar = ($qy->no_of_accepted / $qy->no_of_lots_inspected)*100;
-                    }
-                }
-
-                if ($qy->no_of_defects >= 0 && $qy->sample_size >= 0) {
-                    if ($qy->no_of_defects == 0 || $qy->sample_size == 0) {
-                        $dppm = 0*1000000;
-                    } else {
-                        $dppm = ($qy->no_of_defects / $qy->sample_size)*1000000;
-                    }
-                }
-
-                $details = [];
-
-                //if ($req->field3 == '') {
-                    if ($req->content3 == '') {
-                        if (isset($wherein3[$key])) {
-                            $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND main.".$g1."='".$req->content1."'
-                                        AND main.".$g2."='".$req->content2."'
-                                        AND main.".$g3." = '".$wherein3[$key]."'");
-                        }
-                        
-                    } else {
-                        $details = DB::connection($this->mysql)
-                                ->select("SELECT *
-                                        FROM oqc_inspections as main
-                                        WHERE 1=1".$date_inspected." AND
-                                        main.".$g1."='".$req->content1."'
-                                        AND main.".$g2."='".$req->content2."'
-                                        AND main.".$g3."='".$req->content3."'");
-                    }
-                    $this->insertToReports($details);
-                //}
-
-
-                array_push($node3,[
-                    'group' => $req->field3,
-                    'group_val' => $qy->field3,
-                    'no_of_accepted' => $qy->no_of_accepted,
-                    'no_of_lots_inspected' => $qy->no_of_lots_inspected,
-                    'no_of_defects' => $qy->no_of_defects,
-                    'sample_size' => $qy->sample_size,
-                    'LAR' => number_format($lar,2),
-                    'DPPM' => number_format($dppm,2),
-                    'details' => $details,
-                    'wherein' => $wherein3
-                ]);
-            }
-        }
-
-
-        $data = [
-            'node1' => $node1,
-            'node2' => $node2,
-            'node3' => $node3,
-        ];
-
-        if ($this->com->checkIfExistObject($data) > 0) {
-            return response()->json($data);
-        }
-    }
-
-    private function insertToReports($details)
-    {
-        $fields = [];
-
-        foreach ($details as $key => $x) {
-            array_push($fields,[
-                'assembly_line' => $x->assembly_line,
-                'lot_no' => $x->lot_no,
-                'app_date' => $this->com->convertDate($x->app_date,'Y-m-d'),
-                'app_time' => $x->app_time,
-                'prod_category' => $x->prod_category,
-                'po_no' => $x->po_no,
-                'device_name' => $x->device_name,
-                'customer' => $x->customer,
-                'po_qty' => $x->po_qty,
-                'family' => $x->family,
-                'type_of_inspection' => $x->type_of_inspection,
-                'severity_of_inspection' => $x->severity_of_inspection,
-                'inspection_lvl' => $x->inspection_lvl,
-                'aql' => $x->aql,
-                'accept' => $x->accept,
-                'reject' => $x->reject,
-                'date_inspected' => $this->com->convertDate($x->date_inspected,'Y-m-d'),
-                'ww' => $x->ww,
-                'fy' => $x->fy,
-                'time_ins_from' => $x->time_ins_from,
-                'time_ins_to' => $x->time_ins_to,
-                'shift' => $x->shift,
-                'inspector' => $x->inspector,
-                'submission' => $x->submission,
-                'coc_req' => $x->coc_req,
-                'judgement' => $x->judgement,
-                'lot_qty' => $x->lot_qty,
-                'sample_size' => $x->sample_size,
-                'lot_inspected' => $x->lot_inspected,
-                'lot_accepted' => $x->lot_accepted,
-                'lot_rejected' =>$x->lot_rejected,
-                'num_of_defects' => $x->num_of_defects,
-                'remarks' => $x->remarks,
-                'type'=> $x->type,
-            ]);
-        }
-
-        $insertBatchs = array_chunk($fields, 2000);
-        foreach ($insertBatchs as $batch) {
-            DB::connection($this->mysql)->table('oqc_inspection_excel')->insert($batch);
-        }
     }
 
     public function GrpByPDFReport()
@@ -1507,142 +642,4 @@ class OQCGroupByController extends Controller
 
         })->download('xls');
     }
-
-    private function insertToReportsv2($details,$type)
-    {
-        $fields = [];
-        if($type == "group1"){
-            foreach ($details as $key => $x) {
-                array_push($fields,[
-                    'assembly_line' => $x->assembly_line,
-                    'lot_no' => $x->lot_no,
-                    'app_date' => $this->com->convertDate($x->app_date,'Y-m-d'),
-                    'app_time' => $x->app_time,
-                    'prod_category' => $x->prod_category,
-                    'po_no' => $x->po_no,
-                    'device_name' => $x->device_name,
-                    'customer' => $x->customer,
-                    'po_qty' => $x->po_qty,
-                    'family' => $x->family,
-                    'type_of_inspection' => $x->type_of_inspection,
-                    'severity_of_inspection' => $x->severity_of_inspection,
-                    'inspection_lvl' => $x->inspection_lvl,
-                    'aql' => $x->aql,
-                    'accept' => $x->accept,
-                    'reject' => $x->reject,
-                    'date_inspected' => $this->com->convertDate($x->date_inspected,'Y-m-d'),
-                    'ww' => $x->ww,
-                    'fy' => $x->fy,
-                    'time_ins_from' => $x->time_ins_from,
-                    'time_ins_to' => $x->time_ins_to,
-                    'shift' => $x->shift,
-                    'inspector' => $x->inspector,
-                    'submission' => $x->submission,
-                    'coc_req' => $x->coc_req,
-                    'judgement' => $x->judgement,
-                    'lot_qty' => $x->lot_qty,
-                    'sample_size' => $x->sample_size,
-                    'lot_inspected' => $x->lot_inspected,
-                    'lot_accepted' => $x->lot_accepted,
-                    'lot_rejected' =>$x->lot_rejected,
-                    'num_of_defects' => $x->num_of_defects,
-                    'remarks' => $x->remarks,
-                    'type'=> $x->type,
-                    'group_one' => $x->group_one
-                ]);
-            }
-        }
-        else if($type == "group2")
-        {
-            foreach ($details as $key => $x) {
-                array_push($fields,[
-                    'assembly_line' => $x->assembly_line,
-                    'lot_no' => $x->lot_no,
-                    'app_date' => $this->com->convertDate($x->app_date,'Y-m-d'),
-                    'app_time' => $x->app_time,
-                    'prod_category' => $x->prod_category,
-                    'po_no' => $x->po_no,
-                    'device_name' => $x->device_name,
-                    'customer' => $x->customer,
-                    'po_qty' => $x->po_qty,
-                    'family' => $x->family,
-                    'type_of_inspection' => $x->type_of_inspection,
-                    'severity_of_inspection' => $x->severity_of_inspection,
-                    'inspection_lvl' => $x->inspection_lvl,
-                    'aql' => $x->aql,
-                    'accept' => $x->accept,
-                    'reject' => $x->reject,
-                    'date_inspected' => $this->com->convertDate($x->date_inspected,'Y-m-d'),
-                    'ww' => $x->ww,
-                    'fy' => $x->fy,
-                    'time_ins_from' => $x->time_ins_from,
-                    'time_ins_to' => $x->time_ins_to,
-                    'shift' => $x->shift,
-                    'inspector' => $x->inspector,
-                    'submission' => $x->submission,
-                    'coc_req' => $x->coc_req,
-                    'judgement' => $x->judgement,
-                    'lot_qty' => $x->lot_qty,
-                    'sample_size' => $x->sample_size,
-                    'lot_inspected' => $x->lot_inspected,
-                    'lot_accepted' => $x->lot_accepted,
-                    'lot_rejected' =>$x->lot_rejected,
-                    'num_of_defects' => $x->num_of_defects,
-                    'remarks' => $x->remarks,
-                    'type'=> $x->type,
-                    'group_one' => $x->chosenfield,
-                    'group_two' => $x->chosenfield2
-                ]);
-            }
-        }
-        else{
-            foreach ($details as $key => $x) {
-                array_push($fields,[
-                    'assembly_line' => $x->assembly_line,
-                    'lot_no' => $x->lot_no,
-                    'app_date' => $this->com->convertDate($x->app_date,'Y-m-d'),
-                    'app_time' => $x->app_time,
-                    'prod_category' => $x->prod_category,
-                    'po_no' => $x->po_no,
-                    'device_name' => $x->device_name,
-                    'customer' => $x->customer,
-                    'po_qty' => $x->po_qty,
-                    'family' => $x->family,
-                    'type_of_inspection' => $x->type_of_inspection,
-                    'severity_of_inspection' => $x->severity_of_inspection,
-                    'inspection_lvl' => $x->inspection_lvl,
-                    'aql' => $x->aql,
-                    'accept' => $x->accept,
-                    'reject' => $x->reject,
-                    'date_inspected' => $this->com->convertDate($x->date_inspected,'Y-m-d'),
-                    'ww' => $x->ww,
-                    'fy' => $x->fy,
-                    'time_ins_from' => $x->time_ins_from,
-                    'time_ins_to' => $x->time_ins_to,
-                    'shift' => $x->shift,
-                    'inspector' => $x->inspector,
-                    'submission' => $x->submission,
-                    'coc_req' => $x->coc_req,
-                    'judgement' => $x->judgement,
-                    'lot_qty' => $x->lot_qty,
-                    'sample_size' => $x->sample_size,
-                    'lot_inspected' => $x->lot_inspected,
-                    'lot_accepted' => $x->lot_accepted,
-                    'lot_rejected' =>$x->lot_rejected,
-                    'num_of_defects' => $x->num_of_defects,
-                    'remarks' => $x->remarks,
-                    'type'=> $x->type,
-                    'group_one' => $x->chosenfield,
-                    'group_two' => $x->chosenfield2,
-                    'group_three' => $x->chosenfield3
-                ]);
-            }
-        }
-
-        $insertBatchs = array_chunk($fields, 2000);
-        foreach ($insertBatchs as $batch) {
-            DB::connection($this->mysql)->table('oqc_inspection_excel')->insert($batch);
-        }
-    }
-
 }
