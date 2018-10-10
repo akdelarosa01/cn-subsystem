@@ -634,125 +634,125 @@ class PRBalanceController extends Controller
         {
             $prb = DB::connection($this->mysql)->select("
                 SELECT LEFT(PR,12) as PR1, MCode, MName, Supplier, SUM(WHS100) as WHS100, SUM(WHS102) as WHS102, SUM(ASSY100) as ASSY100,
-       SUM(ASSY102) as ASSY102, SUM(WHSNON) as WHSNON, SUM(WHSSM)as WHSSM, SUM(Total) as Total,
-       OrderIssueDate as OrderIssueDate, SUM(PODQty) as PODQty, SUM(PPRBal) as PPRBal, SUM(YEC_Qty) as YEC_Qty ,
-       SUM(InvoiceQty) as InvoiceQty, SUM(PPRBal-YEC_Qty-InvoiceQty) as Difference, SUM(CurrentInvtry) as CurrentInvtry,
-       SUM(Requirement) as Requirement, IF(SUM(PPRBal-YEC_Qty-InvoiceQty)=0,'',Chk) as Chk, Remarks
-FROM (SELECT PR_DifferenceCheck2.PR, 
-                    PR_DifferenceCheck2.MCode, 
-                    PR_DifferenceCheck2.MName, 
-                    zh.Supplier,
-                    IF(zh.WHS100 IS NULL,0,zh.WHS100) AS WHS100, 
-                    IF(zh.WHS102 IS NULL,0,zh.WHS102) AS WHS102, 
-                    IF(zh.ASSY100 IS NULL, 0,zh.ASSY100) AS ASSY100, 
-                    IF(zh.ASSY102 IS NULL, 0,zh.ASSY102) AS ASSY102, 
-                    IF(zh.WHSNON IS NULL,0,zh.WHSNON) AS WHSNON, 
-                    IF(zh.WHSSM IS NULL,0,zh.WHSSM) AS WHSSM, 
-                    IF(zh.Total IS NULL,0,zh.Total) AS Total, 
-                    PR_DifferenceCheck2.OrderIssueDate, 
-                    PR_DifferenceCheck2.PODQty, 
-                    PR_DifferenceCheck2.PPRBal, 
-                    IF(YQty IS NULL,0,YQty) AS YEC_Qty, 
-                    IF(InvQty IS NULL,0,InvQty) AS InvoiceQty, 
-                    (PPRBal-(IF(YQty IS NULL,0,YQty))-(IF(InvQty IS NULL,0,InvQty))) AS Difference, 
-                    zh.TotalInventory AS CurrentInvtry, 
-                    zh.TotalBalReq AS Requirement, 
-                    IF(+(PPRBal-(IF(YQty IS NULL,0,YQty)+IF(InvQty IS NULL,0,InvQty)))=0,'','*') AS Chk, 
-                    PR_DifferenceCheck2.Remarks 
-                FROM temp_prb_xslip AS PR_DifferenceCheck2 
-                LEFT JOIN (
-                    SELECT PR,IF(PR IS NULL,'',SUBSTR(PR,1,IF(INSTR(PR,'-')>0,INSTR(PR,'-'),LENGTH (PR))-1)) AS YPR, 
-                        Noukikaito.Code, 
-                        Noukikaito.Name, 
-                        SUM(Noukikaito.payment) AS YQty
-                    FROM temp_prb_noukikaito Noukikaito
-                    GROUP BY IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1)), Noukikaito.Code, Noukikaito.Name
-                    HAVING (((IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1))) NOT LIKE 'PR10%'))
-                ) PR_DifferenceCheck1 ON PR_DifferenceCheck2.PR=PR_DifferenceCheck1.YPR
-                LEFT JOIN temp_prb_xzaik_xhiki zh ON PR_DifferenceCheck2.MCode=zh.CODE
-                LEFT JOIN temp_prb_invoice PR_DifferenceCheck1_1 ON PR_DifferenceCheck1_1.PODATA = PR_DifferenceCheck1.YPR
-                LEFT JOIN temp_prb_origprorder opro ON opro.CODE = PR_DifferenceCheck2.MCode
-                UNION
-                SELECT PR_DifferenceCheck1.YPR AS PR, 
-                    PR_DifferenceCheck1.MCode, 
-                    PR_DifferenceCheck1.MName, 
-                    IF(zh.Supplier IS NULL,'',zh.Supplier) AS Supplier,
-                    0 AS WHS100,
-                    0 AS WHS102,
-                    0 AS ASSY100,
-                    0 AS ASSY102,
-                    0 AS WHSNON,
-                    0 AS WHSSM,
-                    0 AS Total,
-                    PR_DifferenceCheck2.OrderIssueDate, 
-                    IF(PODQty IS NULL, 0, PODQty) AS PODQty, 
-                    IF(PPRBal IS NULL,0,PPRBal) AS PPRBal, 
-                    PR_DifferenceCheck1.YQty AS YEC_QTY,
-                    IF(InvQty IS NULL,0,InvQty) AS InvoiceQty, 
-                    IF(PPRBal IS NULL,0,PPRBal)-YQty-IF(InvQty IS NULL,0,InvQty) AS Difference, 
-                    IF(zh.TotalInventory IS NULL, 0,zh.TotalInventory) AS CurrentInvtry, 
-                    IF(Total_PR_Balance.TtlPR_Bal IS NULL, 0 ,Total_PR_Balance.TtlPR_Bal) AS Requirement, 
-                    IF(IF(PPRBal IS NULL,0,PPRBal)-(YQty-IF(InvQty IS NULL,0,InvQty))=0,'','*') AS Chk, 
-                    PR_DifferenceCheck2.Remarks
-                FROM temp_prb_xslip AS PR_DifferenceCheck2 
-                RIGHT JOIN (
-                    SELECT PR,IF(PR IS NULL,'',SUBSTR(PR,1,IF(INSTR(PR,'-')>0,INSTR(PR,'-'),LENGTH (PR))-1)) AS YPR, 
-                        Noukikaito.Code AS mcode, 
-                        Noukikaito.Name AS mname, 
-                        SUM(Noukikaito.payment) AS YQty
-                    FROM temp_prb_noukikaito Noukikaito
-                    GROUP BY IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1)), Noukikaito.Code, Noukikaito.Name
-                    HAVING (((IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1))) NOT LIKE 'PR10%'))
-                )PR_DifferenceCheck1 ON PR_DifferenceCheck2.PR=PR_DifferenceCheck1.YPR
-                LEFT JOIN (
-                    SELECT mcode, SUM(pprbal) AS TtlPR_Bal
-                    FROM temp_prb_xslip
-                    GROUP BY mcode
-                )Total_PR_Balance ON PR_DifferenceCheck1.MCode=Total_PR_Balance.MCode
-                LEFT JOIN temp_prb_xzaik_xhiki zh ON PR_DifferenceCheck1.MCode=zh.CODE
-                LEFT JOIN temp_prb_invoice PR_DifferenceCheck1_1 ON PR_DifferenceCheck1_1.PODATA = PR_DifferenceCheck1.YPR
-                LEFT JOIN temp_prb_origprorder opro ON opro.CODE = PR_DifferenceCheck2.MCode
-                WHERE PR_DifferenceCheck1.YPR NOT LIKE 'PR10%'
-                    AND PR_DifferenceCheck2.PR IS NULL
-                UNION
-                SELECT invoice.PODATA AS PR, 
-                    invoice.CODE AS MCODE, 
-                    invoice.NAME AS MNAME, 
-                    IF(xzh.Supplier IS NULL,'',xzh.Supplier) AS Supplier,
-                    0 AS WHS100,
-                    0 AS WHS102,
-                    0 AS ASSY100,
-                    0 AS ASSY102,
-                    0 AS WHSNON,
-                    0 AS WHSSM,
-                    0 AS Total,
-                    xslip.OrderIssueDate, 
-                    IF(xslip.PODQty IS NULL,0,xslip.PODQty) AS PODQty, 
-                    IF(PPRBal IS NULL,0,PPRBal) AS PPRBal, 
-                    IF(YQty IS NULL,0,YQty) AS YEC_QTY, 
-                    invoice.InvQty AS InvoiceQty,
-                    0 AS Difference,
-                    xzh.TotalInventory AS CurrentInvtry, 
-                    xzh.TotalBalReq AS Requirement, 
-                    NULL AS Chk,
-                    xslip.Remarks
-                FROM(
-                    SELECT PR,IF(PR IS NULL,'',SUBSTR(PR,1,IF(INSTR(PR,'-')>0,INSTR(PR,'-'),LENGTH (PR))-1)) AS YPR, 
-                        Noukikaito.Code AS mcode, 
-                        Noukikaito.Name AS mname, 
-                        SUM(Noukikaito.payment) AS YQty
-                    FROM temp_prb_noukikaito Noukikaito
-                    GROUP BY IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1)), Noukikaito.Code, Noukikaito.Name
-                    HAVING ((IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1))) NOT LIKE 'PR10%')
-                ) AS noukikaito 
-                RIGHT JOIN temp_prb_invoice invoice ON invoice.PODATA = noukikaito.YPR
-                LEFT JOIN temp_prb_xslip AS xslip ON invoice.PODATA = xslip.PR
-                LEFT JOIN temp_prb_origprorder opro ON opro.CODE = xslip.MCode
-                LEFT JOIN temp_prb_xzaik_xhiki AS xzh ON invoice.CODE = xzh.Code
-                WHERE invoice.PODATA NOT LIKE 'PR10%'
-                    AND xslip.PR IS NULL
-                    AND noukikaito.YPR IS NULL) as a
-GROUP BY PR1, MCode
+                       SUM(ASSY102) as ASSY102, SUM(WHSNON) as WHSNON, SUM(WHSSM)as WHSSM, SUM(Total) as Total,
+                       OrderIssueDate as OrderIssueDate, SUM(PODQty) as PODQty, SUM(PPRBal) as PPRBal, SUM(YEC_Qty) as YEC_Qty ,
+                       SUM(InvoiceQty) as InvoiceQty, SUM(PPRBal-YEC_Qty-InvoiceQty) as Difference, SUM(CurrentInvtry) as CurrentInvtry,
+                       SUM(Requirement) as Requirement, IF(SUM(PPRBal-YEC_Qty-InvoiceQty)=0,'',Chk) as Chk, Remarks
+                FROM (SELECT PR_DifferenceCheck2.PR, 
+                                    PR_DifferenceCheck2.MCode, 
+                                    PR_DifferenceCheck2.MName, 
+                                    zh.Supplier,
+                                    IF(zh.WHS100 IS NULL,0,zh.WHS100) AS WHS100, 
+                                    IF(zh.WHS102 IS NULL,0,zh.WHS102) AS WHS102, 
+                                    IF(zh.ASSY100 IS NULL, 0,zh.ASSY100) AS ASSY100, 
+                                    IF(zh.ASSY102 IS NULL, 0,zh.ASSY102) AS ASSY102, 
+                                    IF(zh.WHSNON IS NULL,0,zh.WHSNON) AS WHSNON, 
+                                    IF(zh.WHSSM IS NULL,0,zh.WHSSM) AS WHSSM, 
+                                    IF(zh.Total IS NULL,0,zh.Total) AS Total, 
+                                    PR_DifferenceCheck2.OrderIssueDate, 
+                                    PR_DifferenceCheck2.PODQty, 
+                                    PR_DifferenceCheck2.PPRBal, 
+                                    IF(YQty IS NULL,0,YQty) AS YEC_Qty, 
+                                    IF(InvQty IS NULL,0,InvQty) AS InvoiceQty, 
+                                    (PPRBal-(IF(YQty IS NULL,0,YQty))-(IF(InvQty IS NULL,0,InvQty))) AS Difference, 
+                                    zh.TotalInventory AS CurrentInvtry, 
+                                    zh.TotalBalReq AS Requirement, 
+                                    IF(+(PPRBal-(IF(YQty IS NULL,0,YQty)+IF(InvQty IS NULL,0,InvQty)))=0,'','*') AS Chk, 
+                                    PR_DifferenceCheck2.Remarks 
+                                FROM temp_prb_xslip AS PR_DifferenceCheck2 
+                                LEFT JOIN (
+                                    SELECT PR,IF(PR IS NULL,'',SUBSTR(PR,1,IF(INSTR(PR,'-')>0,INSTR(PR,'-'),LENGTH (PR))-1)) AS YPR, 
+                                        Noukikaito.Code, 
+                                        Noukikaito.Name, 
+                                        SUM(Noukikaito.payment) AS YQty
+                                    FROM temp_prb_noukikaito Noukikaito
+                                    GROUP BY IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1)), Noukikaito.Code, Noukikaito.Name
+                                    HAVING (((IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1))) NOT LIKE 'PR10%'))
+                                ) PR_DifferenceCheck1 ON PR_DifferenceCheck2.PR=PR_DifferenceCheck1.YPR
+                                LEFT JOIN temp_prb_xzaik_xhiki zh ON PR_DifferenceCheck2.MCode=zh.CODE
+                                LEFT JOIN temp_prb_invoice PR_DifferenceCheck1_1 ON PR_DifferenceCheck1_1.PODATA = PR_DifferenceCheck1.YPR
+                                LEFT JOIN temp_prb_origprorder opro ON opro.CODE = PR_DifferenceCheck2.MCode
+                                UNION
+                                SELECT PR_DifferenceCheck1.PR AS PR, 
+                                    PR_DifferenceCheck1.MCode, 
+                                    PR_DifferenceCheck1.MName, 
+                                    IF(zh.Supplier IS NULL,'',zh.Supplier) AS Supplier,
+                                    0 AS WHS100,
+                                    0 AS WHS102,
+                                    0 AS ASSY100,
+                                    0 AS ASSY102,
+                                    0 AS WHSNON,
+                                    0 AS WHSSM,
+                                    0 AS Total,
+                                    PR_DifferenceCheck2.OrderIssueDate, 
+                                    IF(PODQty IS NULL, 0, PODQty) AS PODQty, 
+                                    IF(PPRBal IS NULL,0,PPRBal) AS PPRBal, 
+                                    PR_DifferenceCheck1.YQty AS YEC_QTY,
+                                    IF(InvQty IS NULL,0,InvQty) AS InvoiceQty, 
+                                    IF(PPRBal IS NULL,0,PPRBal)-YQty-IF(InvQty IS NULL,0,InvQty) AS Difference, 
+                                    IF(zh.TotalInventory IS NULL, 0,zh.TotalInventory) AS CurrentInvtry, 
+                                    IF(Total_PR_Balance.TtlPR_Bal IS NULL, 0 ,Total_PR_Balance.TtlPR_Bal) AS Requirement, 
+                                    IF(IF(PPRBal IS NULL,0,PPRBal)-(YQty-IF(InvQty IS NULL,0,InvQty))=0,'','*') AS Chk, 
+                                    PR_DifferenceCheck2.Remarks
+                                FROM temp_prb_xslip AS PR_DifferenceCheck2 
+                                RIGHT JOIN (
+                                    SELECT PR,IF(PR IS NULL,'',SUBSTR(PR,1,IF(INSTR(PR,'-')>0,INSTR(PR,'-'),LENGTH (PR))-1)) AS YPR, 
+                                        Noukikaito.Code AS mcode, 
+                                        Noukikaito.Name AS mname, 
+                                        SUM(Noukikaito.payment) AS YQty
+                                    FROM temp_prb_noukikaito Noukikaito
+                                    GROUP BY IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1)), Noukikaito.Code, Noukikaito.Name
+                                    HAVING (((IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1))) NOT LIKE 'PR10%'))
+                                )PR_DifferenceCheck1 ON PR_DifferenceCheck2.PR=PR_DifferenceCheck1.YPR
+                                LEFT JOIN (
+                                    SELECT mcode, SUM(pprbal) AS TtlPR_Bal
+                                    FROM temp_prb_xslip
+                                    GROUP BY mcode
+                                )Total_PR_Balance ON PR_DifferenceCheck1.MCode=Total_PR_Balance.MCode
+                                LEFT JOIN temp_prb_xzaik_xhiki zh ON PR_DifferenceCheck1.MCode=zh.CODE
+                                LEFT JOIN temp_prb_invoice PR_DifferenceCheck1_1 ON PR_DifferenceCheck1_1.PODATA = PR_DifferenceCheck1.YPR
+                                LEFT JOIN temp_prb_origprorder opro ON opro.CODE = PR_DifferenceCheck2.MCode
+                                WHERE PR_DifferenceCheck1.YPR NOT LIKE 'PR10%'
+                                    AND PR_DifferenceCheck2.PR IS NULL
+                                UNION
+                                SELECT invoice.PODATA AS PR, 
+                                    invoice.CODE AS MCODE, 
+                                    invoice.NAME AS MNAME, 
+                                    IF(xzh.Supplier IS NULL,'',xzh.Supplier) AS Supplier,
+                                    0 AS WHS100,
+                                    0 AS WHS102,
+                                    0 AS ASSY100,
+                                    0 AS ASSY102,
+                                    0 AS WHSNON,
+                                    0 AS WHSSM,
+                                    0 AS Total,
+                                    xslip.OrderIssueDate, 
+                                    IF(xslip.PODQty IS NULL,0,xslip.PODQty) AS PODQty, 
+                                    IF(PPRBal IS NULL,0,PPRBal) AS PPRBal, 
+                                    IF(YQty IS NULL,0,YQty) AS YEC_QTY, 
+                                    invoice.InvQty AS InvoiceQty,
+                                    0 AS Difference,
+                                    xzh.TotalInventory AS CurrentInvtry, 
+                                    xzh.TotalBalReq AS Requirement, 
+                                    NULL AS Chk,
+                                    xslip.Remarks
+                                FROM(
+                                    SELECT PR,IF(PR IS NULL,'',SUBSTR(PR,1,IF(INSTR(PR,'-')>0,INSTR(PR,'-'),LENGTH (PR))-1)) AS YPR, 
+                                        Noukikaito.Code AS mcode, 
+                                        Noukikaito.Name AS mname, 
+                                        SUM(Noukikaito.payment) AS YQty
+                                    FROM temp_prb_noukikaito Noukikaito
+                                    GROUP BY IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1)), Noukikaito.Code, Noukikaito.Name
+                                    HAVING ((IF(PR IS NULL,'',SUBSTR(PR,1,INSTR(PR,'-')-1))) NOT LIKE 'PR10%')
+                                ) AS noukikaito 
+                                RIGHT JOIN temp_prb_invoice invoice ON invoice.PODATA = noukikaito.YPR
+                                LEFT JOIN temp_prb_xslip AS xslip ON invoice.PODATA = xslip.PR
+                                LEFT JOIN temp_prb_origprorder opro ON opro.CODE = xslip.MCode
+                                LEFT JOIN temp_prb_xzaik_xhiki AS xzh ON invoice.CODE = xzh.Code
+                                WHERE invoice.PODATA NOT LIKE 'PR10%'
+                                    AND xslip.PR IS NULL
+                                    AND noukikaito.YPR IS NULL) as a
+                GROUP BY PR1, MCode
                 ");
         }
         catch (Exception $e)
