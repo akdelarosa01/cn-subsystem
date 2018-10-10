@@ -65,7 +65,7 @@ class PRBalanceController extends Controller
 
             $this->getDbConnection($inputfile->getClientOriginalName(), $db, $schema);
 
-            $ypics = $this->getYPICS($db);
+            $ypics = $this->getYPICS();
 
             /*foreach ($ypics as $key => $ypic) {
                 $this->insertDataToOutput($ypic->pr,
@@ -141,10 +141,10 @@ class PRBalanceController extends Controller
         }
     }
 
-    private function getYPICS($db)
+    private function getYPICS()
     {
 
-        $xlsip = DB::connection($db)
+        $xlsip = DB::connection($this->mssql)
                 ->select("
                     SELECT s.PORDER AS PR, 
                         s.CODE AS MCode, 
@@ -217,7 +217,7 @@ class PRBalanceController extends Controller
             }
         }
 
-        $origprorder = DB::connection(Config::get('constants.DB_SQLSRV_BU'))->select("
+        $origprorder = DB::connection($this->mssql)->select("
             SELECT s.PORDER, 
                 s.IDATE, 
                 s.CODE, 
@@ -242,7 +242,7 @@ class PRBalanceController extends Controller
                 ]);
         }
 
-        $xzaik = DB::connection(Config::get('constants.DB_SQLSRV_BU'))
+        $xzaik = DB::connection($this->mssql)
                 ->select("
                     SELECT xz.*, 
                         isnull(xh.TtlBalReq,0) as TtlBalReq, 
