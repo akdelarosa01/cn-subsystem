@@ -1737,13 +1737,14 @@ class WBSMaterialKittingController extends Controller
         }
 
         $checklot = DB::connection($this->mysql)->table('tbl_wbs_inventory as i')
-        				->whereRaw("1=1".$item_cond)->count();
+        				->whereRaw("1=1".$item_cond)->where('i.deleted',0)->count();
 
         if ($checklot > 0) {
         	$data = DB::connection($this->mysql)->table('tbl_wbs_inventory as i')
 		                ->join('tbl_wbs_material_kitting_details as k','i.item','=','k.item')
 		                // ->join('tbl_wbs_material_receiving_batch as r','i.invoice_no','=','r.invoice_no')
 		                ->whereRaw("i.qty > 0 AND i.for_kitting='1' AND k.issue_no='".$req->issuanceno."'".$lotno_cond.$item_cond) //i.item=r.item AND 
+                        ->where('i.deleted',0)
 		                ->select(DB::raw('i.id as id'),
                             DB::raw('i.item as item'),
                             DB::raw('i.item_desc as item_desc'),
@@ -1760,6 +1761,7 @@ class WBSMaterialKittingController extends Controller
 		                ->join('tbl_wbs_material_kitting_details as k','i.item','=','k.item')
 		                // ->join('tbl_wbs_material_receiving_batch as r','i.invoice_no','=','r.invoice_no')
 		                ->whereRaw("i.qty > 0 AND i.for_kitting='1' AND k.issue_no='".$req->issuanceno."'".$item_cond)//i.item=r.item AND 
+                        ->where('i.deleted',0)
 		                ->select(DB::raw('i.id as id'),
                             DB::raw('i.item as item'),
                             DB::raw('i.item_desc as item_desc'),

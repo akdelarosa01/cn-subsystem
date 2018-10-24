@@ -335,6 +335,7 @@ class WBSSakidashiIssuanceController extends Controller
         $check = DB::connection($this->mysql)
                     ->table('tbl_wbs_inventory')
                     ->select('qty')
+                    ->where('deleted',0)
                     ->where('id',$id)
                     ->count();
 
@@ -342,6 +343,7 @@ class WBSSakidashiIssuanceController extends Controller
             $data = DB::connection($this->mysql)
                         ->table('tbl_wbs_inventory')
                         ->select('qty')
+                        ->where('deleted',0)
                         ->where('id',$id)
                         ->first();
             return $data->qty;
@@ -1401,6 +1403,7 @@ class WBSSakidashiIssuanceController extends Controller
     {
         $data = DB::connection($this->mysql)->table(DB::raw('tbl_wbs_inventory, (SELECT @rownum := 0) i'))
                     ->whereRaw("qty > 0 AND iqc_status='1' AND for_kitting='1' AND item='".$req->code."'")
+                    ->where('deleted',0)
                     ->orderBy('received_date','asc')
                     ->distinct()
                     ->select([DB::raw("@rownum:=@rownum+1 as rn"),
@@ -1416,6 +1419,7 @@ class WBSSakidashiIssuanceController extends Controller
         if (count((array)$data) < 1) {
             $data = DB::connection($this->mysql)->table(DB::raw('tbl_wbs_inventory, (SELECT @rownum := 0) i'))
                         ->whereRaw("qty > 0 AND iqc_status='1' AND for_kitting='1' AND item='".$req->code."'")
+                        ->where('deleted',0)
                         ->orderBy('received_date','asc')
                         ->distinct()
                         ->select([DB::raw("@rownum:=@rownum+1 as rn"),
@@ -1475,6 +1479,7 @@ class WBSSakidashiIssuanceController extends Controller
                     ->where('item',$req->item)
                     ->where('lot_no',$req->lot)
                     ->where('qty','>',0)
+                    ->where('deleted',0)
                     ->where('for_kitting',1)
                     ->count();
         return json_encode($data);

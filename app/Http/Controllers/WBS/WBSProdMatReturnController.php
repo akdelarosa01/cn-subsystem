@@ -460,6 +460,7 @@ class WBSProdMatReturnController extends Controller
                         ->select('id','qty')
                         ->where('item',$item)
                         ->where('lot_no',$lot_no)
+                        ->where('deleted',0)
                         ->orderBy('received_date','desc')
                         ->first();
 
@@ -482,6 +483,7 @@ class WBSProdMatReturnController extends Controller
             $checkInv = DB::connection($this->mysql)->table('tbl_wbs_inventory')
                             ->select('id','qty','lot_no')
                             ->where('item',$item)
+                            ->where('deleted',0)
                             ->orderBy('received_date','desc')
                             ->first();
             if ($checkInv->qty > 0) {
@@ -516,6 +518,7 @@ class WBSProdMatReturnController extends Controller
                         ->select('id','qty')
                         ->where('item',$item)
                         ->where('lot_no',$lot_no)
+                        ->where('deleted',0)
                         ->orderBy('received_date','desc')
                         ->first();
 
@@ -538,6 +541,7 @@ class WBSProdMatReturnController extends Controller
             $checkInv = DB::connection($this->mysql)->table('tbl_wbs_inventory')
                             ->select('id','qty','lot_no')
                             ->where('item',$item)
+                            ->where('deleted',0)
                             ->orderBy('received_date','desc')
                             ->first();
             if ($checkInv->qty > 0) {

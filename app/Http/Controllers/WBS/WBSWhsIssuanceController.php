@@ -210,6 +210,7 @@ class WBSWhsIssuanceController extends Controller
     				->where('item',$req->item)
     				->where('for_kitting',1)
     				->where('qty','>',0)
+    				->where('deleted',0)
     				->orderBy('received_date')
     				->select(
     					'id',
