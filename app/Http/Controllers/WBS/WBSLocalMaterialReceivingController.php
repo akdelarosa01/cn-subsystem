@@ -102,6 +102,16 @@ class WBSLocalMaterialReceivingController extends Controller
                         'update_user' => Auth::user()->user_id,
                         'updated_at' => date('Y-m-d h:i:s')
                     ]);
+
+                DB::connection($this->mysql)->table('tbl_wbs_inventory')
+                    ->where('wbs_mr_id',$req->receive_no)
+                    ->update([
+                        'invoice_no' => $req->invoice_no,
+                        'received_date' => $this->convertDate($req->receivingdate,'Y-m-d'),
+                        'update_user' => Auth::user()->user_id,
+                        'updated_at' => date('Y-m-d h:i:s')
+                    ]);
+
                 $data = [
                     'msg' => 'Successfully saved.',
                     'status' => 'success'
