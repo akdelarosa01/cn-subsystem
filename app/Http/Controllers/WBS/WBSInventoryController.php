@@ -149,7 +149,7 @@ class WBSInventoryController extends Controller
                     ->table('tbl_wbs_inventory')
                     ->where('id',$req->id)
                     ->update([
-                        'item' => $req->item,
+                        'item' => $req->item_code,
                         'item_desc' => $req->item_desc,
                         'lot_no' => $req->lot_no,
                         'qty' => $req->qty,
@@ -171,7 +171,7 @@ class WBSInventoryController extends Controller
                     ->table('tbl_wbs_material_receiving_batch')
                     ->where('id',$forID->mat_batch_id)
                     ->update([
-                        'item' => $req->item,
+                        'item' => $req->item_code,
                         'item_desc' => $req->item_desc,
                         'lot_no' => $req->lot_no,
                         'qty' => $req->qty,
@@ -188,7 +188,7 @@ class WBSInventoryController extends Controller
                     ->table('tbl_wbs_local_receiving_batch')
                     ->where('id',$forID->loc_batch_id)
                     ->update([
-                        'item' => $req->item,
+                        'item' => $req->item_code,
                         'item_desc' => $req->item_desc,
                         'lot_no' => $req->lot_no,
                         'qty' => $req->qty,
