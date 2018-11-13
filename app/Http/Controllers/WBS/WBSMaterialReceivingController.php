@@ -1648,6 +1648,7 @@ class WBSMaterialReceivingController extends Controller
 
     public function getItemData(Request $req)
     {
+        $items = [];
         $data = DB::connection($this->mssql)
                 ->table('XSACT as S')
                 ->join('XHEAD as H', 'H.CODE', '=','S.CODE')
@@ -1660,7 +1661,15 @@ class WBSMaterialReceivingController extends Controller
                 ->get();
 
         if ($this->checkIfExistObject($data) > 0) {
-            return $data;
+            foreach ($data as $key => $dt) {
+                array_push($items, [
+                    'code' => $dt->code,
+                    'name' => $this->com->convert_unicode($dt->name)
+                    'rackno' => $dt->rackno
+                ]);
+            }
+            
+            return response()->json($items);
         } else {
             $data = DB::connection($this->mssql)
                 ->table('XSACT as S')
@@ -1672,7 +1681,15 @@ class WBSMaterialReceivingController extends Controller
                 ->groupBy('S.CODE','H.NAME', 'Z.RACKNO')
                 ->get();
 
-            return $data;
+            foreach ($data as $key => $dt) {
+                array_push($items, [
+                    'code' => $dt->code,
+                    'name' => $this->com->convert_unicode($dt->name)
+                    'rackno' => $dt->rackno
+                ]);
+            }
+
+            return response()->json($items);
         }
     }
 

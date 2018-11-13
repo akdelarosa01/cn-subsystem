@@ -965,6 +965,7 @@ function getItemData() {
     $.ajax({
         url: getItemDataURL,
         type: "GET",
+        dataType: 'JSON',
         data: data,
     }).done( function(data, textStatus, jqXHR) {
         var item = '';
