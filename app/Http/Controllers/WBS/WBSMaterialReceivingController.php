@@ -1664,11 +1664,11 @@ class WBSMaterialReceivingController extends Controller
             foreach ($data as $key => $dt) {
                 array_push($items, [
                     'code' => $dt->code,
-                    'name' => $this->com->convert_unicode($dt->name)
+                    'name' => $this->com->convert_unicode($dt->name),
                     'rackno' => $dt->rackno
                 ]);
             }
-            
+
             return response()->json($items);
         } else {
             $data = DB::connection($this->mssql)
@@ -1684,7 +1684,7 @@ class WBSMaterialReceivingController extends Controller
             foreach ($data as $key => $dt) {
                 array_push($items, [
                     'code' => $dt->code,
-                    'name' => $this->com->convert_unicode($dt->name)
+                    'name' => $this->com->convert_unicode($dt->name),
                     'rackno' => $dt->rackno
                 ]);
             }
