@@ -979,7 +979,7 @@ class PackingListSystemController extends Controller
                                 , 'B.SPRICE')
                         ->select(DB::raw('D.CODE AS PORDER')
                                 , DB::raw('D.NAME')
-                                , DB::raw("'BU2' as CODE")
+                                , DB::raw("'CN' as CODE")
                                 , DB::raw('ISNULL(B.SPRICE,0.0000)'))
                         ->get();
                 }
