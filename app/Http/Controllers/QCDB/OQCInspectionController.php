@@ -449,7 +449,7 @@ class OQCInspectionController extends Controller
         $date = Carbon::now();
         $weeknow = $date->format("W");
 
-        $workweek = $diff + $weeknow;
+        $workweek = $diff + $weeknow + 1;
         if ($workweek > 52) {
             $workweek = $workweek - 52;
         }
