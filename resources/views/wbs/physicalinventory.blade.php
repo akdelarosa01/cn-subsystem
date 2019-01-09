@@ -299,8 +299,8 @@
 																			{{ $piddata->remarks }}
 																		</td>
 																	</tr>
-																		<?php $var = $var + $piddata->variance; ?>
-																		<?php $act = $act + $piddata->actual_qty; ?>
+																		<?php $var = intval($var) + intval($piddata->variance); ?>
+																		<?php $act = intval($act) + intval($piddata->actual_qty); ?>
 																		<?php $cnt++; ?>
 																    @endforeach
 																    @endif
