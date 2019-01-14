@@ -985,18 +985,20 @@ class PackingListSystemController extends Controller
                 }
                 if (count((array)$output) == 0) {
                     $output = DB::connection($this->mssql)->table('XRECE AS D')
-                        ->leftJoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
-                        // ->leftJoin('XTANK AS B', 'B.CODE', '=', 'D.CODE')
-                        ->where('D.SORDER', 'like', $porder.'%')
-                        ->groupBy('D.SORDER'
-                                , 'H.NAME'
-                                , 'D.CODE'
-                                , 'D.PRICE')
-                        ->select(DB::raw('D.SORDER AS PORDER')
-                                , DB::raw('H.NAME')
-                                , DB::raw('D.CODE as CODE')
-                                , DB::raw("CASE WHEN D.PRICE <> NULL THEN 'NO PRICE' ELSE 'NO PRICE' END AS TPRICE"))
-                        ->get();
+                                ->leftJoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
+                                ->leftjoin('XBAIK AS B', 'B.CODE', '=', 'H.CODE')
+                                ->where('D.SORDER', 'like', $porder.'%')
+                                ->groupBy('D.SORDER'
+                                        , 'H.NAME'
+                                        , 'D.CODE'
+                                        , 'B.PRICE'
+                                        , 'D.KVOL')
+                                ->select(DB::raw('D.SORDER AS PORDER')
+                                        , DB::raw('H.NAME')
+                                        , DB::raw('D.CODE as CODE')
+                                        , DB::raw("B.PRICE")
+                                        , DB::raw('D.KVOL as KVOL'))
+                                ->get();
                 }
 
         $result = 0;
