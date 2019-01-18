@@ -1418,4 +1418,12 @@ class WBSLocalMaterialReceivingController extends Controller
 
         return $data;
     }
+
+    public function Search(Request $req)
+    {
+        $data = DB::connection($this->mysql)->table('tbl_wbs_local_receiving_batch')
+                    ->where('item',$req->srch_item)
+                    ->get();
+        return response()->json($data);
+    }
 }

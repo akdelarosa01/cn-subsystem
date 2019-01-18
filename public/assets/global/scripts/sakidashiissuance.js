@@ -642,7 +642,7 @@ function addState() {
 
 function openDetails() {
 	$('#btn_partcode').show();
-	$('#lotno').prop('readonly', false);
+	$('#lotno').prop('readonly', true);
 	$('#pairno').prop('readonly', false);
 	$('#issueqty').prop('readonly', false);
 	$('#reqqty').prop('readonly', false);
@@ -651,7 +651,7 @@ function openDetails() {
 
 function editState() {
 	$('#btn_partcode').show();
-	$('#lotno').prop('readonly', false);
+	$('#lotno').prop('readonly', true);
 	$('#pairno').prop('readonly', false);
 	$('#issueqty').prop('readonly', false);
 	$('#reqqty').prop('readonly', false);

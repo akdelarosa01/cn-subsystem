@@ -283,6 +283,32 @@ $(function() {
 		delete_items('.chk_batch_item',DeleteBatchItemURL);
 	});
 
+	$('#frm_search').on('submit', function(e) {
+		$('#loading').modal('show');
+		e.preventDefault();
+		$.ajax({
+			url: $(this).attr('action'),
+			type: 'POST',
+			dataType: 'JSON',
+			data: $(this).serialize(),
+		}).done(function(data, textStatus, xhr) {
+			makeSearchTable(data);
+		}).fail(function(xhr, textStatus, errorThrown) {
+			console.log("error");
+		}).always(function() {
+			$('#loading').modal('hide');
+		});
+	});
+
+	$('#btn_search').on('click', function() {
+		$('#searchModal').modal('show');
+	});
+
+	$('#tbl_search_body').on('click', '.btn_search_detail', function() {
+		getLocalMaterialData('',$(this).attr('data-wbs_loc_id'));
+		$('#searchModal').modal('hide');
+	});
+
 });
 
 function getLocalMaterialData(to,id) {
@@ -611,4 +637,54 @@ function getTotal() {
 		console.log("error");
 	});
 	
+}
+
+function makeSearchTable(arr) {
+	$('#tbl_search').dataTable().fnClearTable();
+    $('#tbl_search').dataTable().fnDestroy();
+    $('#tbl_search').dataTable({
+        data: arr,
+        bLengthChange : false,
+        scrollY: "250px",
+        searching: false,
+	    paging: false,
+        columns: [
+            { data: function(x) {
+                return "<button type='button' class='btn btn-sm btn-primary btn_search_detail' "+
+                				"data-wbs_loc_id='"+x.wbs_loc_id+"'>"+
+                			"<i class='fa fa-eye'></i>"+
+                		"</button>";
+            }, searchable: false, orderable: false },
+
+            { data: 'wbs_loc_id' },
+			{ data: 'received_date' },
+			{ data: 'orig_invoice_no' },
+			{ data: 'invoice_no' },
+			{ data: 'item' },
+			{ data: 'lot_no' },
+			{ data: 'qty' },
+			{ data: function(x) {
+				if (x.iqc_status == 1) {
+					return 'Accepted';
+				}
+
+				if (x.iqc_status == 0) {
+					return 'Pending';
+				}
+
+				if (x.iqc_status == 2) {
+					return 'Rejected'
+				}
+
+				if (x.iqc_status == 3) {
+					return 'On-going'
+				}
+
+			} },
+			{ data: 'create_user' },
+			{ data: 'created_at' },
+			{ data: 'update_user' },
+			{ data: 'updated_at' },
+        ]
+    });	
 }

@@ -215,6 +215,7 @@ $(function() {
     });
 
     $('#btn_filter').on('click', function() {
+        $('#loading').modal('show');
         $('#tbl_search_body').html('');
         var tbl_search = '';
         var data = {
@@ -222,8 +223,8 @@ $(function() {
             from: $('#srch_from').val(),
             to: $('#srch_to').val(),
             invoiceno: $('#srch_invoiceno').val(),
-            invfrom: $('#srch_invfrom').val(),
-            invto: $('#srch_invto').val(),
+            item: $('#srch_item').val(),
+            lot_no: $('#srch_lot').val(),
             palletno: $('#srch_palletno').val(),
             open: $('#srch_open').val(),
             close: $('#srch_close').val(),
@@ -235,37 +236,58 @@ $(function() {
             type: "GET",
             data: data,
         }).done( function(data, textStatus, jqXHR) {
-            var status = '';
-            $.each(data, function(index, x) {
-                if (x.status == 'O') {
-                    status = 'Open';
-                }
-                if (x.status == 'X') {
-                    status = 'Closed';
-                }
+            $('#loading').modal('hide');
+            searchTable(data);
+            // var status = '';
+            // $.each(data, function(index, x) {
+            //     if (x.status == 'O') {
+            //         status = 'Open';
+            //     }
+            //     if (x.status == 'X') {
+            //         status = 'Closed';
+            //     }
 
-                if (x.status == 'C') {
-                    status = 'Cancelled';
-                }
-                tbl_search = '<tr class="search_row">'+
-                                '<td>'+
-                                    '<a href="javascript:;" class="btn blue input-sm look_search" data-id="'+x.id+'">'+
-                                        '<i class="fa fa-edit"></i>'+
-                                    '</a>'+
-                                '</td>'+
-                                '<td>'+x.receive_no+'</td>'+
-                                '<td>'+x.receive_date+'</td>'+
-                                '<td>'+x.invoice_no+'</td>'+
-                                '<td>'+x.invoice_date+'</td>'+
-                                '<td>'+x.pallet_no+'</td>'+
-                                '<td>'+status+'</td>'+
-                                '<td>'+x.create_user+'</td>'+
-                                '<td>'+x.created_at+'</td>'+
-                                '<td>'+x.update_user+'</td>'+
-                                '<td>'+x.updated_at+'</td>'+
-                            '</tr>';
-                $('#tbl_search_body').append(tbl_search);
-            });
+            //     if (x.status == 'C') {
+            //         status = 'Cancelled';
+            //     }
+
+            //     if (x.iqc_status == 1) {
+            //         iqc_status = 'Accepted';
+            //     }
+            //     if (x.iqc_status == 2) {
+            //         iqc_status = 'Rejected';
+            //     }
+
+            //     if (x.iqc_status == 3) {
+            //         iqc_status = 'On-going';
+            //     }
+
+            //     if (x.iqc_status == 0) {
+            //         iqc_status = 'Pending';
+            //     }
+
+            //     tbl_search = '<tr class="search_row">'+
+            //                         '<td>'+
+            //                             '<a href="javascript:;" class="btn blue input-sm look_search" data-id="'+x.id+'">'+
+            //                                 '<i class="fa fa-edit"></i>'+
+            //                             '</a>'+
+            //                         '</td>'+
+            //                         '<td>'+x.receive_no+'</td>'+
+            //                         '<td>'+x.received_date+'</td>'+
+            //                         '<td>'+x.invoice_no+'</td>'+
+            //                         '<td>'+x.invoice_date+'</td>'+
+            //                         '<td>'+x.item+'</td>'+
+            //                         '<td>'+x.lot_no+'</td>'+
+            //                         '<td>'+x.qty+'</td>'+
+            //                         '<td>'+status+'</td>'+
+            //                         '<td>'+iqc_status+'</td>'+
+            //                         '<td>'+x.create_user+'</td>'+
+            //                         '<td>'+x.created_at+'</td>'+
+            //                         '<td>'+x.update_user+'</td>'+
+            //                         '<td>'+x.updated_at+'</td>'+
+            //                     '</tr>';
+            //     $('#tbl_search_body').append(tbl_search);
+            // });
         }).fail( function(data, textStatus, jqXHR) {
             $('#loading').modal('hide');
             failedMsg("There's some error while processing.");
@@ -692,6 +714,68 @@ $(function() {
         refreshInvoice();
     });
 });
+
+function searchTable(arr) {
+    $('#tbl_search').dataTable().fnClearTable();
+    $('#tbl_search').dataTable().fnDestroy();
+    $('#tbl_search').dataTable({
+        data: arr,
+        columns: [
+            { data: function(x) {
+                return '<a href="javascript:;" class="btn blue input-sm look_search" data-id="'+x.id+'">'+
+                            '<i class="fa fa-edit"></i>'+
+                        '</a>';
+            }, name: 'action', orderable: false, searchable: false },
+            { data: 'receive_no' },
+            { data: 'received_date' },
+            { data: 'invoice_no' },
+            { data: 'invoice_date' },
+            { data: 'item' },
+            { data: 'lot_no' },
+            { data: 'qty' },
+            { data: function(x) {
+                var status = '';
+
+                if (x.status == 'O') {
+                    status = 'Open';
+                }
+                if (x.status == 'X') {
+                    status = 'Closed';
+                }
+
+                if (x.status == 'C') {
+                    status = 'Cancelled';
+                }
+
+                return status;
+            } },
+            { data: function(x) {
+                var iqc_status = '';
+
+                if (x.iqc_status == 1) {
+                    iqc_status = 'Accepted';
+                }
+                if (x.iqc_status == 2) {
+                    iqc_status = 'Rejected';
+                }
+
+                if (x.iqc_status == 3) {
+                    iqc_status = 'On-going';
+                }
+
+                if (x.iqc_status == 0) {
+                    iqc_status = 'Pending';
+                }
+
+                return iqc_status;
+            } },
+            { data: 'create_user' },
+            { data: 'created_at' },
+            { data: 'update_user' },
+            { data: 'updated_at' },
+        ]
+    });
+}
 
 function AddState() {
     $('.chk_del_batch').prop('disabled', false);

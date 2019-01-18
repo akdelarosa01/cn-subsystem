@@ -237,6 +237,10 @@
 									<i class="fa fa-file-excel-o"></i> Export To Excel
 								</button>
 
+                                <button type="button" class="btn btn-sm blue" id="btn_search">
+                                    <i class="fa fa-search"></i> Search
+                                </button>
+
 							</div>
                         </div>
         			</div>

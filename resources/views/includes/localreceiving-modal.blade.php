@@ -126,3 +126,58 @@
         </div>
     </div>
 </div>
+
+<div id="searchModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-full">
+
+        <!-- Modal content-->
+        <form class="form-horizontal" role="form" method="POST" action="{{ url('/local-receiving-search') }}" id="frm_search">
+            {!! csrf_field() !!}
+            <div class="modal-content blue">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="inputname" class="col-md-2 control-label" style="font-size:12px">Item Code</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control input-sm search_reset" id="srch_item" placeholder="Item Code" name="srch_item" autofocus />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-striped table-bordered table-hover table-responsive sortable" id="tbl_search">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <td>Transaction No.</td>
+                                        <td>Receive Date</td>
+                                        <td>PPC Invoice No.</td>
+                                        <td>Temp Invoice No.</td>
+                                        <td>Code</td>
+                                        <td>Lot No.</td>
+                                        <td>Qty</td>
+                                        <td>IQC status</td>
+                                        <td>Created By</td>
+                                        <td>Created Date</td>
+                                        <td>Updated By</td>
+                                        <td>Updated Date</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbl_search_body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn blue-madison btn-sm" ><i class="glyphicon glyphicon-filter"></i> Filter</button>
+                    <button type="button" class="btn green btn-sm" ><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

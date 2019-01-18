@@ -213,6 +213,11 @@ Route::group(['middleware' => 'web'], function () {
                 'name' => 'wbslocgettotal'
             ]);
 
+            Route::post('/local-receiving-search', [
+                'uses' => 'WBS\WBSLocalMaterialReceivingController@Search',
+                'name' => 'local-receiving-search'
+            ]);
+
 
         /*WBS IQC Inspection*/
             Route::get('/iqc', [
