@@ -314,62 +314,62 @@ return [
 
         'sqlsrvcn' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', '192.168.200.52'),
+            'host' => env('DB_HOST', '192.168.3.247'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'cn_v4'),
             'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
+            'password' => env('DB_PASSWORD', 'Pr1c0n'),
             'prefix' => '',
         ],
 
         'sqlsrvbu' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', '192.168.200.52'),
+            'host' => env('DB_HOST', '192.168.3.247'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'bu2_v4'),
             'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
+            'password' => env('DB_PASSWORD', 'Pr1c0n'),
             'prefix' => '',
         ],
 
         'sqlsrvts' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', '192.168.200.52'),
+            'host' => env('DB_HOST', '192.168.3.247'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'bu2_v4'),
             'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
+            'password' => env('DB_PASSWORD', 'Pr1c0n'),
             'prefix' => '',
         ],
 
         'sqlsrvyf' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', '192.168.200.52'),
+            'host' => env('DB_HOST', '192.168.3.247'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'yf_v4'),
             'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
+            'password' => env('DB_PASSWORD', 'Pr1c0n'),
             'prefix' => '',
         ],
 
 
         'sqlsrvpps' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', '192.168.200.52'),
+            'host' => env('DB_HOST', '192.168.3.247'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'bu2_v4'),
             'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
+            'password' => env('DB_PASSWORD', 'Pr1c0n'),
             'prefix' => '',
         ],
 
         'sqlsrvmold' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', '192.168.200.52'),
+            'host' => env('DB_HOST', '192.168.3.247'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'bu2_v4'),
             'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
+            'password' => env('DB_PASSWORD', 'Pr1c0n'),
             'prefix' => '',
         ],
 

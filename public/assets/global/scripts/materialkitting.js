@@ -279,7 +279,7 @@ $( function() {
 			$('#iss_qty').val($(this).attr('data-qty'));
 			$('#iss_location').val($(this).attr('data-location'));
 
-			$('#iss_lotno').prop('readonly', false);
+			// $('#iss_lotno').prop('readonly', false);
 			$('#iss_qty').prop('readonly', false);
 			$('#iss_location').prop('readonly', false);
 			$('#iss_remarks').prop('readonly', false);

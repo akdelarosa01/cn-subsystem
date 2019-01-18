@@ -1397,17 +1397,14 @@ class WBSMaterialKittingController extends Controller
                                                 <div class="rTableRow">
                                                     <div class="rTableCell mediumText width-25 right">ORDER QTY.:</div>
                                                     <div class="rTableCell mediumText width-30 left">'. $poqty .'</div>
-                                                    <div class="rTableCell mediumText width-45">Transfer to:</div>
                                                 </div>
                                                 <div class="rTableRow">
                                                     <div class="rTableCell mediumText width-25 right">KIT QTY :</div>
                                                     <div class="rTableCell mediumText width-30 left">'. $kitqty .'</div>
-                                                    <div class="rTableCell mediumText width-45">A. Kanban House ______________</div>
                                                 </div>
                                                 <div class="rTableRow">
                                                     <div class="rTableCell mediumText width-25 right">KIT NUMBER :</div>
                                                     <div class="rTableCell mediumText width-30 left">'. $kitno .'</div>
-                                                    <div class="rTableCell mediumText width-45">B. Warehouse _________________</div>
                                                 </div>
                                                 <div class="rTableRow">
                                                     <div class="rTableCell mediumText width-25 right">PREPARED DT:</div>
@@ -1449,14 +1446,6 @@ class WBSMaterialKittingController extends Controller
                         <div class="rTableCell mediumText width-30">'.$preparedby.'</div>
                         <div class="rTableCell mediumText"></div>
                         <div class="rTableCell large1Text">Total Issued Qty: <strong>'.$sum1.'</strong></div>
-                        <div class="rTableCell mediumText"></div>
-                        <div class="rTableCell mediumText"></div>
-                    </div> ';
-        $html2.= ' <div class="rTableRow mediumText">
-                        <div class="rTableCell mediumText">Issued By:</div>
-                        <div class="rTableCell mediumText width-30">__________________</div>
-                        <div class="rTableCell mediumText"></div>
-                        <div class="rTableCell mediumText">Date: __________________</div>
                         <div class="rTableCell mediumText"></div>
                         <div class="rTableCell mediumText"></div>
                     </div> ';
@@ -1505,17 +1494,14 @@ class WBSMaterialKittingController extends Controller
                             <div class="rTableRow">
                                 <div class="rTableCell mediumText width-25 right">ORDER QTY.:</div>
                                 <div class="rTableCell mediumText width-30 left">'. $poqty .'</div>
-                                <div class="rTableCell mediumText width-45">Transfer to:</div>
                             </div>
                             <div class="rTableRow">
                                 <div class="rTableCell mediumText width-25 right">KIT QTY :</div>
                                 <div class="rTableCell mediumText width-30 left">'. $kitqty .'</div>
-                                <div class="rTableCell mediumText width-45">A. Kanban House ______________</div>
                             </div>
                             <div class="rTableRow">
                                 <div class="rTableCell mediumText width-25 right">KIT NUMBER :</div>
                                 <div class="rTableCell mediumText width-30 left">'. $kitno .'</div>
-                                <div class="rTableCell mediumText width-45">B. Warehouse _________________</div>
                             </div>
                             <div class="rTableRow">
                                 <div class="rTableCell mediumText width-25 right">PREPARED DT:</div>
@@ -1557,14 +1543,6 @@ class WBSMaterialKittingController extends Controller
                             <div class="rTableCell mediumText width-30">'.$preparedby.'</div>
                             <div class="rTableCell mediumText"></div>
                             <div class="rTableCell large1Text">Total Issued Qty: <strong>'.$sum2.'</strong></div>
-                            <div class="rTableCell mediumText"></div>
-                            <div class="rTableCell mediumText"></div>
-                        </div> ';
-            $html4.= ' <div class="rTableRow mediumText">
-                            <div class="rTableCell mediumText">Issued By:</div>
-                            <div class="rTableCell mediumText width-30">__________________</div>
-                            <div class="rTableCell mediumText"></div>
-                            <div class="rTableCell mediumText">Date: __________________</div>
                             <div class="rTableCell mediumText"></div>
                             <div class="rTableCell mediumText"></div>
                         </div> ';
