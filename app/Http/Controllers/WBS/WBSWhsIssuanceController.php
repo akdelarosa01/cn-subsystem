@@ -485,15 +485,31 @@ class WBSWhsIssuanceController extends Controller
 									'issued_qty_o',
 									'issued_qty_t',
 									'lot_no',
+									'create_user',
+									'update_user',
 									DB::raw("IFNULL(location,'') as location"),
 									DB::raw("DATE_FORMAT(created_at, '%m/%d/%Y %h:%i %p') as created_at"),
 									DB::raw("DATE_FORMAT(updated_at, '%m/%d/%Y %h:%i %p') as updated_at"),
 									DB::raw("DATE_FORMAT(issued_date, '%m/%d/%Y') as issued_date"))
                                	->get();
+                $served_qty_per_items = DB::connection($this->mysql)->table('tbl_wbs_warehouse_mat_issuance_details')
+											->where('issuance_no',$summary->issuance_no)
+											->select('item',
+													DB::raw('SUM(issued_qty_t) as served_qty'))
+											->groupBy('item')
+											->get();
+
+				$served_qtys = [];
+				foreach ($served_qty_per_items as $key => $served) {
+					array_push($served_qtys, [
+						$served->item => $served->served_qty
+					]);
+				}
 
 	            return $data = [
                                 'summary' => $summary,
 			                	'details' => $details,
+			                	'served_qty_per_item' => $served_qty_per_items,
 			                	'total_req_qty' => $summary->total_req_qty,
 			                	'total_served_qty' => $request[0]->total_served_qty,
 			                	'total_bal_qty' => $total_bal_qty,

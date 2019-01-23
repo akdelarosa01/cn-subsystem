@@ -357,7 +357,7 @@ function makeIssuanceTable(arr,served_qty_per_item) {
 	            		}
 	            	});
             	} else {
-            		servedqty = (x.servedqty == undefined)? x.issued_qty_t : x.issued_qty_t;
+            		servedqty = (x.servedqty == undefined)? x.issued_qty_t : x.servedqty;
             	}
 
             	
@@ -417,7 +417,7 @@ function makeIssuanceTable(arr,served_qty_per_item) {
 	            		}
 	            	});
             	} else {
-            		servedqty = (x.servedqty == undefined)? x.issued_qty_t : x.issued_qty_t;
+            		servedqty = (x.servedqty == undefined)? x.issued_qty_t : x.servedqty;
             	}
 
             	//var servedqty = (x.servedqty == undefined)? x.issued_qty_t : total_served_qty;
