@@ -41,6 +41,7 @@ $( function() {
 
 			var details = data.details;
 			var totals = data.totals;
+			var served = data.served;
 			var count = 1;
 
 			$.each(details, function(i, x) {
@@ -73,7 +74,7 @@ $( function() {
 			var total_bal_qty = totals.total_req_qty - totals.total_served_qty;
 			$('#total_bal_qty').val(total_bal_qty);
 
-			makeIssuanceTable(issuance);
+			makeIssuanceTable(issuance,served);
 			addState();
 		}).fail(function(xhr, textStatus, errorThrown) {
 			msg(textStatus+': '+errorThrown,textStatus);
@@ -89,6 +90,7 @@ $( function() {
 		$('#edit_pmr_detail_id').val($(this).attr('data-pmr_detail_id'));
 		$('#edit_request_qty').val($(this).attr('data-request_qty'));
 		$('#edit_served_qty').val($(this).attr('data-servedqty'));
+		$('#edit_lot_no').val($(this).attr('data-lot_no'));
 
 		var issue_qty = parseFloat($(this).attr('data-request_qty')) - parseFloat($(this).attr('data-servedqty'));
 
@@ -126,7 +128,9 @@ $( function() {
 				}
 			}
 
-			makeIssuanceTable(issuance);
+			console.log(issuance);
+
+			makeIssuanceTable(issuance,total_issued);
 			$('#editIssuanceModal').modal('hide');
 		}
 	});
@@ -302,7 +306,11 @@ function makeViewDetailsTable(arr) {
 	    paging: false,
         columns: [
             { data: function(x) {
-                return "<input type='checkbox' class='check_item_detail' data-id='"+x.id+"' data-transno='"+x.transno+"' value='"+x.id+"'>";
+            	var blocked = '';
+            	if (x.requestqty == x.servedqty) {
+            		blocked = 'disabled';
+            	}
+                return "<input type='checkbox' class='check_item_detail' data-id='"+x.id+"' data-transno='"+x.transno+"' value='"+x.id+"' "+blocked+">";
             }, searchable: false, orderable: false },
 
             { data: 'detailid' },
@@ -317,7 +325,8 @@ function makeViewDetailsTable(arr) {
     });
 }
 
-function makeIssuanceTable(arr) {
+function makeIssuanceTable(arr,served_qty_per_item) {
+	console.log(served_qty_per_item);
 	$('#tbl_issuance').dataTable().fnClearTable();
     $('#tbl_issuance').dataTable().fnDestroy();
     $('#tbl_issuance').dataTable({
@@ -332,7 +341,27 @@ function makeIssuanceTable(arr) {
             }, searchable: false, orderable: false },
 
             { data: function(x) {
-            	var servedqty = (x.servedqty == undefined)?x.issued_qty_t:x.servedqty;
+
+            	var servedqty = 0;
+
+            	if ($.isArray(served_qty_per_item)) {
+            		$.each(served_qty_per_item, function(i, xx) {
+            			var serves = $.map(xx, function(ii, xxx) {
+	            			return ii;
+	            		});
+
+	            		console.log(serves);
+	            		if (serves[0] == x.item) {
+	            			console.log(xx.item);
+	            			servedqty = serves[1];
+	            		}
+	            	});
+            	} else {
+            		servedqty = (x.servedqty == undefined)? x.issued_qty_t : x.issued_qty_t;
+            	}
+
+            	
+            	// var servedqty = (x.servedqty == undefined)? x.issued_qty_t : total_served_qty; //x.issued_qty_t
                 return "<button class='btn btn-sm blue btn_edit_issuance_details' data-id='"+x.id+"' "+
                 			"data-detail_id='"+x.detail_id+"'"+
 							"data-item='"+x.item+"'"+
@@ -341,6 +370,7 @@ function makeIssuanceTable(arr) {
 							"data-request_qty='"+x.request_qty+"'"+
 							"data-issued_qty_t='"+x.issued_qty_t+"'"+
 							"data-location='"+x.location+"'"+
+							"data-lot_no='"+x.lot_no+"'"+
 							"data-servedqty='"+servedqty+"'>"+
                 			"<i class='fa fa-edit'></i>"+
                 		"</button>";
@@ -372,7 +402,25 @@ function makeIssuanceTable(arr) {
             } },
 
             { data: function(x) {
-            	var servedqty = (x.servedqty == undefined)?x.issued_qty_t:x.servedqty;
+            	var servedqty = 0;
+
+            	if ($.isArray(served_qty_per_item)) {
+            		$.each(served_qty_per_item, function(i, xx) {
+            			var serves = $.map(xx, function(ii, xxx) {
+	            			return ii;
+	            		});
+
+	            		console.log(serves);
+	            		if (serves[0] == x.item) {
+	            			console.log(xx.item);
+	            			servedqty = serves[1];
+	            		}
+	            	});
+            	} else {
+            		servedqty = (x.servedqty == undefined)? x.issued_qty_t : x.issued_qty_t;
+            	}
+
+            	//var servedqty = (x.servedqty == undefined)? x.issued_qty_t : total_served_qty;
                 return "<button class='btn btn-sm grey-gallery btn_barcode' data-id='"+x.id+"' "+
                 			"data-request_no='"+x.request_no+"'"+
                 			"data-issuance_no='"+x.issuance_no+"'"+
@@ -631,7 +679,7 @@ function getData(issuance_no='',to = '') {
 
 			issuance = data.details;
 
-			makeIssuanceTable(issuance);
+			makeIssuanceTable(issuance,data.served_qty_per_item);
 		}
 		viewState();
 	}).fail(function(xhr, textStatus, errorThrown) {
@@ -673,6 +721,7 @@ function save() {
 	}).done(function(data, textStatus, xhr) {
 		getData(data.issuance_no);
 		getPendingRequest();
+		viewReqDetails([]);
 		msg(data.msg,data.status);
 	}).fail(function(xhr, textStatus, errorThrown) {
 		msg(textStatus+': '+errorThrown,textStatus);
