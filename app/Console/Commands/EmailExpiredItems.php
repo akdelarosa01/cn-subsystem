@@ -157,7 +157,7 @@ class EmailExpiredItems extends Command
 
                 Mail::send('email.mail', ['data'=>$data], function ($mail) use ($recipients,$pathToFile) {
                     $mail->to($recipients)
-                        ->from('pmi.subsystem@gmail.com')
+                        ->from('pmi.subsystem@gmail.com','WBS Subsystem')
                         ->subject('WBS: Items will expire in a month (CN)');
                     $mail->attach($pathToFile);
                 });
