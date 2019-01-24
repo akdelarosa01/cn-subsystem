@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
-use Datatables;
 use Carbon\Carbon;
+use Datatables;
 use Config;
 use DB;
 use Excel;
@@ -141,16 +141,12 @@ class WBSInventoryController extends Controller
         $result = "";
         $NFI = 0;
         if (isset($req->id)) {
-            // $this->validate($req, [
-            //     'item' => 'required',
-            //     'item_desc' => 'required',
-            // ]);
             $NFI = (isset($req->nr))?1:0;
             $UP = DB::connection($this->mysql)
                     ->table('tbl_wbs_inventory')
                     ->where('id',$req->id)
                     ->update([
-                        'item' => $req->item_code,
+                        'item' => $req->item,
                         'item_desc' => $req->item_desc,
                         'lot_no' => $req->lot_no,
                         'qty' => $req->qty,

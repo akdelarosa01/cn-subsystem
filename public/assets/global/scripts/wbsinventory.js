@@ -31,7 +31,8 @@ $( function() {
 	});
 
 	$("#btn_delete").on('click', removeByID);
-	$("#frm_markup").on('submit', function(e){
+
+	$("#frm_inventory").on('submit', function(e){
 		var a = $(this).serialize();
 		e.preventDefault();
 		$.ajax({
@@ -53,7 +54,7 @@ $( function() {
 	$('#tbl_inventory_body').on('click', '.btn_edit', function(e) {
 		e.preventDefault();
 		$('#id').val($(this).attr('data-id'));
-		$('#item_code').val($(this).attr('data-item'));
+		$('#item').val($(this).attr('data-item'));
 		$('#item_desc').val($(this).attr('data-item_desc'));
 		$('#lot_no').val($(this).attr('data-lot_no'));
 		$('#qty').val($(this).attr('data-qty'));

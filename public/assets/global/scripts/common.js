@@ -150,10 +150,10 @@ function getDatatable(tbl_id,Url,dataColumn,aoColumnDefs,inOrder,unOrderable,unS
         // bStateSave: true,
         aoColumnDefs: aoColumnDefs,
         lengthMenu: [
-            [5, 10, 15, 20, -1],
-            [5, 10, 15, 20, "All"]
+            [10, 20, 50, 100, 150, 200, 500, -1],
+            [10, 20, 50, 100, 150, 200, 500, "All"]
         ],
-        pageLength: 5,            
+        pageLength: 10,            
         pagingType: "bootstrap_full_number",
         columnDefs: [{
             orderable: false,
