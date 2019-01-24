@@ -6,7 +6,7 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h3 class="modal-title">ADD\EDIT Item</h3>
 			</div>
-			<form class="form-horizontal" role="form" method="POST" action="{{ url('/wbs-inventory-save') }}" id="frm_markup">
+			<form class="form-horizontal" role="form" method="POST" action="{{ url('/wbs-inventory-save') }}" id="frm_inventory">
 				<div class="modal-body">
 					{!! csrf_field() !!}
 					<input type="hidden" id="id" name="id">
