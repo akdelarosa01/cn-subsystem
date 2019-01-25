@@ -435,7 +435,7 @@ $( function() {
 		$('#iss_location').val($(this).attr('data-location'));
 		$('#iss_remarks').val($(this).attr('data-remarks'));
 		$('#iss_item').prop('readonly', true);
-		$('#iss_lotno').prop('readonly', false);
+		$('#iss_lotno').prop('readonly', true);
 		$('#iss_qty').prop('readonly', false);
 		$('#iss_save_status').val('EDIT');
 		$('#iss_id').val($(this).attr('data-id'));
