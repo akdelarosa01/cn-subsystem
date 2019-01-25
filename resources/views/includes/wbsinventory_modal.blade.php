@@ -14,9 +14,9 @@
 					<div class="form-group" id="item_code_div">
 						<label for="inputcode" class="col-md-3 control-label">Item Code</label>
 						<div class="col-md-9">
-							<input type="text" class="form-control validate" id="item_code" name="item_code">
+							<input type="text" class="form-control validate" id="item" name="item">
 							<span class="help-block">
-                                <strong id="item_code_msg"></strong>
+                                <strong id="item_msg"></strong>
                             </span>
 						</div>
 					</div>
