@@ -962,7 +962,7 @@ class PackingListSystemController extends Controller
                             , 'B.SPRICE')
                     ->select(DB::raw('D.CODE AS PORDER')
                             , DB::raw('H.NAME')
-                            , DB::raw("'TS' as CODE")
+                            , DB::raw("'CN' as CODE")
                             , DB::raw('ISNULL(B.SPRICE,0.0000)')
                             , DB::raw('SUM(D.KVOL) as KVOL'))
                     ->get();
