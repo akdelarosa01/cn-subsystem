@@ -934,106 +934,105 @@ class PackingListSystemController extends Controller
                             , 'D.KVOL')
                     ->count();
 
-                if ($countOutput > 0) {
-                    $output = DB::connection($this->mssql)->table('XSLIP AS D')
-                        ->leftjoin('XHIKI AS HK', 'HK.PORDER', '=', 'D.PORDER')
-                        ->leftjoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
-                        ->leftjoin('XBAIK AS B', 'B.CODE', '=', 'H.CODE')
-                        ->where('D.SEIBAN', 'like', $porder.'%')
-                        ->groupBy('D.SEIBAN'
-                                , 'H.NAME'
-                                , 'D.CODE'
-                                , 'B.PRICE'
-                                , 'D.KVOL')
-                        ->select('D.SEIBAN'
-                                , 'H.NAME'
-                                , 'D.CODE as CODE'
-                                , 'B.PRICE'
-                                , 'D.KVOL')
-                        ->get();
-                } else {
-                    $output = DB::connection($this->mssql)->table('XRECE AS D')
-                                ->leftJoin('XHEAD AS H','H.CODE','=','D.CODE')
-                                ->leftJoin('XBAIK AS B','B.CODE','=','H.CODE')
-                                ->where('D.CODE','like',$porder.'%')
-                                ->groupBy('D.CODE',
-                                        'H.NAME',
-                                        'B.PRICE',
-                                        'D.KVOL')
-                                ->select(DB::raw('D.CODE AS PORDER'),
-                                        DB::raw('H.NAME'),
-                                        DB::raw("'CN' AS CODE"),
-                                        DB::raw('B.PRICE'), 
-                                        DB::raw('D.KVOL AS KVOL'))
-                                ->get();
-                    /*$output = DB::connection($this->mssql)->table('XSLIP AS D')
-                        ->leftjoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
-                        ->leftJoin('XTANK AS B', 'B.CODE', '=', 'H.CODE')
-                        ->leftjoin('XITEM AS I', 'I.CODE', '=', 'B.CODE')
-                        ->where('D.CODE', 'like', $porder.'%')
-                        ->groupBy('D.CODE'
-                                , 'H.NAME'
-                                , 'B.SPRICE'
-                                , 'I.VENDOR')
-                        ->select(DB::raw('D.CODE AS PORDER')
-                                , DB::raw('H.NAME')
-                                , DB::raw("'CN' as CODE")
-                                , DB::raw('ISNULL(B.SPRICE,0.0000) as PRICE')
-                                , DB::raw('SUM(D.KVOL) as KVOL')
-                                , DB::raw("I.VENDOR as CNAME"))
-                        ->get();*/
-                }
-                if (count((array)$output) == 0) {
+            if ($countOutput > 0) {
+                $output = DB::connection($this->mssql)->table('XSLIP AS D')
+                    ->leftjoin('XHIKI AS HK', 'HK.PORDER', '=', 'D.PORDER')
+                    ->leftjoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
+                    ->leftjoin('XBAIK AS B', 'B.CODE', '=', 'H.CODE')
+                    ->where('D.SEIBAN', 'like', $porder.'%')
+                    ->groupBy('D.SEIBAN'
+                            , 'H.NAME'
+                            , 'D.CODE'
+                            , 'B.PRICE'
+                            , 'D.KVOL')
+                    ->select('D.SEIBAN'
+                            , 'H.NAME'
+                            , 'D.CODE as CODE'
+                            , 'B.PRICE'
+                            , 'D.KVOL')
+                    ->get();
+            } else {
+                $output = DB::connection($this->mssql)->table('XSLIP AS D')
+                    // ->leftjoin('XHIKI AS HK', 'HK.PORDER', '=', 'D.PORDER')
+                    ->leftjoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
+                    ->join('XTANK AS B', 'B.CODE', '=', 'H.CODE')
+                    ->where('D.CODE', 'like', $porder.'%')
+                    ->groupBy('D.CODE'
+                            , 'H.NAME'
+                            , 'B.SPRICE')
+                    ->select(DB::raw('D.CODE AS PORDER')
+                            , DB::raw('H.NAME')
+                            , DB::raw("'TS' as CODE")
+                            , DB::raw('ISNULL(B.SPRICE,0.0000)')
+                            , DB::raw('SUM(D.KVOL) as KVOL'))
+                    ->get();
+            }
 
-                    /*$output = DB::connection($this->mysql)->table('XSLIP as D')
-                                ->leftJoin('XHEAD AS H','H.CODE','=','D.CODE')
-                                ->leftJoin('XTANK AS B','B.CODE','=','H.CODE')
-                                ->leftJoin('XITEM AS I','I.CODE','=','B.CODE')
-                                ->where('D.CODE','like', $porder.'%')
-                                ->groupBy('D.CODE',
-                                        'H.NAME',
-                                        'D.CODE',
-                                        'B.SPRICE',
-                                        'I.VENDOR')
-                                ->select(DB::raw('D.CODE AS PORDER'),
-                                        DB::raw('H.NAME'),
-                                        DB::raw("'CN' AS CODE"),
-                                        DB::raw('ISNULL(B.SPRICE,0.0000) AS PRICE'),
-                                        DB::raw('SUM(D.KVOL) AS KVOL'),
-                                        DB::raw("I.VENDOR AS CNAME"))
-                                ->get();*/
+            if (count((array)$output) == 0) {
+                $output = DB::connection($this->mssql)->table('XSLIP AS D')
+                    ->leftjoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
+                    ->leftjoin('XBAIK AS B', 'B.CODE', '=', 'H.CODE')
+                    ->where('D.CODE', 'like', $porder.'%')
+                    ->groupBy('D.CODE'
+                            , 'H.NAME'
+                            , 'B.PRICE')
+                    ->select(DB::raw('D.CODE AS PORDER')
+                            , DB::raw('H.NAME')
+                            , DB::raw("'TS' as CODE")
+                            , DB::raw('ISNULL(B.PRICE,0.0000)')
+                            , DB::raw('SUM(D.KVOL) as KVOL'))
+                    ->get();
+            }
 
 
-                    $output = DB::connection($this->mssql)->table('XRECE AS D')
-                        ->leftJoin('XHEAD AS H','H.CODE','=','D.CODE')
-                        ->leftJoin('XBAIK AS B', 'B.CODE', '=', 'H.CODE')
-                        ->where('D.SORDER', 'like', $porder.'%')
-                        ->groupBy('D.SORDER'
-                                , 'H.NAME'
-                                , 'D.CODE'
-                                , 'B.PRICE'
-                                , 'D.KVOL')
-                        ->select(DB::raw('D.SORDER AS PORDER')
-                                , DB::raw('H.NAME')
-                                , DB::raw('D.CODE AS CODE')
-                                , DB::raw("B.PRICE")
-                                , DB::raw('D.KVOL AS KVOL'))
-                        ->get();
-                }
-                if (count((array)$output) == 0) {
 
-                    $output = DB::connection($this->mssql)->table('XHEAD AS D')
-                                ->leftjoin('XTANK AS B', 'B.CODE', '=', 'D.CODE')
-                                ->where('D.CODE', 'like', $porder.'%')
-                                ->groupBy('D.CODE'
-                                        , 'D.NAME'
-                                        , 'B.SPRICE')
-                                ->select(DB::raw('D.CODE AS PORDER')
-                                        , DB::raw('D.NAME')
-                                        , DB::raw("'CN' as CODE")
-                                        , DB::raw("ISNULL(B.SPRICE,0.0000)"))
-                                ->get();
-                }
+            if (count((array)$output) == 0) {
+                // $output = DB::connection($this->mssql)->table('XHEAD AS D')
+                //     ->leftJoin('XTANK AS B', 'B.CODE', '=', 'D.CODE')
+                //     ->where('D.CODE', 'like', $porder.'%')
+                //     ->groupBy('D.CODE'
+                //             , 'D.NAME'
+                //             , 'B.SPRICE')
+                //     ->select(DB::raw('D.CODE AS PORDER')
+                //             , DB::raw('D.NAME')
+                //             , DB::raw("'TS' as CODE")
+                //             , DB::raw('ISNULL(B.SPRICE,0.0000)'))
+                //     ->get();
+                $output = DB::connection($this->mssql)
+                            ->select("SELECT D.CODE AS PORDER,
+                                            D.NAME,
+                                            'CN' AS CODE,
+                                            CASE
+                                                when (SELECT TOP 1 B.SPRICE
+                                                        FROM XTANK AS B
+                                                        where B.CODE = '".$porder."') IS NOT NULL
+                                                    then (SELECT TOP 1 B.SPRICE
+                                                            FROM XTANK AS B
+                                                            where B.CODE = '".$porder."')
+                                            else ISNULL((SELECT TOP 1 B.PRICE
+                                                        FROM XBAIK AS B
+                                                        where B.CODE = '".$porder."'),0)
+                                            END as PRICE
+                                            FROM XHEAD AS D
+                                            where D.CODE = '".$porder."'");
+            }
+            if (count((array)$output) == 0) {
+                $output = DB::connection($this->mssql)->table('XRECE AS D')
+                    ->leftJoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
+                    ->leftjoin('XBAIK AS B', 'B.CODE', '=', 'H.CODE')
+                    ->where('D.SORDER', 'like', $porder.'%')
+                    ->groupBy('D.SORDER'
+                            , 'H.NAME'
+                            , 'D.CODE'
+                            , 'B.PRICE'
+                            , 'D.KVOL')
+                    ->select(DB::raw('D.SORDER AS PORDER')
+                            , DB::raw('H.NAME')
+                            , DB::raw('D.CODE as CODE')
+                            , DB::raw("B.PRICE")
+                            , DB::raw('D.KVOL as KVOL'))
+                    ->get();
+            }
 
         $result = 0;
 
