@@ -100,7 +100,6 @@ function loadMRA()
 						'<td>'+Number(x.TtlCompleted).toLocaleString('en')+'</td>'+
 						'<td>'+Number(x.ReqToComplete).toLocaleString('en')+'</td>'+
 						'<td>'+Number(x.WHSE100).toLocaleString('en')+'</td>'+
-						'<td>'+Number(x.WHSE102).toLocaleString('en')+'</td>'+
 						'<td>'+Number(x.WHSE_NON).toLocaleString('en')+'</td>'+
 						'<td>'+Number(x.ASSY100).toLocaleString('en')+'</td>'+
 						'<td>'+Number(x.ASSY102).toLocaleString('en')+'</td>'+
