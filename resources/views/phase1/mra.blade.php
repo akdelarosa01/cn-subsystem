@@ -64,9 +64,6 @@
 													WHS100
 												</td>
 												<td>
-													WHS102
-												</td>
-												<td>
 													WHSNON
 												</td>
 												<td>

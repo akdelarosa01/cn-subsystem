@@ -98,7 +98,7 @@ class mraController extends Controller
                     //     if (isset($mra->ItemCode)) {
                     foreach ($mraItems as $key => $mra) {
                         $OrderBalance = $mra->OrderBal;//$mra->Scheduled - $mra->Actual;
-                        $total = $mra->WHS100 + $mra->WHS102 + $mra->WHSNON + $mra->ASSY100 + $mra->WHSSM;
+                        $total = $mra->WHS100 + $mra->WHSNON + $mra->ASSY100 + $mra->WHSSM;
                         $ForOrdering = $mra->REQCOM - $total - $OrderBalance;
 
                         if ($mra->TtlRequired == 0) {
@@ -112,9 +112,6 @@ class mraController extends Controller
                         }
                         if ($mra->WHS100 == 0) {
                             $mra->WHS100 = "0.0";
-                        }
-                        if ($mra->WHS102 == 0) {
-                            $mra->WHS102 = "0.0";
                         }
                         if ($mra->WHSNON == 0) {
                             $mra->WHSNON = "0.0";
@@ -145,7 +142,7 @@ class mraController extends Controller
                         $sheet->cell('E'.$row, number_format($mra->TtlCompleted, 2, '.', ''));
                         $sheet->cell('F'.$row, number_format($mra->REQCOM, 2, '.', ''));
                         $sheet->cell('G'.$row, $mra->WHS100);
-                        $sheet->cell('H'.$row, $mra->WHS102);
+                        $sheet->cell('H'.$row, 0);
                         $sheet->cell('I'.$row, $mra->WHSNON);
                         $sheet->cell('J'.$row, $mra->ASSY100);
                         $sheet->cell('K'.$row, $mra->ASSY102);
@@ -166,9 +163,9 @@ class mraController extends Controller
     }
 
 
-    private function insertToTblMra($code,$name,$type,$TtlReq,$TtlComp,$ReqToComplete,$WHS100,$WHS102,$WHSNON,$ASSY100,$ASSY102,$WHSSM,$MAINBUMO,$OrderBalance)
+    private function insertToTblMra($code,$name,$type,$TtlReq,$TtlComp,$ReqToComplete,$WHS100,$WHSNON,$ASSY100,$ASSY102,$WHSSM,$MAINBUMO,$OrderBalance)
     {
-        $total = $WHS100+$WHS102+$WHSNON+$ASSY100+$ASSY102+$WHSSM;
+        $total = $WHS100+$WHSNON+$ASSY100+$ASSY102+$WHSSM;
         $ForOrdering = $ReqToComplete - $total - $OrderBalance;
         return DB::connection($this->mysql)->table('tbl_mrareport')->insert([
                     'ItemCode' => $code,
@@ -178,7 +175,7 @@ class mraController extends Controller
                     'TtlCompleted' => $TtlComp,
                     'ReqToComplete' => $ReqToComplete,
                     'WHSE100' => $WHS100,
-                    'WHSE102' => $WHS102,
+                    'WHSE102' => 0,
                     'WHSE_NON' => $WHSNON,
                     'ASSY100' => $ASSY100,
                     'ASSY102' => $ASSY102,
@@ -202,7 +199,6 @@ class mraController extends Controller
                             ISNULL(hk.totalComplete,0) as TtlCompleted,
                             ISNULL(hk.REQCOM,0) as REQCOM,
                             SUM(x.WHS100) as WHS100,
-                            SUM(x.WHS102) as WHS102,
                             SUM(x.WHSNON) as WHSNON,
                             SUM(x.ASSY100) as ASSY100,
                             SUM(x.ASSY102) as ASSY102,
@@ -226,21 +222,19 @@ class mraController extends Controller
                            GROUP BY CODE) s ON i.CODE = s.CODE
                         LEFT join (SELECT z.CODE,
                                         ISNULL(z1.ZAIK,0) as WHS100,
-                                        ISNULL(z2.ZAIK,0) as WHS102,
                                         ISNULL(z3.ZAIK,0) as WHSNON,
                                         ISNULL(za1.ZAIK,0) as ASSY100,
                                         ISNULL(za2.ZAIK,0) as ASSY102,
                                         ISNULL(z4.ZAIK,0) as WHSSM,
-                                        ISNULL(z1.ZAIK + z2.ZAIK + z3.ZAIK + z4.ZAIK + za1.ZAIK, 0) as TOTAL
+                                        ISNULL(z1.ZAIK + z3.ZAIK + z4.ZAIK + za1.ZAIK, 0) as TOTAL
                                     FROM XZAIK z
                                         LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
-                                        LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
                                         LEFT JOIN XZAIK z3 ON z3.CODE = z.CODE AND z3.HOKAN = 'WHS-NON'
                                         LEFT JOIN XZAIK za1 ON za1.CODE = z.CODE AND za1.HOKAN = 'ASSY100'
                                         LEFT JOIN XZAIK za2 ON za2.CODE = z.CODE AND za2.HOKAN = 'ASSY102'
                                         LEFT JOIN XZAIK z4 ON z4.CODE = z.CODE AND z4.HOKAN = 'WHS-SM'
                                     WHERE z.JYOGAI <> '1'
-                                    GROUP BY z.CODE, z1.ZAIK ,z2.ZAIK, z3.ZAIK, z4.ZAIK, za1.ZAIK, za2.ZAIK
+                                    GROUP BY z.CODE, z1.ZAIK , z3.ZAIK, z4.ZAIK, za1.ZAIK, za2.ZAIK
                                     ) AS x
                         ON i.CODE = x.CODE
                         WHERE i.BUMO = 'PURH100' and i.HOKAN = 'WHS100'
@@ -260,11 +254,11 @@ class mraController extends Controller
         $OrderBalance = 0;
         foreach ($this->MRA() as $key => $mra) {
             $OrderBalance = $mra->OrderBal;
-            $total = $mra->WHS100 + $mra->WHS102 + $mra->WHSNON + $mra->ASSY100 + $mra->WHSSM;
+            $total = $mra->WHS100 + $mra->WHSNON + $mra->ASSY100 + $mra->WHSSM;
             $ForOrdering = $mra->REQCOM - $total - $OrderBalance;
 
             if ($ForOrdering > 0) {
-                $this->insertToTblMra($mra->CODE,$mra->NAME,$mra->BUNR,$mra->TtlRequired,$mra->TtlCompleted,$mra->REQCOM,$mra->WHS100,$mra->WHS102,$mra->WHSNON,$mra->ASSY100,$mra->ASSY102,$mra->WHSSM,$mra->BUMO,$OrderBalance);
+                $this->insertToTblMra($mra->CODE,$mra->NAME,$mra->BUNR,$mra->TtlRequired,$mra->TtlCompleted,$mra->REQCOM,$mra->WHS100,$mra->WHSNON,$mra->ASSY100,$mra->ASSY102,$mra->WHSSM,$mra->BUMO,$OrderBalance);
             }
 
         }
