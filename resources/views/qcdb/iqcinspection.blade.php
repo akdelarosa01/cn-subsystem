@@ -121,6 +121,7 @@
                                                 <input type="checkbox" class="group-checkable iqc_checkall" />
                                             </td>
                                             <td></td>
+											<td>Judgement</td>
                                             <td>Invoice No.</td>
 							                <td>Inspector</td>
 											<td>Date Inspected</td>
@@ -150,14 +151,12 @@
 											<td>Classification</td>
 											<td>Family</td>
 											<td>Remarks</td>
-											<td>Judgement</td>
 										</tr>
                                     </thead>
                                     <tbody id="tblforiqcinspection">
                                     </tbody>
                                 </table>
                         	</div>
-                            	
                             <div class="row">
                             	<div class="col-md-12 text-center">
                             		<button type="button" class="btn red" id="btn_delete_inspected">
@@ -180,7 +179,8 @@
 
 @push('script')
 <script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/common.js') }}" type="text/javascript"></script>
-<script type="text/javascript">
+<script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/iqcinspection.js') }}" type="text/javascript"></script>
+<!-- <script type="text/javascript">
     $(function() {
     	//$('#time_ins_from').mask('AA:AA AA', {placeholder: '__:__ __'});
 		getIQCInspection("{{url('/iqcdbgetiqcdata')}}");
@@ -488,6 +488,13 @@
 				$('#reject').val(1);
 			}
 
+			//check if the judgement is rejected
+			if ($(this).attr('data-judgement') == "Rejected") {
+				$('#btn_special_accept').removeClass('hidden');
+			}else{
+				$('#btn_special_accept').addClass('hidden');
+			}
+
 			$('#IQCresultModal').modal('show');
 		});
 
@@ -573,6 +580,8 @@
 				$('#btn_mod_ins').hide();
 			}
 
+			//add hidden to btn_special_accept
+			$('#btn_special_accept').addClass('hidden');
 			$('#IQCresultModal').modal('show');
 		});
 
@@ -2424,7 +2433,7 @@
 		});
 	}
 
-</script>
+</script> -->
 
 <script type="text/javascript">
 	var token = "{{ Session::token() }}";

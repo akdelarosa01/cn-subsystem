@@ -64,9 +64,6 @@
 													WHS100
 												</td>
 												<td>
-													WHS102
-												</td>
-												<td>
 													WHSNON
 												</td>
 												<td>
@@ -112,12 +109,9 @@
 						<br/>
 						<div class="row">
 							<div class="col-md-12">
-								{{-- <form method="GET" action="{{ url('/mraPrint') }}"> --}}
-									<a href="{{ url('/mraPrint') }}" id="btn_excel" class="btn green input-sm pull-right">
-										<i class="fa fa-file-excel-o"></i> Export To Excel
-									</a>
-								{{-- </form> --}}
-								
+								<a href="{{ url('/mraPrint') }}" id="btn_excel" class="btn green input-sm pull-right">
+									<i class="fa fa-file-excel-o"></i> Export To Excel
+								</a>
 							</div>
 						</div>
 

@@ -95,6 +95,7 @@ return [
             'database' => env('DB_DATABASE', 'pmi_yf'),
             'username' => env('DB_USERNAME', 'do.arca'),
             'password' => env('DB_PASSWORD', 'P@55w0rd'),
+<<<<<<< HEAD
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -123,6 +124,8 @@ return [
             'database' => env('DB_DATABASE', 'pmi_ts'),
             'username' => env('DB_USERNAME', 'do.arca'),
             'password' => env('DB_PASSWORD', 'P@55w0rd'),
+=======
+>>>>>>> 66a0587c96b4da9f37e9ed8faca5789fdc1ce652
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',

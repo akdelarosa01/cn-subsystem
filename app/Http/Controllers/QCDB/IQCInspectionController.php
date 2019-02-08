@@ -339,9 +339,103 @@ class IQCInspectionController extends Controller
                 'msg' => "Successfully Saved."
             ];
         }
+        return $data;
+    }
+
+    public function specialAccept(Request $req)
+    {
+        $judgement = $req->judgement;
+        $lots = $req->lot_no;
+
+        $query = false;
+        
+        $lot_qty = 0;
+        $array_lots = explode(',',$lots);
+
+        $data = [
+            'return_status' => 'failed',
+            'msg' => "Special Acceptance Failed."
+        ];
+
+        $check_duplicate = DB::connection($this->mysql)->table('iqc_inspections')->where('lot_no', $lots)->where('judgement', 'Special Accept')->count();
+
+        if ($check_duplicate <= 0) {
+                
+            foreach ($array_lots as $key => $lot) {
+                $lot_qty = $lot_qty + $this->getLotQty($req->invoice_no,$req->partcodelbl,$lot);
+
+                $status = 4;
+                $kitting = 1;
+
+                DB::connection($this->wbs)->table('tbl_wbs_inventory')
+                    ->where('invoice_no',$req->invoice_no)
+                    ->where('item',$req->partcodelbl)
+                    ->where('lot_no',$lot)
+                    ->update([
+                        'iqc_status' => $status,
+                        'for_kitting' => $kitting,
+                        'iqc_result' => $req->remarks,
+                        'judgement' => 'Special Accept',
+                        'ins_date' => $this->formatDate($req->date_inspected,'m/d/Y'),
+                        'ins_time' => $req->time_ins_to,
+                        'ins_by' => $req->inspector,
+                        'update_user' => Auth::user()->user_id,
+                        'updated_at' => Carbon::now(),
+                    ]);
+            }
+            DB::connection($this->mysql)->table('iqc_inspections')
+            ->insert([
+                'invoice_no' => $req->invoice_no,
+                'partcode' => $req->partcodelbl,
+                'partname' => $req->partname,
+                'supplier' => $req->supplier,
+                'app_date' => $req->app_date,
+                'app_time' => $req->app_time,
+                'app_no' => $req->app_no,
+                'lot_no' => $lots,
+                'lot_qty' => $lot_qty,
+                'type_of_inspection' => $req->type_of_inspection,
+                'severity_of_inspection' => $req->severity_of_inspection,
+                'inspection_lvl' => $req->inspection_lvl,
+                'aql' => $req->aql,
+                'accept' => $req->accept,
+                'reject' => $req->reject,
+                'date_ispected' => $req->date_inspected,
+                'ww' => $req->ww,
+                'fy' => $req->fy,
+                'shift' => $req->shift,
+                'time_ins_from' => $req->time_ins_from,
+                'time_ins_to' => $req->time_ins_to,
+                'inspector' => $req->inspector,
+                'submission' => $req->submission,
+                'judgement' => 'Special Accept',
+                'lot_inspected' => $req->lot_inspected,
+                'lot_accepted' => $req->lot_accepted,
+                'sample_size' => $req->sample_size,
+                'no_of_defects' => $req->no_of_defects,
+                'remarks' => $req->remarks,
+                'classification' => $req->classification,
+                'family' => $req->family,
+                'dbcon' => Auth::user()->productline,
+                'updated_at' => Carbon::now(),
+            ]);
+            $query = true;
+        }else {
+            $query = false;
+            $data = [
+                'return_status' => 'failed',
+                'msg' => "Special Acceptance Failed."
+            ];
+        }
+        if ($query) {
+            Event::fire(new UpdateIQCInspection($this->wbs));
+            $data = [
+                'return_status' => 'success',
+                'msg' => "Special Acceptance Success."
+            ];
+        }
 
         return $data;
-
     }
 
     private function updateInspection($req,$lots)
@@ -387,6 +481,7 @@ class IQCInspectionController extends Controller
                     'ins_date' => $this->formatDate($req->date_inspected,'m/d/Y'),
                     'ins_time' => $req->time_ins_to,
                     'ins_by' => $req->inspector,
+                    'update_user' => Auth::user()->user_id,
                     'updated_at' => Carbon::now(),
                 ]);
             DB::connection($this->wbs)->table('tbl_wbs_inventory')
@@ -402,6 +497,7 @@ class IQCInspectionController extends Controller
                     'ins_date' => $this->formatDate($req->date_inspected,'m/d/Y'),
                     'ins_time' => $req->time_ins_to,
                     'ins_by' => $req->inspector,
+                    'update_user' => Auth::user()->user_id,
                     'updated_at' => Carbon::now(),
                 ]);
         }
