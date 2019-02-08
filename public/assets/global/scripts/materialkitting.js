@@ -244,6 +244,9 @@ $( function() {
 	});
 
 	$('#btn_add_issuance_details').on('click', function() {
+		$('#tbl_fifo').dataTable().fnClearTable();
+    	$('#tbl_fifo').dataTable().fnDestroy();
+
 		$('.iss_clear').val('');
 		$('#iss_item').prop('readonly', false);
 		$('#iss_lotno').prop('readonly', true);
