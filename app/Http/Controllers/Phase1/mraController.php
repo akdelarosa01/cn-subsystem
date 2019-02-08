@@ -72,7 +72,6 @@ class mraController extends Controller
 
             $filename = 'MRA_report_'.$date;
 
-
             Excel::create($filename, function($excel) use($mraItems) {
                 $excel->sheet('Sheet1', function($sheet) use($mraItems) {
                     $sheet->cell('A1', "ItemCode");

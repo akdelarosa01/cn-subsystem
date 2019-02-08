@@ -1253,6 +1253,12 @@ Route::group(['middleware' => 'web'], function () {
                 'uses' => 'QCDB\IQCInspectionController@saveInspection',
                 'name' => 'iqcsaveinspection'
             ]);
+            
+            Route::post('/iqcspecialaccept', [
+                'uses' => 'QCDB\IQCInspectionController@specialAccept',
+                'name' => 'iqcspecialaccept'
+            ]);
+
 
             Route::post('/iqcdbsavemodeofdefects', [
                 'uses' => 'QCDB\IQCInspectionController@saveModeOfDefectsInspection',

@@ -5,7 +5,8 @@
 			<div class="modal-header">
 				<h4 class="modal-title">IQC Inspection Result</h4>
 			</div>
-			<form class=form-horizontal>
+			<form class=form-horizontal id="frm_iqc_inspection">
+				{{ csrf_field() }}
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-6">
@@ -246,6 +247,7 @@
 								<div class="col-sm-9">
 									<input type="text" class="form-control input-sm clear actual" id="judgement" name="judgement" readonly>
 									<div id="er_judgement"></div>
+									<label class="text-success" id="msg_special_accept" style="margin-top:10px;" hidden>Special Accept</label>
 								</div>
 							</div>
 						</div>
@@ -298,6 +300,7 @@
 							<div class="form-group">
 								<div class="col-sm-3">
 									<input type="hidden" name="save_status" id="save_status">
+									<input type="hidden" name="batching" id="batching">
 								</div>
 							</div>
 						</div>
@@ -306,6 +309,7 @@
 
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn btn-primary hidden" id="btn_special_accept"><i class="fa fa-check"></i>Special Accept</button>
 					<button type="button" onclick="javascript:saveInspection();" class="btn btn-success" id="btn_savemodal"><i class="fa fa-floppy-disk-o"></i>Save</button>
 					<button type="button" class="btn grey-gallery" id="btn_clearmodal"><i class="fa fa-eraser"></i>Clear</button>
 					<a href="javascript:;" data-dismiss="modal"  class="btn btn-danger btn_backModal"><i class="fa fa-reply"></i>Back</a>
