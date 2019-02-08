@@ -334,44 +334,7 @@ $(function() {
                 batching = 1;
             }
             $('#batching').val(batching);
-            // var data = {
-            //     _token: token,
-            //     save_status: $('#save_status').val(),
-            //     id: $('#iqc_result_id').val(),
-            //     invoice_no: $('#invoice_no').val(),
-            //     partcode: partcode,
-            //     partname: $('#partname').val(),
-            //     supplier: $('#supplier').val(),
-            //     app_date: $('#app_date').val(),
-            //     app_time: $('#app_time').val(),
-            //     app_no: $('#app_no').val(),
-            //     lot_no: $('#lot_no').val(),
-            //     lot_qty: $('#lot_qty').val(),
-            //     type_of_inspection: $('#type_of_inspection').val(),
-            //     severity_of_inspection: $('#severity_of_inspection').val(),
-            //     inspection_lvl: $('#inspection_lvl').val(),
-            //     aql: $('#aql').val(),
-            //     accept: $('#accept').val(),
-            //     reject: $('#reject').val(),
-            //     date_inspected: $('#date_inspected').val(),
-            //     ww: $('#ww').val(),
-            //     fy: $('#fy').val(),
-            //     time_ins_from: $('#time_ins_from').val(),
-            //     time_ins_to: $('#time_ins_to').val(),
-            //     shift: $('#shift').val(),
-            //     inspector: $('#inspector').val(),
-            //     submission: $('#submission').val(),
-            //     judgement: 'Special Accept',
-            //     lot_inspected: $('#lot_inspected').val(),
-            //     lot_accepted: $('#lot_accepted').val(),
-            //     sample_size: $('#sample_size').val(),
-            //     no_of_defects: $('#no_of_defects').val(),
-            //     remarks: $('#remarks').val(),
-            //     classification: $('#classification').val(),
-            //     family: $('#family').val(),
-            //     is_batching: batching
-            // };
-
+            
             $.ajax({
                 url: url,
                 type: "POST",

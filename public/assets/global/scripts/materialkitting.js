@@ -260,8 +260,11 @@ $( function() {
 		getItemAndLotnumFifo();
 	});
 
-	$('#tbl_fifo_body').on('click', '.showfifoitem', function(event) {
-		if ($(this).attr('data-rowcount') != 1) {
+	$('#tbl_fifo').on('click', '.showfifoitem', function(event) {
+		var data = $('#tbl_fifo').DataTable().rows(0).data();
+		var firstrow_id = data['0'].id;
+
+		if ($(this).attr('data-id') != firstrow_id) {
 			$('#frid').val($(this).attr('data-id'));
 			$('#fritem').val($(this).attr('data-item'));
 			$('#fritemdesc').val($(this).attr('data-item_desc'));
@@ -987,32 +990,57 @@ function getItemAndLotnumFifo() {
 }
 
 function getFifoTable(data) {
-	var tbl_fifo_body = '';
-	$('#tbl_fifo_body').html('');
-	var cnt = 1;
-	$.each(data, function(i, x) {
-		var lot_no = x.lot_no;
-		if (x.lot_no == null) {
-			lot_no = '';
-		}
-		tbl_fifo_body = '<tr>'+
-							'<td width="7.28%">'+
-								'<button class="btn green btn-sm showfifoitem" data-rowcount="'+cnt+'" data-id="'+x.id+'" data-item="'+x.item+'" '+
-									'data-item_desc="'+x.item_desc+'" data-qty="'+x.qty+'" data-lot_no="'+lot_no+'" '+
-									'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'">'+
-									'<i class="fa fa-edit"></i>'+
-								'</button>'+
-							'</td>'+
-							'<td width="18.28%">'+x.item+'</td>'+
-							'<td width="21.28%">'+x.item_desc+'</td>'+
-							'<td width="7.28%">'+x.qty+'</td>'+
-							'<td width="17.28%">'+lot_no+'</td>'+
-							'<td width="14.28%">'+x.location+'</td>'+
-							'<td width="14.28%">'+x.receive_date+'</td>'+
-						'</tr>';
-		$('#tbl_fifo_body').append(tbl_fifo_body);
-		cnt++;
-	});
+	// var tbl_fifo_body = '';
+	// $('#tbl_fifo_body').html('');
+	// var cnt = 1;
+	// $.each(data, function(i, x) {
+	// var lot_no = x.lot_no;
+	// if (x.lot_no == null) {
+	// 	lot_no = '';
+	// }
+	// 	tbl_fifo_body = '<tr>'+
+	// 						'<td width="7.28%">'+
+	// 							'<button class="btn green btn-sm showfifoitem" data-rowcount="'+cnt+'" data-id="'+x.id+'" data-item="'+x.item+'" '+
+	// 								'data-item_desc="'+x.item_desc+'" data-qty="'+x.qty+'" data-lot_no="'+lot_no+'" '+
+	// 								'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'">'+
+	// 								'<i class="fa fa-edit"></i>'+
+	// 							'</button>'+
+	// 						'</td>'+
+	// 						'<td width="18.28%">'+x.item+'</td>'+
+	// 						'<td width="21.28%">'+x.item_desc+'</td>'+
+	// 						'<td width="7.28%">'+x.qty+'</td>'+
+	// 						'<td width="17.28%">'+lot_no+'</td>'+
+	// 						'<td width="14.28%">'+x.location+'</td>'+
+	// 						'<td width="14.28%">'+x.receive_date+'</td>'+
+	// 					'</tr>';
+	// 	$('#tbl_fifo_body').append(tbl_fifo_body);
+	// 	cnt++;
+	// });
+	$('#tbl_fifo').dataTable().fnClearTable();
+    $('#tbl_fifo').dataTable().fnDestroy();
+	$('#tbl_fifo').dataTable({
+			data:data,
+			order:[6,'asc'],
+			columns:[
+				{data: function (x) 
+					{
+						return '<td>'+
+									'<button class="btn green btn-sm showfifoitem" data-id="'+x.id+'" data-item="'+x.item+'" '+
+										'data-item_desc="'+x.item_desc+'" data-qty="'+x.qty+'" data-lot_no="'+x.lot_no+'" '+
+										'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'">'+
+										'<i class="fa fa-edit"></i>'+
+									'</button>'+
+								'</td>'
+					}
+				},
+				{data:'item'},
+				{data:'item_desc'},
+				{data:'qty'},
+				{data:'lot_no'},
+				{data:'location'},
+				{data:'receive_date'}
+			]
+	})
 }
 
 function filterSearch() {

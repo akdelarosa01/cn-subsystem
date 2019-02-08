@@ -91,16 +91,23 @@
 						</form>
 					</div>
 					<div class="col-md-7">
-						<table class="table table-bordered table-fixedheader table-striped table-fifo" style="font-size:10px" id="tbl_fifo">
+						<table class="table table-bordered" style="font-size:10px" id="tbl_fifo">
 							<thead>
 								<tr>
-									<td width="7.28%"></td>
+									<!-- <td width="7.28%"></td>
 									<td width="18.28%">Item Code</td>
 									<td width="21.28%">Description</td>
 									<td width="7.28%">Qty</td>
 									<td width="17.28%">Lot</td>
 									<td width="14.28%">Location</td>
-									<td width="14.28%">Received Date</td>
+									<td width="14.28%">Received Date</td> -->
+									<td></td>
+									<td>Item Code</td>
+									<td>Description</td>
+									<td>Qty</td>
+									<td>Lot</td>
+									<td>Location</td>
+									<td>Received Date</td>
 								</tr>
 							</thead>
 							<tbody id="tbl_fifo_body"></tbody>
