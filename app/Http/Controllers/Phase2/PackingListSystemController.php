@@ -952,6 +952,7 @@ class PackingListSystemController extends Controller
                             , 'D.KVOL')
                     ->get();
             } else {
+                // raw mats will go here
                 $output = DB::connection($this->mssql)->table('XSLIP AS D')
                     // ->leftjoin('XHIKI AS HK', 'HK.PORDER', '=', 'D.PORDER')
                     ->leftjoin('XHEAD AS H', 'H.CODE', '=', 'D.CODE')
