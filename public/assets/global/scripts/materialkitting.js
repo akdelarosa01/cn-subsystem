@@ -260,7 +260,10 @@ $( function() {
 	});
 
 	$('#iss_item').on('change', function(e) {
-		getItemAndLotnumFifo();
+		e.preventDefault();
+		if ($.trim($(this).val()) != "") {
+			getItemAndLotnumFifo();
+		}
 	});
 
 	$('#tbl_fifo').on('click', '.showfifoitem', function(event) {
@@ -969,7 +972,7 @@ function delete_now(url,data) {
 }
 
 function getItemAndLotnumFifo() {
-	var data = {
+	var data = {	
 			_token : token,
 			item: $('#iss_item').val(),
 			lotno: $('#iss_lotno').val(),
@@ -991,6 +994,7 @@ function getItemAndLotnumFifo() {
 		msg("There was an error occurred while searching.",'error');
 	});
 }
+
 
 function getFifoTable(data) {
 	// var tbl_fifo_body = '';

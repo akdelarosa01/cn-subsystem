@@ -113,7 +113,7 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="inspected">
-                        	<div class="table-responsive">
+                        	<div>
                         		<table class="table table-hover table-bordered table-striped table-condensed" id="iqcdatatable" style="font-size: 10px;">
                                     <thead>
                                         <tr>
