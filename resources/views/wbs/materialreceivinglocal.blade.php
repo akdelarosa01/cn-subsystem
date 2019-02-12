@@ -42,6 +42,9 @@
             word-wrap:break-word;
             height: 40px;
         }
+        .dataTables_scrollHeadInner{
+            padding-left:0px!important;
+        }
     </style>
 @endpush
 
@@ -177,7 +180,7 @@
 
                         <div class="row">
                         	<div class="col-md-12">
-                        		<table class="table table-bordered table-striped" id="tbl_batch" style="font-size:10px;">
+                        		<table class="table table-hover table-bordered table-striped table-condensed no-footer" id="tbl_batch" style="font-size:10px;">
                                     <thead id="th_batch">
                                         <tr>
                                             <td class="table-checkbox" width="4.1%">
@@ -189,7 +192,7 @@
                                             <td width="5.1%">Qty.</td>
                                             <td width="7.1%">Pckg. ctgry</td>
                                             <td width="7.1%">Pckg. Qty.</td>
-                                            <td width="22.1%">Lot No.</td>
+                                            <td width="22.9%">Lot No.</td>
                                             <td width="7.1%">Location</td>
                                             <td width="7.1%">Supplier</td>
                                             <td width="6.1%">Not Reqd</td>

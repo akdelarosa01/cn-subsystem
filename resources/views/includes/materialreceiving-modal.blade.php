@@ -64,6 +64,18 @@
                                     <select class="form-control input-sm clearbatch" id="add_inputSupplier" placeholder="Supplier" name="supplier" <?php echo($readonly); ?>></select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="pressed_date" class="control-label col-md-3">Pressed Date</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm clearbatch" id="pressed_date" placeholder="Pressed Date" name="pressed_date">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="plating_date" class="control-label col-md-3">Plating Date</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm clearbatch" id="plating_date" placeholder="Plating Date" name="plating_date">
+                                </div>
+                            </div>
                         </form>
             </div>
             <div class="modal-footer">
@@ -139,6 +151,18 @@
                         <label for="inputname" class="control-label col-md-3">Supplier</label>
                         <div class="col-md-9">
                             <select class="form-control input-sm clearbatch" id="edit_inputSupplier" placeholder="Supplier" name="supplier" <?php echo($readonly); ?>></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_pressed_date" class="control-label col-md-3">Pressed Date</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control input-sm clearbatch" id="edit_pressed_date" placeholder="Pressed Date" name="pressed_date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_plating_date" class="control-label col-md-3">Plating Date</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control input-sm clearbatch" id="edit_plating_date" placeholder="Plating Date" name="plating_date">
                         </div>
                     </div>
                 </form>

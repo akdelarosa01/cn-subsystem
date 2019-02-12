@@ -153,6 +153,8 @@ class WBSLocalMaterialReceivingController extends Controller
                                     DB::raw('IFNULL(location,"") as location'),
                                     DB::raw('IFNULL(supplier,"") as supplier'),
                                     DB::raw('IFNULL(drawing_num,"") as drawing_num'),
+                                    DB::raw('IFNULL(pressed_date,"") as pressed_date'),
+                                    DB::raw('IFNULL(plating_date,"") as plating_date'),
                                     'not_for_iqc',
                                     'is_printed')
                                 ->where('wbs_loc_id',$localinfo->receive_no)
@@ -184,6 +186,8 @@ class WBSLocalMaterialReceivingController extends Controller
                                     DB::raw('IFNULL(location,"") as location'),
                                     DB::raw('IFNULL(supplier,"") as supplier'),
                                     DB::raw('IFNULL(drawing_num,"") as drawing_num'),
+                                    DB::raw('IFNULL(pressed_date,"") as pressed_date'),
+                                    DB::raw('IFNULL(plating_date,"") as plating_date'),
                                     'not_for_iqc',
                                     'is_printed')
                                 ->where('wbs_loc_id',$localinfo->receive_no)
@@ -368,6 +372,8 @@ class WBSLocalMaterialReceivingController extends Controller
                             'lot_no' => $req->lot_no,
                             'box_qty' => $req->box_qty,
                             'supplier' => $req->supplier,
+                            'pressed_date' => $req->pressed_date,
+                            'plating_date' => $req->plating_date,
                             'iqc_status' => $iqc_status,
                             'for_kitting' => $for_kitting,
                             'not_for_iqc' => $not_req,
@@ -387,6 +393,8 @@ class WBSLocalMaterialReceivingController extends Controller
                         'box_qty' => $req->box_qty,
                         'lot_no' => $req->lot_no,
                         'supplier' => $req->supplier,
+                        'pressed_date' => $req->pressed_date,
+                        'plating_date' => $req->plating_date,
                         'iqc_status' => $iqc_status,
                         'for_kitting' => $for_kitting,
                         'not_for_iqc' => $not_req,
@@ -419,7 +427,9 @@ class WBSLocalMaterialReceivingController extends Controller
                 'create_user' => Auth::user()->user_id,
                 'created_at' =>  date('Y-m-d h:i:s a'),
                 'update_user' => Auth::user()->user_id,
-                'updated_at' => date('Y-m-d h:i:s a')
+                'updated_at' => date('Y-m-d h:i:s a'),
+                'pressed_date' => $req->pressed_date,
+                'plating_date' => $req->plating_date
             ]);
 
             DB::connection($this->mysql)->table('tbl_wbs_inventory')->insert([
@@ -444,6 +454,8 @@ class WBSLocalMaterialReceivingController extends Controller
                 'created_at' =>  date('Y-m-d h:i:s a'),
                 'update_user' => Auth::user()->user_id,
                 'updated_at' => date('Y-m-d h:i:s a'),
+                'pressed_date' => $req->pressed_date,
+                'plating_date' => $req->plating_date,
                 'loc_batch_id' => $loc_batch_id
             ]);
 
@@ -533,6 +545,8 @@ class WBSLocalMaterialReceivingController extends Controller
                                         DB::raw('IFNULL(lot_no,"") as lot_no'),
                                         DB::raw('IFNULL(location,"") as location'),
                                         DB::raw('IFNULL(supplier,"") as supplier'),
+                                        DB::raw('IFNULL(pressed_date,"") as pressed_date'),
+                                        DB::raw('IFNULL(plating_date,"") as plating_date'),
                                         DB::raw('IFNULL(drawing_num,"") as drawing_num'),
                                         'not_for_iqc',
                                         'is_printed')
@@ -588,6 +602,8 @@ class WBSLocalMaterialReceivingController extends Controller
                                     DB::raw('IFNULL(lot_no,"") as lot_no'),
                                     DB::raw('IFNULL(location,"") as location'),
                                     DB::raw('IFNULL(supplier,"") as supplier'),
+                                    DB::raw('IFNULL(pressed_date,"") as pressed_date'),
+                                    DB::raw('IFNULL(plating_date,"") as plating_date'),
                                     DB::raw('IFNULL(drawing_num,"") as drawing_num'),
                                     'not_for_iqc',
                                     'is_printed')
@@ -638,6 +654,8 @@ class WBSLocalMaterialReceivingController extends Controller
                                         DB::raw('IFNULL(lot_no,"") as lot_no'),
                                         DB::raw('IFNULL(location,"") as location'),
                                         DB::raw('IFNULL(supplier,"") as supplier'),
+                                        DB::raw('IFNULL(pressed_date,"") as pressed_date'),
+                                        DB::raw('IFNULL(plating_date,"") as plating_date'),
                                         DB::raw('IFNULL(drawing_num,"") as drawing_num'),
                                         'not_for_iqc',
                                         'is_printed')
@@ -693,6 +711,8 @@ class WBSLocalMaterialReceivingController extends Controller
                                     DB::raw('IFNULL(lot_no,"") as lot_no'),
                                     DB::raw('IFNULL(location,"") as location'),
                                     DB::raw('IFNULL(supplier,"") as supplier'),
+                                    DB::raw('IFNULL(pressed_date,"") as pressed_date'),
+                                    DB::raw('IFNULL(plating_date,"") as plating_date'),
                                     DB::raw('IFNULL(drawing_num,"") as drawing_num'),
                                     'not_for_iqc',
                                     'is_printed')

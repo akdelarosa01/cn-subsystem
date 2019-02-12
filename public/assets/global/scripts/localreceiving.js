@@ -1,8 +1,11 @@
 var items_arr = [];
 $(function() {
+	
 	getLocalMaterialData();
 	checkAllCheckboxesInTable('.group-checkable','.checkboxes');
 
+	$('#edt_pressed_date').datepicker({ format: 'yyyy-mm-dd' });
+    $('#edt_plating_date').datepicker({ format: 'yyyy-mm-dd' });
 	$('#btn_save').on('click', function(e) {
 		var data = {
 			_token: token,
@@ -199,6 +202,8 @@ $(function() {
 		$('#edt_lot_no').val($(this).attr('data-lot_no'));
 		$('#edt_loc').val($(this).attr('data-location'));
 		$('#edt_supplier').val($(this).attr('data-supplier'));
+		$('#edt_pressed_date').val($(this).attr('data-pressed_date'));
+		$('#edt_plating_date').val($(this).attr('data-plating_date'));
 
 		if ($(this).attr('data-nr') === '1') {
 			$('#nr_iqc').attr('checked',true);
@@ -231,7 +236,10 @@ $(function() {
 			box: $('#edt_box').val(),
 			box_qty: $('#edt_box_qty').val(),
 			lot_no: $('#edt_lot_no').val(),
+			location: $('#edt_loc').val(),
 			supplier: $('#edt_supplier').val(),
+			pressed_date:$('#edt_pressed_date').val(),
+			plating_date:$('#edt_plating_date').val(),
 			controlno: $('#controlno').val(),
 			invoice_no: $('#invoice_no').val(),
 			save_status: $('#batch_save_status').val(),
@@ -363,10 +371,10 @@ function LocalBatch(data) {
 function makeBatchTable(arr) {
 	$('#tbl_batch').dataTable().fnClearTable();
     $('#tbl_batch').dataTable().fnDestroy();
-    $('#tbl_batch').dataTable({
+    $('#tbl_batch').DataTable({
         data: arr,
         bLengthChange : false,
-        scrollY: "200px",
+		scrollY: "220px",
 	    paging: false,
 	    searching: false,
         columns: [
@@ -380,7 +388,7 @@ function makeBatchTable(arr) {
 	        { data: function(x) {
 	        	return '<a href="javascript:;" class="btn btn-sm blue edit_batch" data-id="'+x.id+'" data-item="'+x.item+'" data-item_desc="'+x.item_desc+'" '+
                     		'data-qty="'+x.qty+'" data-box="'+x.box+'" data-box_qty="'+x.box_qty+'" data-lot_no="'+x.lot_no+'" '+
-                    		'data-location="'+x.location+'" data-supplier="'+x.supplier+'" data-nr="'+x.not_for_iqc+'">'+
+                    		'data-location="'+x.location+'" data-supplier="'+x.supplier+'" data-pressed_date="'+x.pressed_date+'" data-plating_date="'+x.plating_date+'" data-nr="'+x.not_for_iqc+'">'+
                     		'<i class="fa fa-edit"></i>'+
                     	'</a>';
 	        } },
@@ -427,7 +435,7 @@ function makeBatchTable(arr) {
 			{ width: "5.1%", targets: 4 },
 			{ width: "7.1%", targets: 5 },
 			{ width: "7.1%", targets: 6 },
-			{ width: "22.1%", targets: 7 },
+			{ width: "22.9%", targets: 7 },
 			{ width: "7.1%", targets: 8 },
 			{ width: "7.1%", targets: 9 },
 			{ width: "6.1%", targets: 10 },

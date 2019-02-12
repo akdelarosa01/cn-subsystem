@@ -100,6 +100,18 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="edt_pressed_date" class="col-md-3 control-label">Pressed Date</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm clearbatch" id="edt_pressed_date" <?php echo($readonly); ?> />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="edt_plating_date" class="col-md-3 control-label">Plating Date</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm clearbatch" id="edt_plating_date" <?php echo($readonly); ?> />
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="inputname" class="col-md-3 control-label"></label>
                                 <div class="col-md-9">
                                     <div class="md-checkbox-inline">

@@ -325,6 +325,7 @@ class WBSMaterialReceivingController extends Controller
 
             // batch
             if (count((array)$batchdata) > 0) {
+                
                 foreach ($batchdata->item as $key => $item) {
                     if ($this->checkIfBatchExist($batchdata->id[$key])) {
                         DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')
@@ -336,7 +337,9 @@ class WBSMaterialReceivingController extends Controller
                                 'lot_no' => $batchdata->lot_no[$key],
                                 'supplier' => strtoupper($batchdata->supplier[$key]),
                                 'update_user' => Auth::user()->user_id,
-                                'updated_at' => date('Y-m-d h:i:s a')
+                                'updated_at' => date('Y-m-d h:i:s a'),
+                                'pressed_date' => $batchdata->pressed_date[$key],
+                                'plating_date' => $batchdata->plating_date[$key]
                             ]);
 
                         DB::connection($this->mysql)->table('tbl_wbs_inventory')
@@ -348,7 +351,9 @@ class WBSMaterialReceivingController extends Controller
                                 'lot_no' => $batchdata->lot_no[$key],
                                 'supplier' => strtoupper($batchdata->supplier[$key]),
                                 'update_user' => Auth::user()->user_id,
-                                'updated_at' => date('Y-m-d h:i:s a')
+                                'updated_at' => date('Y-m-d h:i:s a'),
+                                'pressed_date' => $batchdata->pressed_date[$key],
+                                'plating_date' => $batchdata->plating_date[$key]
                             ]);
 
                         $this->UpdateCalculateQty($mrdata->receive_no,$item,str_replace(',','',$batchdata->qty[$key]));
@@ -389,7 +394,9 @@ class WBSMaterialReceivingController extends Controller
                                             'create_user' => Auth::user()->user_id,
                                             'created_at' =>  date('Y-m-d h:i:s a'),
                                             'update_user' => Auth::user()->user_id,
-                                            'updated_at' => date('Y-m-d h:i:s a')
+                                            'updated_at' => date('Y-m-d h:i:s a'),
+                                            'pressed_date' => $batchdata->pressed_date[$key],
+                                            'plating_date' => $batchdata->plating_date[$key]
                                         ]);
 
                         DB::connection($this->mysql)->table('tbl_wbs_inventory')->insert([
@@ -414,6 +421,8 @@ class WBSMaterialReceivingController extends Controller
                             'created_at' =>  date('Y-m-d h:i:s a'),
                             'update_user' => Auth::user()->user_id,
                             'updated_at' => date('Y-m-d h:i:s a'),
+                            'pressed_date' => $batchdata->pressed_date[$key],
+                            'plating_date' => $batchdata->plating_date[$key],
                             'mat_batch_id' => $mat_batch_id
                         ]);
 
@@ -502,7 +511,23 @@ class WBSMaterialReceivingController extends Controller
             $detailsdata = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_details')->where('wbs_mr_id',$mr->receive_no)->get();
             $summarydata = $this->DisplaySummary($mr->receive_no);
             // DB::connection($this->mysql)->table('tbl_wbs_material_receiving_summary')->where('wbs_mr_id',$mr->receive_no)->get();
-            $batchdata = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')->where('wbs_mr_id',$mr->receive_no)->get();
+            $batchdata = DB::connection($this->mysql)
+                        ->table('tbl_wbs_material_receiving_batch')
+                        ->select( 
+                            DB::raw('IFNULL(id,"") AS id')
+                          , DB::raw('IFNULL(item,"") AS item')
+                          , DB::raw('IFNULL(item_desc,"") AS item_desc')
+                          , DB::raw('IFNULL(qty,"") AS qty')
+                          , DB::raw('IFNULL(box,"") AS box')
+                          , DB::raw('IFNULL(box_qty,"") AS box_qty')
+                          , DB::raw('IFNULL(lot_no,"") AS lot_no')
+                          , DB::raw('IFNULL(location,"") AS location')
+                          , DB::raw('IFNULL(supplier,"") AS supplier')
+                          , DB::raw('IFNULL(pressed_date,"") AS pressed_date')
+                          , DB::raw('IFNULL(plating_date,"") AS plating_date')
+                          )
+                        ->where('wbs_mr_id',$mr->receive_no)
+                        ->get();
 
             return $data = [
                         'invoicedata' => $mrdata,
@@ -776,7 +801,24 @@ class WBSMaterialReceivingController extends Controller
             $detailsdata = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_details')->where('wbs_mr_id',$mr->receive_no)->get();
             $summarydata = $this->DisplaySummary($mr->receive_no);
             // DB::connection($this->mysql)->table('tbl_wbs_material_receiving_summary')->where('wbs_mr_id',$mr->receive_no)->get();
-            $batchdata = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')->where('wbs_mr_id',$mr->receive_no)->get();
+            $batchdata = DB::connection($this->mysql)
+                        ->table('tbl_wbs_material_receiving_batch')
+                        ->select( 
+                              DB::raw('IFNULL(id,"") AS id')
+                            , DB::raw('IFNULL(item,"") AS item')
+                            , DB::raw('IFNULL(item_desc,"") AS item_desc')
+                            , DB::raw('IFNULL(qty,"") AS qty')
+                            , DB::raw('IFNULL(box,"") AS box')
+                            , DB::raw('IFNULL(box_qty,"") AS box_qty')
+                            , DB::raw('IFNULL(lot_no,"") AS lot_no')
+                            , DB::raw('IFNULL(location,"") AS location')
+                            , DB::raw('IFNULL(supplier,"") AS supplier')
+                            , DB::raw('IFNULL(pressed_date,"") AS pressed_date')
+                            , DB::raw('IFNULL(plating_date,"") AS plating_date')
+                            )
+                        ->where('wbs_mr_id',$mr->receive_no)
+                        ->get();
+                        
 
             return $data = [
                         'invoicedata' => $mrdata,
@@ -1031,7 +1073,10 @@ class WBSMaterialReceivingController extends Controller
             $detailsdata = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_details')->where('wbs_mr_id',$mr->receive_no)->get();
             $summarydata = $this->DisplaySummary($mr->receive_no);
             // DB::connection($this->mysql)->table('tbl_wbs_material_receiving_summary')->where('wbs_mr_id',$mr->receive_no)->get();
-            $batchdata = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')->where('wbs_mr_id',$mr->receive_no)->get();
+            $batchdata = DB::connection($this->mysql)
+                        ->table('tbl_wbs_material_receiving_batch')
+                        ->where('wbs_mr_id',$mr->receive_no)
+                        ->get();
 
             return $data = [
                         'invoicedata' => $mrdata,
@@ -1756,7 +1801,9 @@ class WBSMaterialReceivingController extends Controller
                             'box_qty',
                             'lot_no',
                             'location',
-                            'supplier')
+                            'supplier',
+                            'pressed_date',
+                            'plating_date')
                     ->get();
         if ($this->checkIfExistObject($data) > 0) {
             return $data;

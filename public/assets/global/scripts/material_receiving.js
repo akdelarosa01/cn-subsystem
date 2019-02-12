@@ -9,6 +9,11 @@ $(function() {
     getLatestRecord();
     ViewState();
 
+    $('#pressed_date').datepicker({ format: 'yyyy-mm-dd' });
+    $('#plating_date').datepicker({ format: 'yyyy-mm-dd' });
+    $('#edit_pressed_date').datepicker({ format: 'yyyy-mm-dd' });
+    $('#edit_plating_date').datepicker({ format: 'yyyy-mm-dd' });
+
     supplierDropdown('#add_inputSupplier');
     supplierDropdown('#edit_inputSupplier');
 
@@ -201,17 +206,23 @@ $(function() {
         var boxqty = $('#edit_inputBoxQty').val();
         var lot = $('#edit_inputLotNo').val();
         var supplier = $('#edit_inputSupplier').val();
+        var pressed_date = $('#edit_pressed_date').val();
+        var plating_date = $('#edit_plating_date').val();
         $('#td_batch_qty'+bid).html(qty+'<input type="hidden" name="qty_batch[]" id="in_batch_qty'+bid+'" value="'+qty+'">');
         $('#td_batch_box'+bid).html(box+'<input type="hidden" name="box_batch[]" id="in_batch_box'+bid+'" value="'+box+'">');
         $('#td_batch_boxqty'+bid).html(boxqty+'<input type="hidden" name="box_qty_batch[]" id="in_batch_boxqty'+bid+'" value="'+boxqty+'">');
         $('#td_batch_lot'+bid).html(lot+'<input type="hidden" name="lot_no_batch[]" id="in_batch_lot'+bid+'" value="'+lot+'">');
         $('#td_batch_supplier'+bid).html(supplier+'<input type="hidden" name="supplier_batch[]" id="in_batch_supplier'+bid+'" value="'+supplier+'">');
+        $('#td_batch_pressed_date'+bid).html(pressed_date+'<input type="hidden" name="pressed_date_batch[]" id="in_batch_pressed_date'+bid+'" value="'+pressed_date+'">');
+        $('#td_batch_plating_date'+bid).html(plating_date+'<input type="hidden" name="plating_date_batch[]" id="in_batch_plating_date'+bid+'" value="'+plating_date+'">');
 
         $('#in_batch_qty'+bid).val($('#edit_inputQty').val());
         $('#in_batch_box'+bid).val($('#edit_inputBox').val());
         $('#in_batch_boxqty'+bid).val($('#edit_inputBoxQty').val());
         $('#in_batch_lot'+bid).val($('#edit_inputLotNo').val());
         $('#in_batch_supplier'+bid).val($('#edit_inputSupplier').val());
+        $('#in_batch_pressed_date'+bid).val($('#edit_pressed_date').val());
+        $('#in_batch_plating_date'+bid).val($('#edit_plating_date').val());
     });
 
     $('#btn_filter').on('click', function() {
@@ -547,6 +558,8 @@ $(function() {
             lot_no: $('input[name="lot_no_batch[]"]').map(function(){return $(this).val();}).get(),
             location: $('input[name="location_batch[]"]').map(function(){return $(this).val();}).get(),
             supplier: $('input[name="supplier_batch[]"]').map(function(){return $(this).val();}).get(),
+            pressed_date: $('input[name="pressed_date_batch[]"]').map(function(){return $(this).val();}).get(),
+            plating_date: $('input[name="plating_date_batch[]"]').map(function(){return $(this).val();}).get(),
         };
         var savestate = $('#savestate').val();
 
@@ -818,7 +831,7 @@ function AddState() {
 
 function ViewState() {
     //clear();
-    $('#receivingno').prop('readonly', false);
+    $('#receivingno').prop('disabled', false);
     $('#palletno').prop('readonly', true);
     $('#receivingdate').prop('readonly', true);
     $('#invoiceno').prop('readonly',true);
@@ -1115,7 +1128,7 @@ function getSingleBatchItem(id,bid) {
         type: "GET",
         data: data,
     }).done( function(data, textStatus, jqXHR) {
-        var item = '',item_desc = '',qty = '',box = '',box_qty = '',lot_no = '',location = '',supplier = '';
+        var item = '',item_desc = '',qty = '',box = '',box_qty = '',lot_no = '',location = '',supplier = '',pressed_date = '',plating_date = '';
         $.each(data, function(index, x) {
             item = x.item;
             item_desc = x.item_desc;
@@ -1125,8 +1138,10 @@ function getSingleBatchItem(id,bid) {
             lot_no = x.lot_no;
             location = x.location;
             supplier = x.supplier;
+            pressed_date = x.pressed_date;
+            plating_date = x.plating_date;
         });
-
+        console.log(pressed_date);
         $('#edit_inputItemNo').prop('disabled',true);
 
         $('#edit_inputBatchId').val(bid);
@@ -1143,6 +1158,8 @@ function getSingleBatchItem(id,bid) {
         $('#edit_inputLotNo').val(lot_no);
         $('#edit_inputLocation').val(location);
         $('#edit_inputSupplier').val(supplier);
+        $('#edit_pressed_date').val(pressed_date);
+        $('#edit_plating_date').val(plating_date);
     }).fail( function(data, textStatus, jqXHR) {
         $('#loading').modal('hide');
         failedMsg("There's some error while processing.");
@@ -1327,6 +1344,12 @@ function BatchData(batchdata,table) {
         if (x.is_printed == 1) {
             checked_print = 'checked="checked"';
         }
+        if(x.pressed_date == '0000-00-00'){
+            x.pressed_date = "";
+        }
+        if(x.plating_date == '0000-00-00'){
+            x.plating_date = "";
+        }
         cnt++;
 
         table = '<tr class="batch_remove">'+
@@ -1363,6 +1386,12 @@ function BatchData(batchdata,table) {
                     '</td>'+
                     '<td style="width:7.1%" id="td_batch_supplier'+cnt+'">'+x.supplier+
                         '<input type="hidden" name="supplier_batch[]" id="in_batch_supplier'+cnt+'" value="'+x.supplier+'">'+
+                    '</td>'+
+                    '<td style="width:7.1%;display:none;" id="td_batch_pressed_date'+cnt+'">'+x.pressed_date+
+                        '<input type="hidden" name="pressed_date_batch[]" id="in_batch_pressed_date'+cnt+'" value="'+x.pressed_date+'">'+
+                    '</td>'+
+                    '<td style="width:7.1%;display:none;" id="td_batch_plating_date'+cnt+'">'+x.plating_date+
+                        '<input type="hidden" name="plating_date_batch[]" id="in_batch_plating_date'+cnt+'" value="'+x.plating_date+'">'+
                     '</td>'+
                     '<td style="width:6.1%" class="text-center">'+
                         '<input type="checkbox" class="notforiqc_batch" name="notforiqc_batch[]" value="'+x.item+'" '+checked_kit+' disabled="disabled">'+
@@ -1482,6 +1511,8 @@ function deleteBatchItem() {
     }).fail( function(data, textStatus, jqXHR) {
         $('#loading').modal('hide');
         failedMsg("There's some error while processing.");
+    }).always(function() {
+        $('#loading').modal('hide');
     });
 }
 
@@ -1549,7 +1580,7 @@ function tblSummary() {
 }
 
 function tblBatch() {
-    var table = '<table class="table table-bordered table-fixedheader table-striped" id="tbl_batch">'+
+    var table = '<table class="table table-bordered table-striped" id="tbl_batch">'+
                     '<thead id="th_batch">'+
                         '<tr>'+
                             '<td class="table-checkbox" style="font-size:10px; width:2.1%;">'+
@@ -1565,6 +1596,8 @@ function tblBatch() {
                             '<td style="width:18.1%;">Lot No.</td>'+
                             '<td style="width:7.1%;">Location</td>'+
                             '<td style="width:7.1%;">Supplier</td>'+
+                            '<td style="width:7.1%;display:none;">Pressed Date</td>'+
+                            '<td style="width:7.1%;display:none;">Plating Date</td>'+
                             '<td style="width:6.1%;">Not Reqd</td>'+
                             '<td style="width:5.1%;">Printed</td>'+
                             '<td style="width:5.1%;"></td>'+
@@ -1586,6 +1619,8 @@ function batching() {
     var lot_no = $('#add_inputLotNo').val();
     var location = $('#add_inputLocation').val();
     var supplier = $('#add_inputSupplier').val();
+    var pressed_date = $('#pressed_date').val();
+    var plating_date = $('#plating_date').val();
 
     //   var r_qty = 0;
     //   var variance = 0;
@@ -1593,7 +1628,7 @@ function batching() {
     var item_code = $('#in_item_'+item).val();
     var item_id = $('#in_id_'+item).val();
 
-    if (item == '' || qty == '' || box == '' || box_qty == '' || lot_no == '' || supplier == '') {
+    if (item == '' || qty == '' || box == '' || box_qty == '' || lot_no == '' || supplier == '' || pressed_date == '' || plating_date == '') {
         failedMsg('Please fill out all the inputs.');
     } else {
         if ($('#add_notForIqc').val() == 1) {
@@ -1644,6 +1679,12 @@ function batching() {
                         '</td>'+
                         '<td style="width:7.1%">'+supplier+
                             '<input type="hidden" name="supplier_batch[]" value="'+supplier+'">'+
+                        '</td>'+
+                        '<td style="width:7.1%;display:none;">'+pressed_date+
+                                '<input type="hidden" name="pressed_date_batch[]" value="'+pressed_date+'">'+
+                        '</td>'+
+                        '<td style="width:7.1%;display:none;">'+plating_date+
+                                '<input type="hidden" name="plating_date_batch[]" value="'+plating_date+'">'+
                         '</td>'+
                         '<td style="width:6.1%">'+
                             '<input type="checkbox" class="notforiqc_batch" name="notforiqc_batch[]" value="'+item+'" disabled="disabled" '+not_for_iqc+'>'+
