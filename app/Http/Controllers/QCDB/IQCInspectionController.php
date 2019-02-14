@@ -354,7 +354,7 @@ class IQCInspectionController extends Controller
 
         $data = [
             'return_status' => 'failed',
-            'msg' => "Special Acceptance Failed."
+            'msg' => "Item Already Accepted."
         ];
 
         $check_duplicate = DB::connection($this->mysql)->table('iqc_inspections')->where('lot_no', $lots)->where('judgement', 'Special Accept')->count();
@@ -424,7 +424,7 @@ class IQCInspectionController extends Controller
             $query = false;
             $data = [
                 'return_status' => 'failed',
-                'msg' => "Special Acceptance Failed."
+                'msg' => "Item Already Accepted."
             ];
         }
         if ($query) {
