@@ -54,22 +54,22 @@ class WBSWhsIssuanceController extends Controller
 
     public function getPendingRequest()
     {
-    	$data = DB::connection($this->mysql)->table('tbl_request_summary')
-                    ->where('status','<>','Cancelled')
-                    ->where('status','<>','Closed')
-                    ->orderBy('id','desc')
-                    ->select([
-                		'id',
-                        DB::raw("ifnull(transno,'') as transno"),
-                        DB::raw("ifnull(DATE_FORMAT(created_at, '%m/%d/%Y %h:%i %p'),'') as created_at"),
-                        DB::raw("ifnull(pono,'') as pono"),
-                        DB::raw("ifnull(destination,'') as destination"),
-                        DB::raw("ifnull(line,'') as line"),
-                        DB::raw("ifnull(status,'') as status"),
-                        DB::raw("ifnull(requestedby,'') as requestedby"),
-                        DB::raw("ifnull(lastservedby,'') as lastservedby"),
-                        DB::raw("ifnull(lastserveddate,'') as lastserveddate")
-                    ]);
+		$data = DB::connection($this->mysql)
+					->table('tbl_request_summary')
+					->where('status','<>','Cancelled')
+					->where('status','<>','Closed')
+					->orderBy('id','desc')
+					->select('id',
+						DB::raw("ifnull(transno,'') as transno"),
+						DB::raw("ifnull(DATE_FORMAT(created_at, '%m/%d/%Y %h:%i %p'),'') as created_at"),
+						DB::raw("ifnull(pono,'') as pono"),
+						DB::raw("ifnull(destination,'') as destination"),
+						DB::raw("ifnull(line,'') as line"),	
+						DB::raw("ifnull(status,'') as status"),
+						DB::raw("ifnull(requestedby,'') as requestedby"),
+						DB::raw("ifnull(lastservedby,'') as lastservedby"),
+						DB::raw("ifnull(lastserveddate,'') as lastserveddate")
+					);
         return Datatables::of($data)
                         ->addColumn('action', function($data) {
                             return '<a href="javascript:;" class="btn btn-circle btn-primary btn-sm btn_view_details" data-transno="'.$data->transno.
@@ -189,13 +189,14 @@ class WBSWhsIssuanceController extends Controller
     		]);
     	}
 
-        $totals = DB::connection($this->mysql)->table('tbl_request_detail')
-                    ->where('transno',$req->transno)
-                    ->select(
-                    	DB::raw("SUM(requestqty) as total_req_qty"),
+		$totals = DB::connection($this->mysql)->table('tbl_request_detail')
+					->where('transno',$req->transno)
+					->where(DB::raw("REPLACE(UPPER(remarks),' ','')"),'!=',"NONEEDREPLACEMENT")
+					->select(
+						DB::raw("SUM(requestqty) as total_req_qty"),
 						DB::raw("SUM(servedqty) as total_served_qty")
 					)->first();
-
+					
 		$served_qty_per_items = DB::connection($this->mysql)->table('tbl_request_detail')
 				                    ->where('transno',$req->transno)
 				                    ->select(
@@ -204,7 +205,6 @@ class WBSWhsIssuanceController extends Controller
 									)
 									->groupBy('code')
 									->get();
-
 		$served_qtys = [];
 		foreach ($served_qty_per_items as $key => $served) {
 			array_push($served_qtys, [
@@ -214,7 +214,7 @@ class WBSWhsIssuanceController extends Controller
 
 	    return $data = [
 	    	'details' => $details,
-	    	'totals' => $totals,
+			'totals' => $totals,
 	    	'status' => $status,
 	    	'served' => $served_qty_per_items,
 	    	'id' => $id
@@ -431,6 +431,7 @@ class WBSWhsIssuanceController extends Controller
     	$data = DB::connection($this->mysql)->table('tbl_request_detail')
 						->where('whstransno',$issuance_no)
 						->where('transno',$req_no)
+						->where(DB::raw("REPLACE(UPPER(remarks),' ','')"),'!=',"NONEEDREPLACEMENT")
 						->select(
 							DB::raw('SUM(requestqty) as requestqty'),
 							DB::raw('SUM(servedqty) as servedqty')

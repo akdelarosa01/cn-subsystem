@@ -89,6 +89,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="control-label col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <input type="checkbox" id="cb_no_need_replacement" name="cb_no_need_replacement" />
+                                    <label for="cb_no_need_replacement">NO NEED REPLACEMENT</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="control-label col-sm-3">Remarks</label>
                                 <div class="col-sm-9">
                                     <textarea id="edit_remarks" class="form-control input-sm" name="edit_remarks" style="resize:none"></textarea>

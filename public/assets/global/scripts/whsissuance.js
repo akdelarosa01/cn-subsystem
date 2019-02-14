@@ -309,7 +309,10 @@ function makeViewDetailsTable(arr) {
             	var blocked = '';
             	if (x.requestqty == x.servedqty) {
             		blocked = 'disabled';
-            	}
+				}
+				if (x.remarks.toUpperCase().replace(/\s/g,'') == "NONEEDREPLACEMENT") {
+					blocked = 'disabled';
+				}
                 return "<input type='checkbox' class='check_item_detail' data-id='"+x.id+"' data-transno='"+x.transno+"' value='"+x.id+"' "+blocked+">";
             }, searchable: false, orderable: false },
 
@@ -320,6 +323,7 @@ function makeViewDetailsTable(arr) {
 			{ data: 'issuedqty' },
 			{ data: 'requestqty' },
 			{ data: 'servedqty' },
+			{ data: 'remarks' },
 			{ data: 'last_served_date' },
         ]
     });

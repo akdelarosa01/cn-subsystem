@@ -74,6 +74,7 @@
 													<td width="10%">Issued Qty.(Kitting)</td>
 													<td width="10%">Request Qty.</td>
 													<td width="10%">Served Qty.</td>
+													<td width="10%">Remarks</td>
 													<td width="10%">Served Date</td>
 												</tr>
 											</thead>

@@ -5,6 +5,16 @@ $( function() {
 	checkAllCheckboxesInTable('.check_all_po_detail','.check_item_po_detail');
 	getData();
 
+	$('#cb_no_need_replacement').on('change',function() {
+		if($(this).is(":checked")) {
+			$('#edit_remarks').val("NO NEED REPLACEMENT");
+			$('#edit_remarks').attr('readonly','readonly');
+		}else{
+			$('#edit_remarks').val("");
+			$('#edit_remarks').removeAttr('readonly');
+		}       
+	})
+
 	$('#btn_add_req').on('click', function() {
 		addState();
 	});
@@ -181,7 +191,16 @@ $( function() {
 		$('#edit_remarks').val($(this).attr('data-remarks'));
 		$('#edit_item_id').val($(this).attr('data-id'));
 
+		if ($(this).attr('data-remarks') == "NO NEED REPLACEMENT") {
+			$('#edit_remarks').attr('readonly','readonly');
+			$('.checker span').addClass('checked');
+		} else {
+			$('#edit_remarks').removeAttr('readonly');
+			$('.checker span').removeClass('checked');
+		}
+
 		$('#EditPODetailsModal').modal('show');
+
 	});
 
 	$('#tbl_details_body').on('click', '.btn_acknowledge_item', function() {

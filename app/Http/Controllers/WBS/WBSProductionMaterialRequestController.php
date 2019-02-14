@@ -195,7 +195,8 @@ class WBSProductionMaterialRequestController extends Controller
     	$data = [
     		'msg' => 'Saving failed.',
     		'status' => 'failed'
-    	];
+		];
+		$requestqty = 0;
 
     	if ($req->req_no == '') {
     		$status = 'Alert';
@@ -224,6 +225,13 @@ class WBSProductionMaterialRequestController extends Controller
 
 	        foreach ($req->detailid as $key => $detailid)
 	        {
+				
+				// if ($req->remarks[$key] == "NO NEED REPLACEMENT") {
+				// 	$requestqty = 0;
+				// } else {
+				// 	$requestqty = $req->requestqty[$key];
+				// }
+				
 	        	array_push($params,[
 	        		'transno' => $transno_no,
 	        		'whstransno' => $whstransNo,
