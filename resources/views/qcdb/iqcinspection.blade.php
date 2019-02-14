@@ -751,7 +751,7 @@
 		});
 
 		$('#btn_excel').on('click', function() {
-			window.location.href= "{{ url('/iqcprintreportexcel')  }}";
+			window.location.href= "{{ url('/iqcprintreportexcel')}}";
 		});
 
 		$('#btn_searchHistory').on('click', function() {
@@ -2443,8 +2443,43 @@
     var GettripleGroupByURL = "{{ url('/iqc-groupby-dppmgroup3') }}";
     var GetdoubleGroupByURLdetails = "{{ url('/iqc-groupby-dppmgroup2_Details') }}";
     var GettripleGroupByURLdetails = "{{ url('/iqc-groupby-dppmgroup3_Details') }}";
-    var pdfURL = "{{ url('/iqcprintreport?') }}";
-    var excelURL = "{{ url('/iqcprintreportexcel')  }}";
+	var pdfURL = "{{ url('/iqcprintreport?') }}";
+	var excelURL = "{{ url('/iqcprintreportexcel')}}";
+	var getShiftURL = "{{ url('/iqc-get-shift') }}";
+	var getIQCworkWeekURL = "{{url('/iqcgetworkweek')}}";
+	var getIQCInspectionURL = "{{url('/iqcdbgetiqcdata')}}";
+	var getHistoryURL = "{{url('/iqcdbgethistory')}}";
+	var getOnGoingURL = "{{url('/iqcdbgetongoing')}}";
+	var saveInspectionURL = "{{url('/iqcsaveinspection')}}";
+	var samplingPlanURL = "{{url('/iqcsamplingplan')}}";
+	var getDropdownsURL = "{{url('/iqcgetdropdowns')}}";
+	var getItemsURL = "{{url('/iqcdbgetitems')}}";
+	var getItemDetailsURL = "{{url('/iqcdbgetitemdetails')}}";
+	var calculateLotQtyURL = "{{url('/iqccalculatelotqty')}}";
+	var saveModeOfDefectsURL ="{{url('/iqcdbsavemodeofdefects')}}";
+	var getModeOfDefectsInspectionURL = "{{url('/iqcdbgetmodeofdefectsinspection')}}";
+	var getPartcodeSearchURL = "{{url('/iqcdbgetitemsearch')}}";
+	var searchItemInspectionURL="{{url('/iqcdbsearchinspection')}}";
+	var getItemsRequalificationURL = "{{url('/iqcdbgetitemrequali')}}";
+	var getAppNoURL = "{{url('/iqcdbgetappnorequali')}}";
+	var getDetailsRequalificationURL = "{{url('/iqcdbgetdetailsrequali')}}";
+	var calculateLotQtyRequalificationURL = "{{url('/iqccalculatelotqtyrequali')}}";
+	var getVisualInspectionRequalificationURL = "{{url('/iqcdbvisualinspectionrequali')}}";
+	var getDropdownsRequaliURL ="{{url('/iqcgetdropdownsrequali')}}";
+	var saveRequalificationURL ="{{url('/iqcsaverequali')}}";
+	var getRequalidataTableURL = "{{url('/iqcdbgetrequalidata')}}";
+	var	getModeOfDefectsRequali = "{{url('/iqcdbgetmodeofdefectsrequali')}}";
+	var saveModeOfDefectsRQURL = "{{url('/iqcdbsavemodeofdefectsrq')}}";
+	var getGroupbyContentsURL = "{{url('iqcdbgroupbygetcontent')}}";
+	var getGroupByTable = "{{url('/iqcdbgroupbytable')}}";
+	var inspectionByDateURL = "{{url('/iqcdbinspectionbydate')}}";
+	var deleteInspectionURL ="{{url('/iqcdbdeleteinspection')}}";
+	var deleteRequaliURL = "{{url('/iqcdbdeleterequali')}}";
+	var deleteModRQURL = "{{url('/iqcdbdeletemodeofdefectsrequali')}}";
+	var deleteModInsURL = "{{url('/iqcdbdeletemodeofdefects')}}";
+	var deleteOnGoingURL = "{{url('/iqcdbdeleteongoing')}}";
+	var iqcSpecialAcceptURL = "{{url('/iqcspecialaccept')}}";
+
 </script>
 
 <script src="{{ asset(config('constants.PUBLIC_PATH').'assets/global/scripts/iqc_inspection_groupby.js') }}" type="text/javascript"></script>

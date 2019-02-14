@@ -1,6 +1,6 @@
 $(function() {
     //$('#time_ins_from').mask('AA:AA AA', {placeholder: '__:__ __'});
-    getIQCInspection("/iqcdbgetiqcdata");
+    getIQCInspection(getIQCInspectionURL);
     getOnGoing();
 
     $('.timepicker').timepicker({
@@ -326,7 +326,7 @@ $(function() {
         $('#loading').modal('show');
 
         if (requiredFields(':input.required') == true) {
-            var url = '/iqcspecialaccept';
+            var url = iqcSpecialAcceptURL;
             var token = $('meta[name=csrf-token]').attr("content");
             var batching = 0;
 
@@ -347,7 +347,7 @@ $(function() {
                     msg(data.msg,'success');
                     //clear();
                     // $('#IQCresultModal').modal('hide');
-                    getIQCInspection("/iqcdbgetiqcdata");
+                    getIQCInspection(getIQCInspectionURL);
                     getOnGoing();
                     $('#msg_special_accept').removeAttr('hidden');
                 } else{
@@ -613,17 +613,17 @@ $(function() {
 
     // EXPORTS
     $('#btn_pdf').on('click', function() {
-        window.location.href= "/iqcprintreport?";
+        window.location.href= pdfURL;
     });
 
     $('#btn_excel').on('click', function() {
-        window.location.href= "/iqcprintreportexcel";
+        window.location.href= excelURL;
     });
 
     $('#btn_searchHistory').on('click', function() {
         var tblhistorybody = '';
         $('#tblhistorybody').html('');
-        var url = '/iqcdbgethistory';
+        var url = getHistoryURL;
         var token = $('meta[name=csrf-token]').attr("content");
         var data = {
             _token:token,
@@ -863,7 +863,7 @@ function getOnGoing() {
     $('#on-going-inspection').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '/iqcdbgetongoing',
+        ajax: getOnGoingURL,
         lengthMenu: [
             [5, 10, 20, 100, -1],
             [5, 10, 20, 100,"All"]
@@ -919,7 +919,7 @@ function saveInspection() {
     $('#loading').modal('show');
 
     if (requiredFields(':input.required') == true) {
-        var url = '/iqcsaveinspection';
+        var url = saveInspectionURL;
         var token = $('meta[name=csrf-token]').attr("content");
         var partcode = $('#partcode').val();
         var batching = 0;
@@ -982,7 +982,7 @@ function saveInspection() {
                 msg(data.msg,'success');
                 //clear();
                 // $('#IQCresultModal').modal('hide');
-                getIQCInspection("/iqcdbgetiqcdata");
+                getIQCInspection(getIQCInspectionURL);
                 getOnGoing();
             }
         }).fail( function(data,textStatus,jqXHR) {
@@ -1006,7 +1006,7 @@ function clear() {
 }
 
 function samplingPlan() {
-    var url = '/iqcsamplingplan';
+    var url = samplingPlanURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1034,7 +1034,7 @@ function samplingPlan() {
 }
 
 function getDropdowns() {
-    var url = '/iqcgetdropdowns';
+    var url = getDropdownsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token
@@ -1105,7 +1105,7 @@ function getFiscalYear() {
 }
 
 function getItems() {
-     var url = '/iqcdbgetitems';
+     var url = getItemsURL;
      var token = $('meta[name=csrf-token]').attr("content");
      var data = {
           _token: token,
@@ -1147,7 +1147,7 @@ function getItemDetails() {
         partcode = $('#partcodelbl').val();
     }
     
-    var url = '/iqcdbgetitemdetails';
+    var url = getItemDetailsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1192,7 +1192,7 @@ function getItemDetailsEdit() {
     // 	partcode = $('#partcodelbl').val();
     // }
     
-    var url = '/iqcdbgetitemdetails';
+    var url = getItemDetailsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1234,7 +1234,7 @@ function calculateLotQty(lotno) {
         items = $('#partcodelbl').val();
     }
 
-    var url = '/iqccalculatelotqty';
+    var url = calculateLotQtyURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token:token,
@@ -1255,7 +1255,7 @@ function calculateLotQty(lotno) {
 }
 
 function saveModeOfDefectsInspection() {
-    var url = '/iqcdbsavemodeofdefects';
+    var url = saveModeOfDefectsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1330,7 +1330,7 @@ function getModinspectionlist(data) {
 function iqcdbgetmodeofdefectsinspection() {
     $('#tblformodinspection').html('');
     var tblformodinspection = '';
-    var url = '/iqcdbgetmodeofdefectsinspection';
+    var url = getModeOfDefectsInspectionURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1384,7 +1384,7 @@ function requiredFields(requiredClass) {
 
 //search button
 function getPartcodeSearch() {
-    var url = '/iqcdbgetitemsearch';
+    var url = getPartcodeSearchURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1411,7 +1411,7 @@ function getPartcodeSearch() {
 function searchItemInspection() {
     var tblforiqcinspection = '';
     $('#tblforiqcinspection').html('');
-    var url = '/iqcdbsearchinspection';
+    var url = searchItemInspectionURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1434,7 +1434,7 @@ function searchItemInspection() {
 
 //REQUALIFICATION
 function getItemsRequalification() {
-    var url = '/iqcdbgetitemrequali';
+    var url = getItemsRequalificationURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1459,7 +1459,7 @@ function getItemsRequalification() {
 }
 
 function getAppNo() {
-    var url = '/iqcdbgetappnorequali';
+    var url = getAppNoURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1485,7 +1485,7 @@ function getAppNo() {
 }
 
 function getDetailsRequalification() {
-    var url = '/iqcdbgetdetailsrequali';
+    var url = getDetailsRequalificationURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1518,7 +1518,7 @@ function getDetailsRequalification() {
 }
 
 function calculateLotQtyRequalification(lotno) {
-    var url = '/iqccalculatelotqtyrequali';
+    var url = calculateLotQtyRequalificationURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token:token,
@@ -1540,7 +1540,7 @@ function calculateLotQtyRequalification(lotno) {
 }
 
 function getVisualInspectionRequalification() {
-    var url = '/iqcdbvisualinspectionrequali';
+    var url = getVisualInspectionRequalificationURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token:token,
@@ -1586,7 +1586,7 @@ function getVisualInspectionRequalification() {
 }
 
 function getDropdownsRequali() {
-    var url = '/iqcgetdropdownsrequali';
+    var url = getDropdownsRequaliURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token
@@ -1622,7 +1622,7 @@ function getDropdownsRequali() {
 function saveRequalification() {
     $('#loading').modal('show');
     if (requiredFields(':input.requiredRequali') == true) {
-        var url = '/iqcsaverequali';
+        var url = saveRequalificationURL;
         var token = $('meta[name=csrf-token]').attr("content");
         var data = {
             _token: token,
@@ -1676,7 +1676,7 @@ function saveRequalification() {
 function getRequalification(row) {
     var rq_inspection_body = '';
     $('#rq_inspection_body').html('');
-    var url = '/iqcdbgetrequalidata';
+    var url = getRequalidataTableURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
          _token: token,
@@ -1743,7 +1743,7 @@ function getRequalidataTable(data,rq_inspection_body) {
 function iqcdbgetmodeofdefectsRequali() {
     $('#tblformodinspection').html('');
     var tblformodinspection = '';
-    var url = '/iqcdbgetmodeofdefectsrequali';
+    var url = getModeOfDefectsRequali;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1788,7 +1788,7 @@ function getModrqlist(data) {
 }
 
 function saveModeOfDefectsRequali() {
-    var url = '/iqcdbsavemodeofdefectsrq';
+    var url = saveModeOfDefectsRQURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1818,7 +1818,7 @@ function saveModeOfDefectsRequali() {
 
 // GROUP BY
 function getGroupbyContents(field,content) {
-    var url = 'iqcdbgroupbygetcontent';
+    var url = getGroupbyContentsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1847,7 +1847,7 @@ function groupByTable(field1,content1,field2,content2,field3,content3,gfrom,gto)
     tblforlarlrrdppm = '';
     $('#tblforiqcinspection').html('');
     $('#tblforlarlrrdppm').html('');
-    var url = '/iqcdbgroupbytable';
+    var url = getGroupByTable;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -1875,7 +1875,7 @@ function groupByTable(field1,content1,field2,content2,field3,content3,gfrom,gto)
 function getInspectionBydate(gfrom,gto) {
     tblforiqcinspection = '';
     $('#tblforiqcinspection').html('');
-    var url = '/iqcdbinspectionbydate';
+    var url = inspectionByDateURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         from: gfrom,
@@ -1887,7 +1887,7 @@ function getInspectionBydate(gfrom,gto) {
         type: "GET",
         data: data
     }).done(function(data,textStatus,jqXHR) {
-        // getIQCInspection("/iqcdbgetiqcdata");
+        // getIQCInspection(getIQCInspectionURL);
         getIQCdataTable(data,tblforiqcinspection);
     }).fail(function(data,textStatus,jqXHR) {
         msg("There's some error while processing.",'failed');
@@ -1935,7 +1935,7 @@ function checkFile(fileName) {
 }
 
 function deleteInspection() {
-    var url = '/iqcdbdeleteinspection';
+    var url = deleteInspectionURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         id: getAllChecked('.iqc_checkitems'),
@@ -1953,14 +1953,14 @@ function deleteInspection() {
         } else {
             msg(data.msg,'failed');
         }
-        getIQCInspection("/iqcdbgetiqcdata");
+        getIQCInspection(getIQCInspectionURL);
     }).fail( function(data,textStatus,jqXHR) {
         msg("There's some error while processing.",'failed');
     });
 }
 
 function deleteRequali() {
-    var url = '/iqcdbdeleterequali';
+    var url = deleteRequaliURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         id: getAllChecked('.checitemrq'),
@@ -1985,7 +1985,7 @@ function deleteRequali() {
 }
 
 function deleteModRQ() {
-    var url = '/iqcdbdeletemodeofdefectsrequali';
+    var url = deleteModRQURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         id: getAllChecked('.modrq_checkitem'),
@@ -2010,7 +2010,7 @@ function deleteModRQ() {
 }
 
 function deleteModIns() {
-    var url = '/iqcdbdeletemodeofdefects';
+    var url = deleteModInsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         id: getAllChecked('.modinspection_checkitem'),
@@ -2035,7 +2035,7 @@ function deleteModIns() {
 }
 
 function deleteOnGoing() {
-    var url = '/iqcdbdeleteongoing';
+    var url = deleteOnGoingURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         id: getAllChecked('.ongiong_checkitems'),
@@ -2077,7 +2077,7 @@ function openModeOfDefects() {
 }
 
 function samplingPlan_man() {
-    var url = '/iqcsamplingplan';
+    var url = samplingPlanURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token,
@@ -2106,7 +2106,7 @@ function samplingPlan_man() {
 }
 
 function getDropdowns_man() {
-    var url = '/iqcgetdropdowns';
+    var url = getDropdownsURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token
@@ -2201,7 +2201,7 @@ function saveInspection_man() {
     $('#loading').modal('show');
 
     //if (requiredFields(':input.required') == true) {
-        var url = '/iqcsaveinspection';
+        var url = saveInspectionURL;
         var token = $('meta[name=csrf-token]').attr("content");
         var data = {
             _token: token,
@@ -2252,7 +2252,7 @@ function saveInspection_man() {
                 msg(data.msg,'success');
                 clear();
                 // $('#ManualModal').modal('hide');
-                getIQCInspection("/iqcdbgetiqcdata");
+                getIQCInspection(getIQCInspectionURL);
                 getOnGoing();
             }
         }).fail( function(data,textStatus,jqXHR) {
@@ -2266,7 +2266,7 @@ function saveInspection_man() {
 }
 
 function getIQCworkWeek() {
-    var url = '/iqcgetworkweek';
+    var url = getIQCworkWeekURL;
     var token = $('meta[name=csrf-token]').attr("content");
     var data = {
         _token: token
@@ -2291,7 +2291,7 @@ function getShift(from,to,el) {
     };
 
     $.ajax({
-        url: "/iqc-get-shift",
+        url: getShiftURL,
         type: 'GET',
         dataType: 'JSON',
         data: data
