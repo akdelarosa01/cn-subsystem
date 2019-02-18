@@ -733,6 +733,7 @@ class IQCInspectionController extends Controller
 
     public function getInvoiceItemDetails(Request $req)
     {
+        $db;
         $checker = DB::connection($this->wbs)->table('tbl_wbs_inventory')
                 ->where('invoice_no',$req->invoiceno)
                 ->where('item',$req->item)->count();
@@ -761,33 +762,39 @@ class IQCInspectionController extends Controller
                     'details' => $db
                 ];
             }
-        } // else {
-        //     $db = DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch as b')
-        //             ->join('tbl_wbs_local_receiving as m','m.receive_no','=','b.wbs_loc_id')
-        //             ->select('b.item_desc',
-        //                     'b.supplier',
-        //                     'm.app_time',
-        //                     'm.app_date',
-        //                     'm.receive_no',
-        //                     DB::raw("SUM(qty) as lot_qty"))
-        //             ->where('m.invoice_no',$req->invoiceno)
-        //             ->where('b.item',$req->item)
-        //             ->first();
+        } else {
 
-        //     $lot = DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch')
-        //             ->where('invoice_no',$req->invoiceno)
-        //             ->where('item',$req->item)
-        //             ->where('not_for_iqc',0)
-        //             ->select('lot_no as id','lot_no as text')
-        //             ->get();
-        // }
-
-        if ($this->checkIfExistObject($db) > 0 && $this->checkIfExistObject($lot) > 0) {
             return $data = [
-                'lot' => $lot,
-                'details' => $db
+                'lot' => '',
+                'details' => ''
             ];
+
+            // $db = DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch as b')
+            //         ->join('tbl_wbs_local_receiving as m','m.receive_no','=','b.wbs_loc_id')
+            //         ->select('b.item_desc',
+            //                 'b.supplier',
+            //                 'm.app_time',
+            //                 'm.app_date',
+            //                 'm.receive_no',
+            //                 DB::raw("SUM(qty) as lot_qty"))
+            //         ->where('m.invoice_no',$req->invoiceno)
+            //         ->where('b.item',$req->item)
+            //         ->first();
+
+            // $lot = DB::connection($this->wbs)->table('tbl_wbs_local_receiving_batch')
+            //         ->where('invoice_no',$req->invoiceno)
+            //         ->where('item',$req->item)
+            //         ->where('not_for_iqc',0)
+            //         ->select('lot_no as id','lot_no as text')
+            //         ->get();
         }
+
+        // if ($this->checkIfExistObject($db) > 0 && $this->checkIfExistObject($lot) > 0) {
+        //     return $data = [
+        //         'lot' => $lot,
+        //         'details' => $db
+        //     ];
+        // }
     }
 
     public function calculateLotQty(Request $req)

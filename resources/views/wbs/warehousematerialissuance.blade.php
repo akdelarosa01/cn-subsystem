@@ -45,6 +45,9 @@
             overflow-y: scroll;
             height: 375px;
         }
+        .dataTables_scrollHeadInner {
+          padding-left: 0px;
+        }
     </style>
 @endpush
 
