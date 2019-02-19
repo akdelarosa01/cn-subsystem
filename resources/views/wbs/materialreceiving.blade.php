@@ -289,7 +289,7 @@
                                     <i class="fa fa-plus"></i> Add New
                                 </button>
                                 <button type="button" class="btn blue-madison input-sm" id="btn_save" <?php echo($state); ?> >
-                                    <i class="fa fa-pencil"></i> Save
+                                    <i class="fa fa-floppy-o"></i> Save
                                 </button>
                                 <button type="button" class="btn blue-madison input-sm" id="btn_edit" >
                                     <i class="fa fa-pencil"></i> Edit
