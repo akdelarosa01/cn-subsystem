@@ -48,7 +48,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}"/>
 	<link rel="stylesheet" type="text/css" href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}"/>
 	<link rel="stylesheet" type="text/css" href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/global/plugins/bootstrap-tagsinput-latest/bootstrap-tagsinput.css') }}"/>
-
+	
 	{{-- <link rel="stylesheet" type="text/css" href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/global/plugins/typeahead/typeahead.css') }}"> --}}
 	<!-- END PAGE LEVEL STYLES -->
 
@@ -59,6 +59,8 @@
 	{{-- <link id="style_color" href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/admin/layout/css/themes/light.css')}}" rel="stylesheet" type="text/css"/> --}}
 	<link href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/admin/layout/css/themes/darkblue.css')}}" rel="stylesheet" type="text/css" id="style_color"/>
 	<link href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/admin/layout/css/custom.css')}}" rel="stylesheet" type="text/css"/>
+	
+	<link rel="stylesheet" type="text/css" href="{{ asset(Config::get('constants.PUBLIC_PATH').'assets/global/plugins/jquery-ui/jquery-ui.min.css') }}"/>
 
 	@stack('css')
 	<!-- END THEME STYLES -->

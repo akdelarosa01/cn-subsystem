@@ -362,7 +362,7 @@ $(function() {
             msg("Please fill out all required fields.",'failed');
         }	
     
-    })
+    });
 
     $('#tblforongoing').on('click','.btn_editongiong',function() {
         getDropdowns();

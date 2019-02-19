@@ -73,9 +73,11 @@ class WBSMaterialReceivingController extends Controller
         else
         {
 
+            $packages = $this->com->getDropdownById(86);
             #Render WBS Page.
             return view('wbs.materialreceiving', [
-                        'userProgramAccess' => $userProgramAccess
+                        'userProgramAccess' => $userProgramAccess,
+                        'packages' => $packages
                     ]);
         }
     }
