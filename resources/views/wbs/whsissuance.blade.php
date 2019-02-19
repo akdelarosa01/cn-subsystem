@@ -4,6 +4,14 @@
 	WBS | Pricon Microelectronics, Inc.
 @endsection
 
+@push('css')
+	<style type="text/css">
+		.dataTables_scrollHeadInner {
+			padding-left: 0px;
+        }
+	</style>
+@endpush
+
 @section('content')
 
 	<?php $state = ""; $readonly = ""; ?>
