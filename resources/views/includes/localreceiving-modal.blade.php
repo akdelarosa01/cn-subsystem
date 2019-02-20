@@ -72,6 +72,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <select id="edt_box" class="form-control input-sm clearbatch" <?php echo($state);?>>
+                                        <option value=""></option>
                                     </select>
                                 </div>
                                 <div class="col-md-3" style="text-align: right;">
@@ -102,13 +103,13 @@
                             <div class="form-group">
                                 <label for="edt_pressed_date" class="col-md-3 control-label">Pressed Date</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control input-sm clearbatch" id="edt_pressed_date" <?php echo($readonly); ?> />
+                                    <input type="text" class="form-control input-sm clearbatch" placeholder="yyyy-mm-dd" id="edt_pressed_date" <?php echo($readonly); ?> />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="edt_plating_date" class="col-md-3 control-label">Plating Date</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control input-sm clearbatch" id="edt_plating_date" <?php echo($readonly); ?> />
+                                    <input type="text" class="form-control input-sm clearbatch" placeholder="yyyy-mm-dd" id="edt_plating_date" <?php echo($readonly); ?> />
                                 </div>
                             </div>
                             <div class="form-group">
