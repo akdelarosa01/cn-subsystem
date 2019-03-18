@@ -1,12 +1,13 @@
 var items_arr = [];
-$(function() {
-	
-	getLocalMaterialData();
-	checkAllCheckboxesInTable('.group-checkable','.checkboxes');
+$(function () {
 
-	$('#edt_pressed_date').datepicker({ format: 'yyyy-mm-dd' });
-    $('#edt_plating_date').datepicker({ format: 'yyyy-mm-dd' });
-	$('#btn_save').on('click', function(e) {
+	getPackageCategory();
+	getLocalMaterialData();
+	checkAllCheckboxesInTable('.group-checkable', '.checkboxes');
+
+	// $('#edt_pressed_date').datepicker({ format: 'yyyy-mm-dd' });
+	// $('#edt_plating_date').datepicker({ format: 'yyyy-mm-dd' });
+	$('#btn_save').on('click', function (e) {
 		var data = {
 			_token: token,
 			id: $('#loc_info_id').val(),
@@ -17,25 +18,25 @@ $(function() {
 			receivingdate: $('#receivingdate').val(),
 			save_type: $('#save_type').val(),
 		}
-		
+
 		$.ajax({
 			url: savematlocURL,
 			type: 'POST',
 			dataType: 'JSON',
 			data: data,
-		}).done(function(data,textStatus,jqXHR) {
-			msg(data.msg,data.status);
+		}).done(function (data, textStatus, jqXHR) {
+			msg(data.msg, data.status);
 			getLocalMaterialData();
-		}).fail(function(data,textStatus,jqXHR) {
+		}).fail(function (data, textStatus, jqXHR) {
 			console.log(data);
 		});
 	});
 
-	$('#controlno').on('change', function() {
-		getLocalMaterialData('',$('#controlno').val());
+	$('#controlno').on('change', function () {
+		getLocalMaterialData('', $('#controlno').val());
 	});
 
-	$('#uploadbatchfiles').on('submit', function(e) {
+	$('#uploadbatchfiles').on('submit', function (e) {
 		$('#progress-close').prop('disabled', true);
 		$('#progressbar').addClass('progress-striped active');
 		$('#progressbar-color').addClass('progress-bar-success');
@@ -54,7 +55,7 @@ $(function() {
 			$('#progress-close').prop('disabled', false);
 			$('#progress-msg').html("Upload field is empty");
 		} else {
-			if (fileName != ''){
+			if (fileName != '') {
 				if (ext == 'xls' || ext == 'xlsx' || ext == 'XLS' || ext == 'XLSX') {
 					$('.myprogress').css('width', '0%');
 					$('#progress-msg').html('Uploading in progress...');
@@ -63,12 +64,12 @@ $(function() {
 					$.ajax({
 						url: formURL,
 						type: 'POST',
-						data:  formData,
-						mimeType:"multipart/form-data",
+						data: formData,
+						mimeType: "multipart/form-data",
 						contentType: false,
 						cache: false,
-						processData:false,
-						xhr: function() {
+						processData: false,
+						xhr: function () {
 							var xhr = new window.XMLHttpRequest();
 							if (xhr.upload) {
 								xhr.upload.addEventListener("progress", function (evt) {
@@ -94,7 +95,7 @@ $(function() {
 							}
 							return xhr;
 						}
-					}).done(function(data) {
+					}).done(function (data) {
 						$('#progressbar').removeClass('progress-striped active');
 						var datas = JSON.parse(data);
 						console.log(datas);
@@ -109,7 +110,7 @@ $(function() {
 							$('#progressbar-color').addClass('progress-bar-danger');
 							$('#progress-msg').html(datas.msg);
 						}
-					}).fail(function(data) {
+					}).fail(function (data) {
 						$('#progress-close').prop('disabled', false);
 						$('#progressbar').removeClass('progress-striped active');
 						$('#progressbar-color').removeClass('progress-bar-success');
@@ -124,76 +125,74 @@ $(function() {
 		}
 	});
 
-	$('#btn_excel').on('click', function() {
+	$('#btn_excel').on('click', function () {
 		$('#reportModal').modal('show');
 	});
 
-	$('#tbl_batch_body').on('click', '.barcode_item_batch', function(e) {
-        $('#lodaing').modal('show');
-        var id = $(this).attr('data-id');
-        var txnno = $(this).attr('data-txnno');
-        var txndate = $(this).attr('data-txndate');
-        var itemno = $(this).attr('data-itemno');
-        var itemdesc = $(this).attr('data-itemdesc');
-        var qty = $(this).attr('data-qty');
-        var bcodeqty = $(this).attr('data-bcodeqty');
-        var lotno = $(this).attr('data-lotno');
-        var location = $(this).attr('data-location');
-        var barcode = $(this).attr('data-barcode');
-        
-        var data = {
-             _token: token,
-             receivingno: $('#controlno').val(),
-             receivingdate: $('#receivingdate').val(),
-             id: id,
-             txnno : txnno,
-             txndate : txndate,
-             itemno : itemno,
-             itemdesc : itemdesc,
-             qty: qty,
-             bcodeqty : bcodeqty,
-             lotno : lotno,
-             location : location,
-             barcode : barcode,
-             state: 'single'
-        };
+	$('#tbl_batch_body').on('click', '.barcode_item_batch', function (e) {
+		$('#lodaing').modal('show');
+		var id = $(this).attr('data-id');
+		var txnno = $(this).attr('data-txnno');
+		var txndate = $(this).attr('data-txndate');
+		var itemno = $(this).attr('data-itemno');
+		var itemdesc = $(this).attr('data-itemdesc');
+		var qty = $(this).attr('data-qty');
+		var bcodeqty = $(this).attr('data-bcodeqty');
+		var lotno = $(this).attr('data-lotno');
+		var location = $(this).attr('data-location');
+		var barcode = $(this).attr('data-barcode');
+
+		var data = {
+			_token: token,
+			receivingno: $('#controlno').val(),
+			receivingdate: $('#receivingdate').val(),
+			id: id,
+			txnno: txnno,
+			txndate: txndate,
+			itemno: itemno,
+			itemdesc: itemdesc,
+			qty: qty,
+			bcodeqty: bcodeqty,
+			lotno: lotno,
+			location: location,
+			barcode: barcode,
+			state: 'single'
+		};
 
 
-        if ($('#invoice_no').val() == '' || $('#controlno').val() == '') {
-             msg("Please provide some values for Invoice Number or Local Receiving Number.",'failed');
-             $('#err_msg').html("");
-        } else {
-             $.ajax({
-                  url: localBarcodeURL,
-                  type: "POST",
-                  data: data,
-             }).done( function(data, textStatus, jqXHR) {
-                  $('#lodaing').modal('hide');
-                  if (data.request_status == 'success') {
-                       msg(data.msg,data.request_status);
-                       $('#print_br_'+itemno).val(itemno);
-                       $('#print_br_'+itemno).prop('checked', 'true');
-                  } else {
-                       msg(data.msg,data.request_status);
-                  }
-             }).fail( function(data, textStatus, jqXHR) {
-                  $('#loading').modal('hide');
-                  msg("There's some error while processing.",'error');
-             });
-        }
-    });
+		if ($('#invoice_no').val() == '' || $('#controlno').val() == '') {
+			msg("Please provide some values for Invoice Number or Local Receiving Number.", 'failed');
+			$('#err_msg').html("");
+		} else {
+			$.ajax({
+				url: localBarcodeURL,
+				type: "POST",
+				data: data,
+			}).done(function (data, textStatus, jqXHR) {
+				$('#lodaing').modal('hide');
+				if (data.request_status == 'success') {
+					msg(data.msg, data.request_status);
+					$('#print_br_' + itemno).val(itemno);
+					$('#print_br_' + itemno).prop('checked', 'true');
+				} else {
+					msg(data.msg, data.request_status);
+				}
+			}).fail(function (data, textStatus, jqXHR) {
+				$('#loading').modal('hide');
+				msg("There's some error while processing.", 'error');
+			});
+		}
+	});
 
-    $('#tbl_batch_body').on('click', '.edit_batch', function(e) {
-    	$('.clearbatch').val('');
-    	e.preventDefault();
-    	$('#batch_save_status').val('EDIT');
-    	getPackageCategory();
+	$('#tbl_batch_body').on('click', '.edit_batch', function (e) {
+		$('.clearbatch').val('');
+		e.preventDefault();
+		$('#batch_save_status').val('EDIT');
+		$('#edt_item').prop('readonly', true);
+		//$('#edt_lot_no').prop('readonly', true);
+		//$('#edt_loc').prop('readonly', true);
 
-    	$('#edt_item').prop('readonly', true);
-    	//$('#edt_lot_no').prop('readonly', true);
-    	//$('#edt_loc').prop('readonly', true);
-
-    	$('#edt_id').val($(this).attr('data-id'));
+		$('#edt_id').val($(this).attr('data-id'));
 		$('#edt_item').val($(this).attr('data-item'));
 		// $().val($(this).attr('data-item_desc'));
 		$('#edt_qty').val($(this).attr('data-qty'));
@@ -206,15 +205,15 @@ $(function() {
 		$('#edt_plating_date').val($(this).attr('data-plating_date'));
 
 		if ($(this).attr('data-nr') === '1') {
-			$('#nr_iqc').attr('checked',true);
+			$('#nr_iqc').attr('checked', true);
 		} else {
-			$('#nr_iqc').attr('checked',false);
+			$('#nr_iqc').attr('checked', false);
 		}
 
 		$('#EditbatchItemModal').modal('show');
-    });
+	});
 
-    $('input#nr_iqc').on('change', function(e) {
+	$('input#nr_iqc').on('change', function (e) {
 		if ($(this).is(':checked')) {
 			$(this).val(1);
 		} else {
@@ -222,15 +221,22 @@ $(function() {
 		}
 	});
 
-    $('#btn_edit_batch').on('click', function() {
-    	var nr = 0;
-        if ($('#nr_iqc').is(':checked')) {
-            nr = 1;
-        }
-
-    	var data = {
-    		_token: token,
-    		id: $('#edt_id').val(),
+	$('#btn_edit_batch').on('click', function () {
+		var nr = 0;
+		var pressed_date = $('#edt_pressed_date').val();
+		var plating_date = $('#edt_plating_date').val();
+		if ($('#nr_iqc').is(':checked')) {
+			nr = 1;
+		}
+		if ($.trim(pressed_date) == "") {
+			pressed_date = "N/A";
+		}
+		if ($.trim(plating_date) == "") {
+			plating_date = "N/A";
+		}
+		var data = {
+			_token: token,
+			id: $('#edt_id').val(),
 			item: $('#edt_item').val(),
 			qty: $('#edt_qty').val(),
 			box: $('#edt_box').val(),
@@ -238,60 +244,59 @@ $(function() {
 			lot_no: $('#edt_lot_no').val(),
 			location: $('#edt_loc').val(),
 			supplier: $('#edt_supplier').val(),
-			pressed_date:$('#edt_pressed_date').val(),
-			plating_date:$('#edt_plating_date').val(),
+			pressed_date: pressed_date,
+			plating_date: plating_date,
 			controlno: $('#controlno').val(),
 			invoice_no: $('#invoice_no').val(),
 			save_status: $('#batch_save_status').val(),
 			nr: nr,
-    	} 
-    	$.ajax({
-    		url: updateBatchItemURL,
-    		type: 'POST',
-    		dataType: 'JSON',
-    		data: data,
-    	}).done(function(data,textStatus,jqXHR) {
-    		msg(data.msg,data.status);
-    		$('#EditbatchItemModal').modal('hide');
-    		getLocalMaterialData('',$('#loc_info_id').val());
-    	}).fail(function(data,textStatus,jqXHR) {
-    		msg('There was an error occurred.','error');
-    	});
-    });
+		}
+		$.ajax({
+			url: updateBatchItemURL,
+			type: 'POST',
+			dataType: 'JSON',
+			data: data,
+		}).done(function (data, textStatus, jqXHR) {
+			msg(data.msg, data.status);
+			$('#EditbatchItemModal').modal('hide');
+			getLocalMaterialData('', $('#loc_info_id').val());
+		}).fail(function (data, textStatus, jqXHR) {
+			msg('There was an error occurred.', 'error');
+		});
+	});
 
-    $('#btn_add_batch').on('click', function() {
-    });
+	$('#btn_add_batch').on('click', function () {
+	});
 
-    $('#btn_addDetails').on('click', function() {
-    	$('.clearbatch').val('');
-    	$('#nr_iqc').attr('checked',false);
-    	$('#edt_item').prop('readonly', false);
-    	$('#edt_lot_no').prop('readonly', false);
-    	$('#edt_loc').prop('readonly', false);
-    	$('#batch_save_status').val('ADD');
-    	getPackageCategory();
-    	$('#EditbatchItemModal').modal('show');
-    });
+	$('#btn_addDetails').on('click', function () {
+		$('.clearbatch').val('');
+		$('#nr_iqc').attr('checked', false);
+		$('#edt_item').prop('readonly', false);
+		$('#edt_lot_no').prop('readonly', false);
+		$('#edt_loc').prop('readonly', false);
+		$('#batch_save_status').val('ADD');
+		$('#EditbatchItemModal').modal('show');
+	});
 
-    $('#btn_print_iqc').on('click', function() {
+	$('#btn_print_iqc').on('click', function () {
 		if ($('#controlno').val() == '' || $('#invoice_no').val() == '') {
 			failedMsg("Please provide some values for Invoice Number or Material Receiving Number.");
 		} else {
-			var url = LocalIQCURL+'?receivingno='+$('#controlno').val()+'&&_token='+token;
+			var url = LocalIQCURL + '?receivingno=' + $('#controlno').val() + '&&_token=' + token;
 
-			window.location.href= url;
+			window.location.href = url;
 		}
 	});
 
-	$('#btn_deleteDetails').on('click', function() {
+	$('#btn_deleteDetails').on('click', function () {
 		delete_modal();
 	});
 
-	$('#btn_confirm_delete').on('click', function() {
-		delete_items('.chk_batch_item',DeleteBatchItemURL);
+	$('#btn_confirm_delete').on('click', function () {
+		delete_items('.chk_batch_item', DeleteBatchItemURL);
 	});
 
-	$('#frm_search').on('submit', function(e) {
+	$('#frm_search').on('submit', function (e) {
 		$('#loading').modal('show');
 		e.preventDefault();
 		$.ajax({
@@ -299,32 +304,32 @@ $(function() {
 			type: 'POST',
 			dataType: 'JSON',
 			data: $(this).serialize(),
-		}).done(function(data, textStatus, xhr) {
+		}).done(function (data, textStatus, xhr) {
 			makeSearchTable(data);
-		}).fail(function(xhr, textStatus, errorThrown) {
+		}).fail(function (xhr, textStatus, errorThrown) {
 			console.log("error");
-		}).always(function() {
+		}).always(function () {
 			$('#loading').modal('hide');
 		});
 	});
 
-	$('#btn_search').on('click', function() {
+	$('#btn_search').on('click', function () {
 		$('#searchModal').modal('show');
 	});
 
-	$('#tbl_search_body').on('click', '.btn_search_detail', function() {
-		getLocalMaterialData('',$(this).attr('data-wbs_loc_id'));
+	$('#tbl_search_body').on('click', '.btn_search_detail', function () {
+		getLocalMaterialData('', $(this).attr('data-wbs_loc_id'));
 		$('#searchModal').modal('hide');
 	});
 
 });
 
-function getLocalMaterialData(to,id) {
+function getLocalMaterialData(to, id) {
 	var tbl_batch_body = '';
 	$('#tbl_batch_body').html(tbl_batch_body);
 
 	var data = {
-		_token: token, 
+		_token: token,
 		id: id,
 		to: to
 	};
@@ -334,14 +339,14 @@ function getLocalMaterialData(to,id) {
 		type: 'GET',
 		dataType: 'JSON',
 		data: data,
-	}).done(function(data,textStatus,jqXHR) {
+	}).done(function (data, textStatus, jqXHR) {
 		//if (data.localinfo.length > 0) {
 		LocalInfo(data.localinfo);
 		getTotal();
 		LocalBatch(data.localbatch);
 		//}
 		viewstate();
-	}).fail(function(data,textStatus,jqXHR) {
+	}).fail(function (data, textStatus, jqXHR) {
 		console.log("error");
 	});
 }
@@ -370,28 +375,32 @@ function LocalBatch(data) {
 
 function makeBatchTable(arr) {
 	$('#tbl_batch').dataTable().fnClearTable();
-    $('#tbl_batch').dataTable().fnDestroy();
-    $('#tbl_batch').DataTable({
-        data: arr,
-        bLengthChange : false,
+	$('#tbl_batch').dataTable().fnDestroy();
+	$('#tbl_batch').DataTable({
+		data: arr,
+		bLengthChange: false,
 		scrollY: "220px",
-	    paging: false,
-	    searching: false,
-        columns: [
-        	{ data: function(x) {
-        		if (x.id != '') {
-        			return '<input type="checkbox" class="checkboxes chk_batch_item" value="'+x.id+'"/>';
-        		} else {
-        			return '';
-        		}
-        	} },
-	        { data: function(x) {
-	        	return '<a href="javascript:;" class="btn btn-sm blue edit_batch" data-id="'+x.id+'" data-item="'+x.item+'" data-item_desc="'+x.item_desc+'" '+
-                    		'data-qty="'+x.qty+'" data-box="'+x.box+'" data-box_qty="'+x.box_qty+'" data-lot_no="'+x.lot_no+'" '+
-                    		'data-location="'+x.location+'" data-supplier="'+x.supplier+'" data-pressed_date="'+x.pressed_date+'" data-plating_date="'+x.plating_date+'" data-nr="'+x.not_for_iqc+'">'+
-                    		'<i class="fa fa-edit"></i>'+
-                    	'</a>';
-	        } },
+		paging: false,
+		searching: false,
+		columns: [
+			{
+				data: function (x) {
+					if (x.id != '') {
+						return '<input type="checkbox" class="checkboxes chk_batch_item" value="' + x.id + '"/>';
+					} else {
+						return '';
+					}
+				}
+			},
+			{
+				data: function (x) {
+					return '<a href="javascript:;" class="btn btn-sm blue edit_batch" data-id="' + x.id + '" data-item="' + x.item + '" data-item_desc="' + x.item_desc + '" ' +
+						'data-qty="' + x.qty + '" data-box="' + x.box + '" data-box_qty="' + x.box_qty + '" data-lot_no="' + x.lot_no + '" ' +
+						'data-location="' + x.location + '" data-supplier="' + x.supplier + '" data-pressed_date="' + x.pressed_date + '" data-plating_date="' + x.plating_date + '" data-nr="' + x.not_for_iqc + '">' +
+						'<i class="fa fa-edit"></i>' +
+						'</a>';
+				}
+			},
 
 			{ data: 'item' },
 			{ data: 'item_desc' },
@@ -402,33 +411,39 @@ function makeBatchTable(arr) {
 			{ data: 'location' },
 			{ data: 'supplier' },
 
-			{ data: function(x) {
-				var not_iqc = '';
-				if (x.not_for_iqc == 1) {
-					not_iqc = 'checked';
+			{
+				data: function (x) {
+					var not_iqc = '';
+					if (x.not_for_iqc == 1) {
+						not_iqc = 'checked';
+					}
+
+					return '<input type="checkbox" class="not_for_iqc" name="not_for_iqc[]" value="1" ' + not_iqc + '>';
 				}
+			},
 
-				return '<input type="checkbox" class="not_for_iqc" name="not_for_iqc[]" value="1" '+not_iqc+'>';
-			} },
+			{
+				data: function (x) {
+					var printed = '';
+					if (x.is_printed == 1) {
+						printed = 'checked';
+					}
 
-			{ data: function(x) {
-				var printed = '';
-				if (x.is_printed == 1) {
-					printed = 'checked';
+					return '<input type="checkbox" class="is_printed" name="is_printed[]" value="1" ' + printed + '>';
 				}
-
-				return '<input type="checkbox" class="is_printed" name="is_printed[]" value="1" '+printed+'>';
-			} },
-			{ data: function(x) {
-				return '<a href="javascript:;" class="btn input-sm grey-gallery barcode_item_batch" data-txnno="'+$('#invoice_no').val()+
-	                    	'" data-txndate="'+$('#receivingdate').val()+'" data-itemno="'+x.item+'" data-itemdesc="'+x.item_desc+'" data-qty="'+x.qty+
-	                    	'" data-bcodeqty="'+x.box_qty+'" data-lotno="'+x.lot_no+'" data-location="'+x.location+'">'+
-                            '<i class="fa fa-barcode"></i>'+
-                        '<a>';
-			} }
-        ],
-        columnDefs: [
-        	{ width: "4.1%", targets: 0 },
+			},
+			{
+				data: function (x) {
+					return '<a href="javascript:;" class="btn input-sm grey-gallery barcode_item_batch" data-txnno="' + $('#invoice_no').val() +
+						'" data-txndate="' + $('#receivingdate').val() + '" data-itemno="' + x.item + '" data-itemdesc="' + x.item_desc + '" data-qty="' + x.qty +
+						'" data-bcodeqty="' + x.box_qty + '" data-lotno="' + x.lot_no + '" data-location="' + x.location + '">' +
+						'<i class="fa fa-barcode"></i>' +
+						'<a>';
+				}
+			}
+		],
+		columnDefs: [
+			{ width: "4.1%", targets: 0 },
 			{ width: "5.1%", targets: 1 },
 			{ width: "7.1%", targets: 2 },
 			{ width: "14.1%", targets: 3 },
@@ -441,21 +456,21 @@ function makeBatchTable(arr) {
 			{ width: "6.1%", targets: 10 },
 			{ width: "4.1%", targets: 11 },
 			{ width: "4.1%", targets: 12 }
-        ]
-    });
+		]
+	});
 }
 
 function viewstate() {
-	$('#controlno').prop('readonly',false);
-	$('#btn_min').prop('disabled',false);
-	$('#btn_prv').prop('disabled',false);
-	$('#btn_nxt').prop('disabled',false);
-	$('#btn_max').prop('disabled',false);
+	$('#controlno').prop('readonly', false);
+	$('#btn_min').prop('disabled', false);
+	$('#btn_prv').prop('disabled', false);
+	$('#btn_nxt').prop('disabled', false);
+	$('#btn_max').prop('disabled', false);
 
-	$('#invoice_no').prop('readonly',true);
-	$('#orig_invoice').prop('readonly',true);
-	$('#invoicedate').prop('readonly',true);
-	$('#receivingdate').prop('readonly',true);
+	$('#invoice_no').prop('readonly', true);
+	$('#orig_invoice').prop('readonly', true);
+	$('#invoicedate').prop('readonly', true);
+	$('#receivingdate').prop('readonly', true);
 	$('#btn_save').hide();
 	$('#btn_back').hide();
 	$('#btn_addDetails').hide();
@@ -466,30 +481,30 @@ function viewstate() {
 	$('#btn_search').show();
 	$('#btn_excel').show();
 	$('#btn_print_iqc').show();
-	$('#btn_upload').prop('disabled',false);
-	$('.checkboxes').prop('disabled',true);
-	$('.group-checkable').prop('disabled',true);
-	$('.not_for_iqc').prop('disabled',true);
-	$('.is_printed').prop('disabled',true);
+	$('#btn_upload').prop('disabled', false);
+	$('.checkboxes').prop('disabled', true);
+	$('.group-checkable').prop('disabled', true);
+	$('.not_for_iqc').prop('disabled', true);
+	$('.is_printed').prop('disabled', true);
 }
 
 function addstate() {
 	clear();
-	$('#tbl_batch_body').html('<tr>'+
-			                '<td width="100%" colspan="14" class="text-center">'+
-			                	'No data displayed.'+
-			                '</td>'+
-			            '</tr>');
-	$('#controlno').prop('readonly',true);
-	$('#btn_min').prop('disabled',true);
-	$('#btn_prv').prop('disabled',true);
-	$('#btn_nxt').prop('disabled',true);
-	$('#btn_max').prop('disabled',true);
+	$('#tbl_batch_body').html('<tr>' +
+		'<td width="100%" colspan="14" class="text-center">' +
+		'No data displayed.' +
+		'</td>' +
+		'</tr>');
+	$('#controlno').prop('readonly', true);
+	$('#btn_min').prop('disabled', true);
+	$('#btn_prv').prop('disabled', true);
+	$('#btn_nxt').prop('disabled', true);
+	$('#btn_max').prop('disabled', true);
 
-	$('#invoice_no').prop('readonly',false);
-	$('#orig_invoice').prop('readonly',false);
-	$('#invoicedate').prop('readonly',false);
-	$('#receivingdate').prop('readonly',false);
+	$('#invoice_no').prop('readonly', false);
+	$('#orig_invoice').prop('readonly', false);
+	$('#invoicedate').prop('readonly', false);
+	$('#receivingdate').prop('readonly', false);
 	$('#btn_save').show();
 	$('#btn_back').show();
 
@@ -505,27 +520,27 @@ function addstate() {
 	$('#updated_at').val(datenow);
 
 	$('#save_type').val('ADD');
-	$('#btn_upload').prop('disabled',true);
-	$('.group-checkable').prop('disabled',true);
-	$('.checkboxes').prop('disabled',true);
-	$('.not_for_iqc').prop('disabled',true);
-	$('.is_printed').prop('disabled',true);
+	$('#btn_upload').prop('disabled', true);
+	$('.group-checkable').prop('disabled', true);
+	$('.checkboxes').prop('disabled', true);
+	$('.not_for_iqc').prop('disabled', true);
+	$('.is_printed').prop('disabled', true);
 
 	$('#invoicedate').val(getDate());
 	$('#receivingdate').val(getDate());
 }
 
 function editstate() {
-	$('#controlno').prop('readonly',true);
-	$('#btn_min').prop('disabled',true);
-	$('#btn_prv').prop('disabled',true);
-	$('#btn_nxt').prop('disabled',true);
-	$('#btn_max').prop('disabled',true);
+	$('#controlno').prop('readonly', true);
+	$('#btn_min').prop('disabled', true);
+	$('#btn_prv').prop('disabled', true);
+	$('#btn_nxt').prop('disabled', true);
+	$('#btn_max').prop('disabled', true);
 
-	$('#invoice_no').prop('readonly',false);
-	$('#orig_invoice').prop('readonly',false);
-	$('#invoicedate').prop('readonly',false);
-	$('#receivingdate').prop('readonly',false);
+	$('#invoice_no').prop('readonly', false);
+	$('#orig_invoice').prop('readonly', false);
+	$('#invoicedate').prop('readonly', false);
+	$('#receivingdate').prop('readonly', false);
 	$('#btn_save').show();
 	$('#btn_back').show();
 	$('#btn_addDetails').show();
@@ -538,11 +553,11 @@ function editstate() {
 	$('#btn_print_iqc').hide();
 
 	$('#save_type').val('EDIT');
-	$('#btn_upload').prop('disabled',false);
-	$('.checkboxes').prop('disabled',false);
-	$('.group-checkable').prop('disabled',false);
-	$('.not_for_iqc').prop('disabled',false);
-	$('.is_printed').prop('disabled',false);
+	$('#btn_upload').prop('disabled', false);
+	$('.checkboxes').prop('disabled', false);
+	$('.group-checkable').prop('disabled', false);
+	$('.not_for_iqc').prop('disabled', false);
+	$('.is_printed').prop('disabled', false);
 }
 
 function clear() {
@@ -550,7 +565,7 @@ function clear() {
 }
 
 function navigate(to) {
-	getLocalMaterialData(to,$('#loc_info_id').val());
+	getLocalMaterialData(to, $('#loc_info_id').val());
 }
 
 function isEmptyObject(obj) {
@@ -564,24 +579,23 @@ function isEmptyObject(obj) {
 }
 
 function summaryReport() {
-	window.location.href = LocalSummaryReport+ "?from="+$('#from').val()+"&&to="+$('#to').val()+"&&_token="+token;
+	window.location.href = LocalSummaryReport + "?from=" + $('#from').val() + "&&to=" + $('#to').val() + "&&_token=" + token;
 }
 
 function getPackageCategory() {
-	var options = '';
-	$('#edt_box').html(options);
-
+	// var options = '';
+	// $('#edt_box').html(options);
 	$.ajax({
 		url: getPackageCategoryURL,
 		type: 'GET',
 		dataType: 'JSON',
-		data: {_token: token},
-	}).done(function(data,textStatus,jqXHR) {
-		$.each(data, function(i, x) {
-			options = '<option value="'+x.text+'">'+x.text+'</option>';
+		data: { _token: token },
+	}).done(function (data, textStatus, jqXHR) {
+		$.each(data, function (i, x) {
+			options = '<option value="' + x.text + '">' + x.text + '</option>';
 			$('#edt_box').append(options);
 		});
-	}).fail(function(data,textStatus,jqXHR) {
+	}).fail(function (data, textStatus, jqXHR) {
 		console.log("error");
 	});
 }
@@ -589,16 +603,16 @@ function getPackageCategory() {
 function getDate() {
 	var d = new Date();
 
-    var month = d.getMonth()+1;
-    var day = d.getDate();
+	var month = d.getMonth() + 1;
+	var day = d.getDate();
 
-    var date = ((''+month).length<2 ? '0' : '') + month + '/'+ ((''+day).length<2 ? '0' : '') + day + '/' +d.getFullYear();
-    return date;
+	var date = (('' + month).length < 2 ? '0' : '') + month + '/' + (('' + day).length < 2 ? '0' : '') + day + '/' + d.getFullYear();
+	return date;
 }
 
-function delete_items(checkboxClass,url) {
+function delete_items(checkboxClass, url) {
 	var chkArray = [];
-	$(checkboxClass+":checked").each(function() {
+	$(checkboxClass + ":checked").each(function () {
 		chkArray.push($(this).val());
 	});
 
@@ -607,25 +621,25 @@ function delete_items(checkboxClass,url) {
 			_token: token,
 			ids: chkArray,
 		}
-		delete_now(url,data);
+		delete_now(url, data);
 	} else {
 		$('#delete_modal').modal('hide');
 		msg("Please select at least 1 item.", 'failed');
 	}
 }
 
-function delete_now(url,data) {
+function delete_now(url, data) {
 	$('#delete_modal').modal('hide');
 	$.ajax({
 		url: url,
 		type: 'POST',
 		dataType: 'JSON',
 		data: data,
-	}).done(function(data,textStatus,jqXHR) {
-		msg(data.msg,data.status);
+	}).done(function (data, textStatus, jqXHR) {
+		msg(data.msg, data.status);
 		getLocalMaterialData();
-	}).fail(function(data,textStatus,jqXHR) {
-		msg("There's an error occurred while processing.",'error');
+	}).fail(function (data, textStatus, jqXHR) {
+		msg("There's an error occurred while processing.", 'error');
 	});
 }
 
@@ -639,60 +653,64 @@ function getTotal() {
 		type: 'GET',
 		dataType: 'JSON',
 		data: data,
-	}).done(function(data,textStatus,jqXHR) {
+	}).done(function (data, textStatus, jqXHR) {
 		$('#total').val(data.total);
-	}).fail(function(data,textStatus,jqXHR) {
+	}).fail(function (data, textStatus, jqXHR) {
 		console.log("error");
 	});
-	
+
 }
 
 function makeSearchTable(arr) {
 	$('#tbl_search').dataTable().fnClearTable();
-    $('#tbl_search').dataTable().fnDestroy();
-    $('#tbl_search').dataTable({
-        data: arr,
-        bLengthChange : false,
-        scrollY: "250px",
-        searching: false,
-	    paging: false,
-        columns: [
-            { data: function(x) {
-                return "<button type='button' class='btn btn-sm btn-primary btn_search_detail' "+
-                				"data-wbs_loc_id='"+x.wbs_loc_id+"'>"+
-                			"<i class='fa fa-eye'></i>"+
-                		"</button>";
-            }, searchable: false, orderable: false },
+	$('#tbl_search').dataTable().fnDestroy();
+	$('#tbl_search').dataTable({
+		data: arr,
+		bLengthChange: false,
+		scrollY: "250px",
+		searching: false,
+		paging: false,
+		columns: [
+			{
+				data: function (x) {
+					return "<button type='button' class='btn btn-sm btn-primary btn_search_detail' " +
+						"data-wbs_loc_id='" + x.wbs_loc_id + "'>" +
+						"<i class='fa fa-eye'></i>" +
+						"</button>";
+				}, searchable: false, orderable: false
+			},
 
-            { data: 'wbs_loc_id' },
+			{ data: 'wbs_loc_id' },
 			{ data: 'received_date' },
 			{ data: 'orig_invoice_no' },
 			{ data: 'invoice_no' },
 			{ data: 'item' },
 			{ data: 'lot_no' },
 			{ data: 'qty' },
-			{ data: function(x) {
-				if (x.iqc_status == 1) {
-					return 'Accepted';
-				}
+			{
+				data: function (x) {
+					if (x.iqc_status == 1) {
+						return 'Accepted';
+					}
 
-				if (x.iqc_status == 0) {
-					return 'Pending';
-				}
+					if (x.iqc_status == 0) {
+						return 'Pending';
+					}
 
-				if (x.iqc_status == 2) {
-					return 'Rejected'
-				}
+					if (x.iqc_status == 2) {
+						return 'Rejected'
+					}
 
-				if (x.iqc_status == 3) {
-					return 'On-going'
-				}
+					if (x.iqc_status == 3) {
+						return 'On-going'
+					}
 
-			} },
+				}
+			},
 			{ data: 'create_user' },
 			{ data: 'created_at' },
 			{ data: 'update_user' },
 			{ data: 'updated_at' },
-        ]
-    });	
+		]
+	});
 }

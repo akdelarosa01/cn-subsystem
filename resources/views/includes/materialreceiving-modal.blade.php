@@ -82,14 +82,14 @@
                         <label for="pressed_date" class="control-label col-md-3">Pressed Date</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control input-sm clearbatch" id="pressed_date"
-                                placeholder="yyyy-dd-mm" name="pressed_date">
+                                placeholder="yyyy-mm-dd" name="pressed_date">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="plating_date" class="control-label col-md-3">Plating Date</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control input-sm clearbatch" id="plating_date"
-                                placeholder="yyyy-dd-mm" name="plating_date">
+                                placeholder="yyyy-mm-dd" name="plating_date">
                         </div>
                     </div>
                 </form>
@@ -189,14 +189,14 @@
                         <label for="edit_pressed_date" class="control-label col-md-3">Pressed Date</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control input-sm clearbatch" id="edit_pressed_date"
-                                placeholder="yyyy-dd-mm" name="pressed_date">
+                                placeholder="yyyy-mm-dd" name="pressed_date">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="edit_plating_date" class="control-label col-md-3">Plating Date</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control input-sm clearbatch" id="edit_plating_date"
-                                placeholder="yyyy-dd-mm" name="plating_date">
+                                placeholder="yyyy-mm-dd" name="plating_date">
                         </div>
                     </div>
                 </form>

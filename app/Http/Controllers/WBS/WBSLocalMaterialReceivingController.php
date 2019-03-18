@@ -1393,9 +1393,12 @@ class WBSLocalMaterialReceivingController extends Controller
 
     public function getPackage()
     {
-        return DB::connection($this->mysql)->table('tbl_package_category')
-                    ->select('description as id', 'description as text')
+        $dropdowns = DB::connection($this->main_mysql)->table('tbl_mdropdowns')
+                    ->where('category',86)
+                    ->select('description as text')
                     ->get();
+
+        return response()->json($dropdowns);
     }
 
     public function postDeleteBatchItem(Request $req)
