@@ -135,7 +135,7 @@
                         <td>{{ $row->drawnum }}</td>
                         <td>{{ $row->supplier }}</td>
                         <td>{{ $rqdqty }}</td>
-                        <td>{{ number_format($usage,4) }}</td>
+                        <td>{{ number_format($row->usage,4) }}</td>
                         <td>{{ number_format($kit,2) }}</td>
                         <td>{{ $row->whs100 }}</td>
                         <td>{{ $row->whs102 }}</td>
