@@ -89,7 +89,7 @@ class WBSMaterialKittingController extends Controller
                                                 i.VENDOR as supplier, 
                                                 x.WHS100 as whs100, 
                                                 x.WHS102 as whs102,
-                                                xp.SIYOU as usage
+                                                xp.SIYOUW as usage
                                         FROM XRECE r
                                         LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
                                         LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
@@ -114,7 +114,7 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS100, 
                                                 x.WHS102, 
                                                 x.RACKNO,
-                                                xp.SIYOU");
+                                                xp.SIYOUW");
                 $dt = Carbon::now();
                 $yr = substr($dt->format('Y'), 2);
                 $mm = $dt->format('m');
@@ -1014,7 +1014,7 @@ class WBSMaterialKittingController extends Controller
                                                 i.VENDOR as supplier, 
                                                 x.WHS100 as whs100, 
                                                 x.WHS102 as whs102,
-                                                xp.SIYOU as usage
+                                                xp.SIYOUW as usage
                                         FROM XSLIP s
                                         LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE
@@ -1039,7 +1039,7 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS100, 
                                                 x.WHS102, 
                                                 x.RACKNO,
-                                                xp.SIYOU");
+                                                xp.SIYOUW");
 
 
             foreach ($mk_details_data as $key => $row) {
