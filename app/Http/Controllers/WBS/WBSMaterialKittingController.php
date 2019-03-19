@@ -114,7 +114,7 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS100, 
                                                 x.WHS102, 
                                                 x.RACKNO,
-                                                xp.SIYOUW");
+                                                xp.SIYOU");
                 $dt = Carbon::now();
                 $yr = substr($dt->format('Y'), 2);
                 $mm = $dt->format('m');
@@ -1039,7 +1039,7 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS100, 
                                                 x.WHS102, 
                                                 x.RACKNO,
-                                                xp.SIYOUW");
+                                                xp.SIYOU");
 
 
             foreach ($mk_details_data as $key => $row) {
