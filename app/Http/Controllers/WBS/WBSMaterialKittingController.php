@@ -1030,7 +1030,7 @@ class WBSMaterialKittingController extends Controller
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
                                         JOIN XPRTS AS xp ON xp.KCODE = hk.CODE
-                                        WHERE s.SEIBAN = '$req->po'
+                                        WHERE s.SEIBAN = '$req->po' AND s.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
                                                 i.VENDOR, 
