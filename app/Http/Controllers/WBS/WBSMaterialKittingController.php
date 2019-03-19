@@ -104,7 +104,7 @@ class WBSMaterialKittingController extends Controller
                                                    WHERE z.RACKNO <> ''
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE
+                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
                                         WHERE r.SORDER = '".$req->po."' AND s.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
@@ -1029,7 +1029,7 @@ class WBSMaterialKittingController extends Controller
                                                    AND z1.ZAIK <> 0
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE
+                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
                                         WHERE s.SEIBAN = '$req->po' AND s.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
