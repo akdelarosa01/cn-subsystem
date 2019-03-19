@@ -89,7 +89,7 @@ class WBSMaterialKittingController extends Controller
                                                 i.VENDOR as supplier, 
                                                 x.WHS100 as whs100, 
                                                 x.WHS102 as whs102,
-                                                xp.SIYOUW as usage
+                                                xp.SIYOU as usage
                                         FROM XRECE r
                                         LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
                                         LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
@@ -127,7 +127,7 @@ class WBSMaterialKittingController extends Controller
 
                 if (count((array)$details) > 0) {
                     foreach ($details as $key => $detail) {
-                        $usage = $detail->rqdqty / $info->POqty;
+                        $usage = $detail->usage;
                         if ($detail->rqdqty % $info->POqty == 0) {
                             $usage = $detail->rqdqty / $info->POqty;
                             $rqdqty = $detail->rqdqty;
@@ -1014,7 +1014,7 @@ class WBSMaterialKittingController extends Controller
                                                 i.VENDOR as supplier, 
                                                 x.WHS100 as whs100, 
                                                 x.WHS102 as whs102,
-                                                xp.SIYOUW as usage
+                                                xp.SIYOU as usage
                                         FROM XSLIP s
                                         LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE

@@ -112,7 +112,7 @@
             	$usage = 0.0000;
 	            $rqdqty = 0;
 	            $kit = 0;
-            	$usage = $row->rqdqty / $info->POqty;
+            	$usage = $row->usage;
                 if ($row->rqdqty % $info->POqty == 0) {
                     $usage = $row->rqdqty / $info->POqty;
                     $rqdqty = $row->rqdqty;
