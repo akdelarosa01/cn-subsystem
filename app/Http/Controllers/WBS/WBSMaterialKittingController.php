@@ -88,7 +88,8 @@ class WBSMaterialKittingController extends Controller
                                                 i.DRAWING_NUM as drawnum, 
                                                 i.VENDOR as supplier, 
                                                 x.WHS100 as whs100, 
-                                                x.WHS102 as whs102
+                                                x.WHS102 as whs102,
+                                                xp.SIYOU as usage
                                         FROM XRECE r
                                         LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
                                         LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
@@ -103,6 +104,7 @@ class WBSMaterialKittingController extends Controller
                                                    WHERE z.RACKNO <> ''
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
+                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
                                         WHERE r.SORDER = '".$req->po."' AND s.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
@@ -111,7 +113,8 @@ class WBSMaterialKittingController extends Controller
                                                 i.DRAWING_NUM, 
                                                 x.WHS100, 
                                                 x.WHS102, 
-                                                x.RACKNO");
+                                                x.RACKNO,
+                                                xp.SIYOU");
                 $dt = Carbon::now();
                 $yr = substr($dt->format('Y'), 2);
                 $mm = $dt->format('m');
@@ -124,7 +127,7 @@ class WBSMaterialKittingController extends Controller
 
                 if (count((array)$details) > 0) {
                     foreach ($details as $key => $detail) {
-                        $usage = $detail->rqdqty / $info->POqty;
+                        $usage = $detail->usage;
                         if ($detail->rqdqty % $info->POqty == 0) {
                             $usage = $detail->rqdqty / $info->POqty;
                             $rqdqty = $detail->rqdqty;
@@ -190,7 +193,7 @@ class WBSMaterialKittingController extends Controller
             'detailid' => $id,
             'item' => $detail->kcode,
             'item_desc' => $this->com->convert_unicode($detail->partname),
-            'usage' => $usage,
+            'usage' => $detail->usage,
             'rqd_qty' => $this->cleanQty($rqdqty),
             'kit_qty' => 0.0000,
             'issued_qty' => ($this->getIssuedQty($req->po,$detail->kcode) !== null)? $this->getIssuedQty($req->po,$detail->kcode):0.0000,
@@ -1010,7 +1013,8 @@ class WBSMaterialKittingController extends Controller
                                                 i.DRAWING_NUM as drawnum, 
                                                 i.VENDOR as supplier, 
                                                 x.WHS100 as whs100, 
-                                                x.WHS102 as whs102
+                                                x.WHS102 as whs102,
+                                                xp.SIYOU as usage
                                         FROM XSLIP s
                                         LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE
@@ -1025,7 +1029,8 @@ class WBSMaterialKittingController extends Controller
                                                    AND z1.ZAIK <> 0
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        WHERE s.SEIBAN = '$req->po'
+                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
+                                        WHERE s.SEIBAN = '$req->po' AND s.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
                                                 i.VENDOR, 
@@ -1033,7 +1038,8 @@ class WBSMaterialKittingController extends Controller
                                                 i.DRAWING_NUM, 
                                                 x.WHS100, 
                                                 x.WHS102, 
-                                                x.RACKNO");
+                                                x.RACKNO,
+                                                xp.SIYOU");
 
 
             foreach ($mk_details_data as $key => $row) {
