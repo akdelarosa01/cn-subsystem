@@ -95,37 +95,6 @@ return [
             'database' => env('DB_DATABASE', 'pmi_yf'),
             'username' => env('DB_USERNAME', 'do.arca'),
             'password' => env('DB_PASSWORD', 'P@55w0rd'),
-<<<<<<< HEAD
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
-            'engine' => null,
-        ],
-
-        'mysqlpps' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '192.168.200.50'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'pmi_ts'),
-            'username' => env('DB_USERNAME', 'do.arca'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
-            'engine' => null,
-        ],
-
-        'mysqlmold' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '192.168.200.50'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'pmi_ts'),
-            'username' => env('DB_USERNAME', 'do.arca'),
-            'password' => env('DB_PASSWORD', 'P@55w0rd'),
-=======
->>>>>>> 66a0587c96b4da9f37e9ed8faca5789fdc1ce652
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
