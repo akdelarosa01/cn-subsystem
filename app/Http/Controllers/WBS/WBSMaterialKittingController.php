@@ -102,21 +102,20 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS102 as whs102,
                                                 xp.SIYOU as usage
                                         FROM XRECE r
-                                        LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
-                                        LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                        LEFT JOIN XHIKI hk ON r.CODE = hk.OYACODE AND hk.PORDER = '".$info->porder."'
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE
                                         LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                        LEFT JOIN XPRTS AS xp ON xp.KCODE = h.CODE AND xp.CODE = hk.OYACODE
                                         LEFT JOIN (SELECT z.CODE, 
                                                         ISNULL(z1.ZAIK,0) as WHS100, 
                                                         ISNULL(z2.ZAIK,0) as WHS102, 
                                                         z1.RACKNO FROM XZAIK z
-                                                   LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
-                                                   LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z1.ZAIK IS NOT NULL
-                                                   GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
+                                                    LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                                    LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                                    WHERE z1.ZAIK IS NOT NULL
+                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
-                                        WHERE r.SORDER = '".$req->po."' AND s.PORDER = '".$info->porder."'
+                                        WHERE r.SORDER = '".$req->po."' AND hk.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
                                                 i.VENDOR, 
@@ -126,6 +125,43 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS102, 
                                                 x.RACKNO,
                                                 xp.SIYOU");
+
+                                // SELECT hk.CODE as kcode, 
+                                //         h.NAME as partname, 
+                                //         hk.KVOL as rqdqty, 
+                                //         x.RACKNO as location, 
+                                //         i.DRAWING_NUM as drawnum, 
+                                //         i.VENDOR as supplier, 
+                                //         x.WHS100 as whs100, 
+                                //         x.WHS102 as whs102,
+                                //         xp.SIYOU as usage
+                                // FROM XRECE r
+                                // LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
+                                // LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                // LEFT JOIN XITEM i ON i.CODE = hk.CODE
+                                // LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                // LEFT JOIN (SELECT z.CODE, 
+                                //                 ISNULL(z1.ZAIK,0) as WHS100, 
+                                //                 ISNULL(z2.ZAIK,0) as WHS102, 
+                                //                 z1.RACKNO FROM XZAIK z
+                                //            LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                //            LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                //            WHERE z1.ZAIK IS NOT NULL
+                                //            GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
+                                // ) x ON x.CODE = hk.CODE
+                                // JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
+                                // WHERE r.SORDER = '".$req->po."' AND s.PORDER = '".$info->porder."'
+                                // GROUP BY hk.CODE, 
+                                //         h.NAME, 
+                                //         i.VENDOR, 
+                                //         hk.KVOL, 
+                                //         i.DRAWING_NUM, 
+                                //         x.WHS100, 
+                                //         x.WHS102, 
+                                //         x.RACKNO,
+                                //         xp.SIYOU
+
+                                        
                 $dt = Carbon::now();
                 $yr = substr($dt->format('Y'), 2);
                 $mm = $dt->format('m');
@@ -1028,22 +1064,21 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS100 as whs100, 
                                                 x.WHS102 as whs102,
                                                 xp.SIYOU as usage
-                                        FROM XSLIP s
-                                        LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                        FROM XRECE r
+                                        LEFT JOIN XHIKI hk ON r.CODE = hk.OYACODE AND hk.PORDER = '".$info->porder."'
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE
                                         LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                        LEFT JOIN XPRTS AS xp ON xp.KCODE = h.CODE AND xp.CODE = hk.OYACODE
                                         LEFT JOIN (SELECT z.CODE, 
                                                         ISNULL(z1.ZAIK,0) as WHS100, 
                                                         ISNULL(z2.ZAIK,0) as WHS102, 
                                                         z1.RACKNO FROM XZAIK z
-                                                   LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
-                                                   LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z1.ZAIK IS NOT NULL
-                                                   AND z1.ZAIK <> 0
-                                                   GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
+                                                    LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                                    LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                                    WHERE z1.ZAIK IS NOT NULL
+                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
-                                        WHERE s.SEIBAN = '$req->po' AND s.PORDER = '".$info->porder."'
+                                        WHERE r.SORDER = '".$req->po."' AND hk.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
                                                 i.VENDOR, 
