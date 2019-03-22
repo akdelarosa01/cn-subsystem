@@ -66,7 +66,7 @@ class WBSMaterialKittingController extends Controller
             $info = '';
             $details = '';
             $info = DB::connection($this->mssql)
-                        ->table('XSLIP as s')
+                        ->select('XSLIP as s')
                         ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
                         ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
                         ->select(DB::raw('s.CODE as code'),
@@ -78,6 +78,17 @@ class WBSMaterialKittingController extends Controller
                         ->orderBy('r.SEDA','desc')
                         ->orderBy('s.PORDER','desc')
                         ->first();
+
+                        // SELECT s.CODE as code,
+                        //         h.NAME as prodname,
+                        //         r.KVOL as POqty,
+                        //         s.PORDER as porder,
+                        //         r.SEDA as branch
+                        // FROM XSLIP as s
+                        // LEFT JOIN XHEAD as H ON s.CODE = h.CODE
+                        // LEFT JOIN XRECE as r ON s.SEIBAN = r.SORDER
+                        // WHERE s.SEIBAN = ''
+                        // ORDER BY r.SEDA DESC, s.PORDER DESC
 
             if (count((array)$info) > 0) {
                 $details = DB::connection($this->mssql)
@@ -101,7 +112,7 @@ class WBSMaterialKittingController extends Controller
                                                         z1.RACKNO FROM XZAIK z
                                                    LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
                                                    LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z.RACKNO <> ''
+                                                   WHERE z1.ZAIK IS NOT NULL
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
                                         JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
@@ -963,6 +974,8 @@ class WBSMaterialKittingController extends Controller
         $issuance_no = '';
         $max_id = '';
         $max_id = '';
+        $whs100 = [];
+        $whs102 = [];
         $whsnon = [];
         $whssm = [];
         $assy102 = [];
@@ -1025,7 +1038,7 @@ class WBSMaterialKittingController extends Controller
                                                         z1.RACKNO FROM XZAIK z
                                                    LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
                                                    LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z.RACKNO <> ''
+                                                   WHERE z1.ZAIK IS NOT NULL
                                                    AND z1.ZAIK <> 0
                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
@@ -1043,9 +1056,13 @@ class WBSMaterialKittingController extends Controller
 
 
             foreach ($mk_details_data as $key => $row) {
+                $w100 = $this->getHokanZaik($row->kcode,'WHS100');
+                $w102 = $this->getHokanZaik($row->kcode,'WHS102');
                 $non = $this->getHokanZaik($row->kcode,'WHS-NON');
                 $sm = $this->getHokanZaik($row->kcode,'WHS-SM');
                 $assy = $this->getHokanZaik($row->kcode,'ASSY102');
+                array_push($whs100, $w100);
+                array_push($whs102, $w102);
                 array_push($whsnon, $non);
                 array_push($whssm, $sm);
                 array_push($assy102, $assy);
@@ -1055,22 +1072,16 @@ class WBSMaterialKittingController extends Controller
                 'date' => $date,
                 'company_info' => $company_info,
                 'info' => $info,
-                // 'issuanceno' => $issuanceno,
-                // 'pono' => $pono,
-                // 'devicecode' => $devicecode,
-                // 'devicename' => $devicename,
-                // 'poqty' => $poqty,
-                // 'kitqty' => $kitqty,
-                // 'kitno' => $kitno,
-                // 'preparedby' => $preparedby,
-                // 'createdat' => $createdat,
-                // 'status' => $status,
                 'mk_details_data' => $mk_details_data,
                 'kitqty' => $req->kitqty,
+                'whs100' => $whs100,
+                'whs102' => $whs102,
                 'whsnon' => $whsnon,
                 'whssm' => $whssm,
                 'assy102' => $assy102,
             ];
+
+            //return dd($data);
 
             $pdf = PDF::loadView('pdf.wbs_material_kitting', $data)
                         ->setPaper('A4')
@@ -1091,7 +1102,7 @@ class WBSMaterialKittingController extends Controller
     				->where('HOKAN',$hokan)
     				->first();
     	if ($this->com->checkIfExistObject($db) > 0) {
-    		return $db->ZAIK;
+    		return intval($db->ZAIK);
     	} else {
     		return '0';
     	}

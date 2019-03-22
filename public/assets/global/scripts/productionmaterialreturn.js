@@ -52,6 +52,16 @@ $(function() {
 		$('#DetailsModal').modal('show');
 	});
 
+	$('#item').select2({
+		data: [],
+		placeholder: "Select an Item Code"
+	});
+
+	$('#lot_no').select2({
+		data: [],
+		placeholder: "Select a Lot Number"
+	});
+
 	$('#btn_save_details').on('click', function() {
 		var total_returned_qty = parseInt($('#total_returned_qty').val()) + parseInt($('#actual_returned_qty').val());
 		if (total_returned_qty > $('#return_qty').val()) {

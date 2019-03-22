@@ -137,8 +137,8 @@
                         <td>{{ $rqdqty }}</td>
                         <td>{{ number_format($row->usage,4) }}</td>
                         <td>{{ number_format($kit,2) }}</td>
-                        <td>{{ $row->whs100 }}</td>
-                        <td>{{ $row->whs102 }}</td>
+                        <td>{{ $whs100[$key] }}</td>
+                        <td>{{ $whs102[$key] }}</td>
                         <td>{{ $whsnon[$key] }}</td>
                         <td>{{ $whssm[$key] }}</td>
                         <td>{{ $assy102[$key] }}</td>
