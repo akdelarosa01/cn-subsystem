@@ -298,8 +298,8 @@ class WBSWhsIssuanceController extends Controller
 					'total_req_qty' => $req->total_req_qty,
 					'create_user' => Auth::user()->user_id,
 					'update_user' => Auth::user()->user_id,
-					'created_at' => date('Y-m-d'),
-					'updated_at' => date('Y-m-d'),
+					'created_at' => date('Y-m-d h:i:s'),
+					'updated_at' => date('Y-m-d h:i:s'),
 				]);
 
 			DB::connection($this->mysql)->table('tbl_request_summary')
@@ -387,7 +387,7 @@ class WBSWhsIssuanceController extends Controller
 				->update([
 					'status' => $sum_status,
 					'update_user' => Auth::user()->user_id,
-					'updated_at' => date('Y-m-d'),
+					'updated_at' => date('Y-m-d h:i:s'),
 				]);
 
 			DB::connection($this->mysql)->table('tbl_request_summary')
