@@ -66,7 +66,7 @@ class WBSMaterialKittingController extends Controller
             $info = '';
             $details = '';
             $info = DB::connection($this->mssql)
-                        ->select('XSLIP as s')
+                        ->table('XSLIP as s')
                         ->leftJoin('XHEAD as h', 's.CODE', '=', 'h.CODE')
                         ->leftjoin('XRECE as r', 's.SEIBAN','=','r.SORDER')
                         ->select(DB::raw('s.CODE as code'),
