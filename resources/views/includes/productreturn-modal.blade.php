@@ -9,18 +9,18 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label class="control-label col-sm-3">Issuance No.</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control input-sm" id="issuance_no">
                                     <input type="hidden" class="form-control input-sm" id="detail_id">
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group">
                     			<label for="" class="control-label col-sm-3">Item Code</label>
                     			<div class="col-sm-9">
-                    				<input type="text" class="form-control input-sm" id="item" name="item" readonly>
+                    				<input type="text" class="form-control input-sm" id="item" name="item">
                     			</div>
                     		</div>
 
@@ -28,6 +28,13 @@
                                 <label class="control-label col-sm-3">Item Name</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control input-sm" id="item_desc" name="item_desc" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="" class="control-label col-sm-3">Lot no</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-sm" id="lot_no" name="lot_no">
                                 </div>
                             </div>
 
@@ -58,13 +65,6 @@
                                     <input type="number" class="form-control input-sm" id="actual_returned_qty">
                                 </div>
                             </div>
-                            
-                    		<div class="form-group">
-                    			<label for="" class="control-label col-sm-3">Lot no</label>
-                    			<div class="col-sm-9">
-                    				<input type="text" class="form-control input-sm" id="lot_no" name="lot_no" readonly>
-                    			</div>
-                    		</div>
 
                     		<div class="form-group">
                     			<label for="" class="control-label col-sm-3">Remarks</label>

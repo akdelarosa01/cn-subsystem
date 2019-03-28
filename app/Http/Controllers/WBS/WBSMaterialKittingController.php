@@ -79,6 +79,17 @@ class WBSMaterialKittingController extends Controller
                         ->orderBy('s.PORDER','desc')
                         ->first();
 
+                        // SELECT s.CODE as code,
+                        //         h.NAME as prodname,
+                        //         r.KVOL as POqty,
+                        //         s.PORDER as porder,
+                        //         r.SEDA as branch
+                        // FROM XSLIP as s
+                        // LEFT JOIN XHEAD as H ON s.CODE = h.CODE
+                        // LEFT JOIN XRECE as r ON s.SEIBAN = r.SORDER
+                        // WHERE s.SEIBAN = ''
+                        // ORDER BY r.SEDA DESC, s.PORDER DESC
+
             if (count((array)$info) > 0) {
                 $details = DB::connection($this->mssql)
                                 ->select("SELECT hk.CODE as kcode, 
@@ -91,21 +102,20 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS102 as whs102,
                                                 xp.SIYOU as usage
                                         FROM XRECE r
-                                        LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
-                                        LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                        LEFT JOIN XHIKI hk ON r.CODE = hk.OYACODE AND hk.PORDER = '".$info->porder."'
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE
                                         LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                        LEFT JOIN XPRTS AS xp ON xp.KCODE = h.CODE AND xp.CODE = hk.OYACODE
                                         LEFT JOIN (SELECT z.CODE, 
                                                         ISNULL(z1.ZAIK,0) as WHS100, 
                                                         ISNULL(z2.ZAIK,0) as WHS102, 
                                                         z1.RACKNO FROM XZAIK z
-                                                   LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
-                                                   LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z.RACKNO <> ''
-                                                   GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
+                                                    LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                                    LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                                    WHERE z1.ZAIK IS NOT NULL
+                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
-                                        WHERE r.SORDER = '".$req->po."' AND s.PORDER = '".$info->porder."'
+                                        WHERE r.SORDER = '".$req->po."' AND hk.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
                                                 i.VENDOR, 
@@ -115,6 +125,43 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS102, 
                                                 x.RACKNO,
                                                 xp.SIYOU");
+
+                                // SELECT hk.CODE as kcode, 
+                                //         h.NAME as partname, 
+                                //         hk.KVOL as rqdqty, 
+                                //         x.RACKNO as location, 
+                                //         i.DRAWING_NUM as drawnum, 
+                                //         i.VENDOR as supplier, 
+                                //         x.WHS100 as whs100, 
+                                //         x.WHS102 as whs102,
+                                //         xp.SIYOU as usage
+                                // FROM XRECE r
+                                // LEFT JOIN XSLIP s ON r.SORDER = s.SEIBAN
+                                // LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                // LEFT JOIN XITEM i ON i.CODE = hk.CODE
+                                // LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                // LEFT JOIN (SELECT z.CODE, 
+                                //                 ISNULL(z1.ZAIK,0) as WHS100, 
+                                //                 ISNULL(z2.ZAIK,0) as WHS102, 
+                                //                 z1.RACKNO FROM XZAIK z
+                                //            LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                //            LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                //            WHERE z1.ZAIK IS NOT NULL
+                                //            GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
+                                // ) x ON x.CODE = hk.CODE
+                                // JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
+                                // WHERE r.SORDER = '".$req->po."' AND s.PORDER = '".$info->porder."'
+                                // GROUP BY hk.CODE, 
+                                //         h.NAME, 
+                                //         i.VENDOR, 
+                                //         hk.KVOL, 
+                                //         i.DRAWING_NUM, 
+                                //         x.WHS100, 
+                                //         x.WHS102, 
+                                //         x.RACKNO,
+                                //         xp.SIYOU
+
+                                        
                 $dt = Carbon::now();
                 $yr = substr($dt->format('Y'), 2);
                 $mm = $dt->format('m');
@@ -963,6 +1010,8 @@ class WBSMaterialKittingController extends Controller
         $issuance_no = '';
         $max_id = '';
         $max_id = '';
+        $whs100 = [];
+        $whs102 = [];
         $whsnon = [];
         $whssm = [];
         $assy102 = [];
@@ -1015,22 +1064,21 @@ class WBSMaterialKittingController extends Controller
                                                 x.WHS100 as whs100, 
                                                 x.WHS102 as whs102,
                                                 xp.SIYOU as usage
-                                        FROM XSLIP s
-                                        LEFT JOIN XHIKI hk ON s.PORDER = hk.PORDER
+                                        FROM XRECE r
+                                        LEFT JOIN XHIKI hk ON r.CODE = hk.OYACODE AND hk.PORDER = '".$info->porder."'
                                         LEFT JOIN XITEM i ON i.CODE = hk.CODE
                                         LEFT JOIN XHEAD h ON h.CODE = hk.CODE
+                                        LEFT JOIN XPRTS AS xp ON xp.KCODE = h.CODE AND xp.CODE = hk.OYACODE
                                         LEFT JOIN (SELECT z.CODE, 
                                                         ISNULL(z1.ZAIK,0) as WHS100, 
                                                         ISNULL(z2.ZAIK,0) as WHS102, 
                                                         z1.RACKNO FROM XZAIK z
-                                                   LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
-                                                   LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
-                                                   WHERE z.RACKNO <> ''
-                                                   AND z1.ZAIK <> 0
-                                                   GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
+                                                    LEFT JOIN XZAIK z1 ON z1.CODE = z.CODE AND z1.HOKAN = 'WHS100'
+                                                    LEFT JOIN XZAIK z2 ON z2.CODE = z.CODE AND z2.HOKAN = 'WHS102'
+                                                    WHERE z1.ZAIK IS NOT NULL
+                                                    GROUP BY z.CODE, z1.ZAIK, z2.ZAIK, z1.RACKNO
                                         ) x ON x.CODE = hk.CODE
-                                        JOIN XPRTS AS xp ON xp.KCODE = hk.CODE AND xp.CODE = hk.OYACODE
-                                        WHERE s.SEIBAN = '$req->po' AND s.PORDER = '".$info->porder."'
+                                        WHERE r.SORDER = '".$req->po."' AND hk.PORDER = '".$info->porder."'
                                         GROUP BY hk.CODE, 
                                                 h.NAME, 
                                                 i.VENDOR, 
@@ -1043,9 +1091,13 @@ class WBSMaterialKittingController extends Controller
 
 
             foreach ($mk_details_data as $key => $row) {
+                $w100 = $this->getHokanZaik($row->kcode,'WHS100');
+                $w102 = $this->getHokanZaik($row->kcode,'WHS102');
                 $non = $this->getHokanZaik($row->kcode,'WHS-NON');
                 $sm = $this->getHokanZaik($row->kcode,'WHS-SM');
                 $assy = $this->getHokanZaik($row->kcode,'ASSY102');
+                array_push($whs100, $w100);
+                array_push($whs102, $w102);
                 array_push($whsnon, $non);
                 array_push($whssm, $sm);
                 array_push($assy102, $assy);
@@ -1055,22 +1107,16 @@ class WBSMaterialKittingController extends Controller
                 'date' => $date,
                 'company_info' => $company_info,
                 'info' => $info,
-                // 'issuanceno' => $issuanceno,
-                // 'pono' => $pono,
-                // 'devicecode' => $devicecode,
-                // 'devicename' => $devicename,
-                // 'poqty' => $poqty,
-                // 'kitqty' => $kitqty,
-                // 'kitno' => $kitno,
-                // 'preparedby' => $preparedby,
-                // 'createdat' => $createdat,
-                // 'status' => $status,
                 'mk_details_data' => $mk_details_data,
                 'kitqty' => $req->kitqty,
+                'whs100' => $whs100,
+                'whs102' => $whs102,
                 'whsnon' => $whsnon,
                 'whssm' => $whssm,
                 'assy102' => $assy102,
             ];
+
+            //return dd($data);
 
             $pdf = PDF::loadView('pdf.wbs_material_kitting', $data)
                         ->setPaper('A4')
@@ -1091,7 +1137,7 @@ class WBSMaterialKittingController extends Controller
     				->where('HOKAN',$hokan)
     				->first();
     	if ($this->com->checkIfExistObject($db) > 0) {
-    		return $db->ZAIK;
+    		return intval($db->ZAIK);
     	} else {
     		return '0';
     	}
