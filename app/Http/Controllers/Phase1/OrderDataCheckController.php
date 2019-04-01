@@ -3321,22 +3321,31 @@ class OrderDataCheckController extends Controller
 
     private function umatchSalesInsertDB($uSalesPrice,$unit_unmatch)
     {
+        // $data = [
+        //     'salesprice' => $uSalesPrice,
+        //     'unmatch' => $unit_unmatch
+        // ];
+        // return dd($data);
         if ($uSalesPrice != null) {
             foreach (array_unique($unit_unmatch) as $key => $sales) {
                 try {
                     $error = 0;
-                    if ($uSalesPrice[$key]->PRICE != $sales) {
-                        $error = 1;
-                    }
 
-                    DB::connection($this->mysql)->table('unmatch_salesprice')
-                        ->insert([
-                            'code' => $uSalesPrice[$key]->CODE,
-                            'name' => $uSalesPrice[$key]->NAME,
-                            'price' => $uSalesPrice[$key]->PRICE,
-                            'r3_price' => $sales,
-                            'error' => $error,
-                        ]);
+                    if (isset($uSalesPrice[$key]->PRICE)) {
+                        if ($uSalesPrice[$key]->PRICE != $sales) {
+                            $error = 1;
+                        }
+
+                        DB::connection($this->mysql)->table('unmatch_salesprice')
+                            ->insert([
+                                'code' => $uSalesPrice[$key]->CODE,
+                                'name' => $uSalesPrice[$key]->NAME,
+                                'price' => $uSalesPrice[$key]->PRICE,
+                                'r3_price' => $sales,
+                                'error' => $error,
+                            ]);
+                    }
+                        
                 } catch (Exception $e) {
 
                 }
