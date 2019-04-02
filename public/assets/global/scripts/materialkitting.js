@@ -1,3 +1,4 @@
+
 $( function() {
 	getMaterialKittingData();
 	checkAllCheckboxesInTable('.tbl_kitdetails_group_checkable','.kit_checkboxes');
@@ -301,9 +302,9 @@ $( function() {
 		var iss_qty = parseFloat($('#iss_qty').val());
 		var kit_qty = parseFloat($('#iss_kitqty').val());
 
-		// if (iss_qty > kit_qty) {
-		// 	msg("Issued quantity is larger than kit quantity.",'failed');
-		// } else {
+		if (iss_qty > kit_qty) {
+			msg("Issued quantity is larger than kit quantity.",'failed');
+		} else {
 			var data = {
 					_token: token,
 					issuanceno: $('#issuanceno').val(),
@@ -402,7 +403,7 @@ $( function() {
 			});
 			
 			$('#addIssuanceDetailsModal').modal('hide');
-		//}
+		}
 	});
 
 	$('#btn_search').on('click', function() {
@@ -481,6 +482,16 @@ $( function() {
 	$('#btn_kittinglist').on('click', function() {
 		$('#kittingListModal').modal('show');
 	});
+
+	// $("#iss_qty").on("change", function () {
+	// 	var iss_kitqty = $("#iss_kitqty").val();
+	// 	var iss_qty = $(this).val();
+
+	// 	if (iss_qty > iss_kitqty) {
+	// 		msg("Invalid Input","failed")
+	// 		$(this).val("");
+	// 	}
+	// });
 });
 
 function setControl(ctrl) {
@@ -1023,30 +1034,42 @@ function getFifoTable(data) {
 	// 	$('#tbl_fifo_body').append(tbl_fifo_body);
 	// 	cnt++;
 	// });
+	var firstrow_id;
+	$.each(data, function(index, value) {
+		if (index == 0) {
+			firstrow_id = value.id;
+		}
+	});
 	$('#tbl_fifo').dataTable().fnClearTable();
     $('#tbl_fifo').dataTable().fnDestroy();
 	$('#tbl_fifo').dataTable({
-			data:data,
-			order:[6,'asc'],
-			columns:[
-				{data: function (x) 
-					{
-						return '<td>'+
-									'<button class="btn green btn-sm showfifoitem" data-id="'+x.id+'" data-item="'+x.item+'" '+
-										'data-item_desc="'+x.item_desc+'" data-qty="'+x.qty+'" data-lot_no="'+x.lot_no+'" '+
-										'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'">'+
-										'<i class="fa fa-edit"></i>'+
-									'</button>'+
-								'</td>'
+		data:data,
+		order:[6,'asc'],
+		columns:[
+			{data: function (x) 
+				{
+					var isDisabled="";
+					if (x.id != firstrow_id) {
+						isDisabled="disabled";
+					} else {
+						isDisabled="";
 					}
-				},
-				{data:'item'},
-				{data:'item_desc'},
-				{data:'qty'},
-				{data:'lot_no'},
-				{data:'location'},
-				{data:'receive_date'}
-			]
+					return '<td>'+
+								'<button class="btn green btn-sm showfifoitem" data-id="'+x.id+'" data-item="'+x.item+'" '+
+									'data-item_desc="'+x.item_desc+'" data-qty="'+x.qty+'" data-lot_no="'+x.lot_no+'" '+
+									'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'" '+isDisabled+'>'+
+									'<i class="fa fa-edit"></i>'+
+								'</button>'+
+							'</td>'
+				}
+			},
+			{data:'item'},
+			{data:'item_desc'},
+			{data:'qty'},
+			{data:'lot_no'},
+			{data:'location'},
+			{data:'receive_date'}
+		]
 	})
 }
 
