@@ -8098,7 +8098,7 @@
                 <tr>
                     <td width="30px"></td>
 
-                    <td width="80px"></td>
+                    <td width="70px"></td>
 
                     <td width="40px" class="text-center">{{$dt->prepared_by}}</td>
 
