@@ -1034,12 +1034,12 @@ function getFifoTable(data) {
 	// 	$('#tbl_fifo_body').append(tbl_fifo_body);
 	// 	cnt++;
 	// });
-	var firstrow_id;
-	$.each(data, function(index, value) {
-		if (index == 0) {
-			firstrow_id = value.id;
-		}
-	});
+	// var firstrow_id;
+	// $.each(data, function(index, value) {
+	// 	if (index == 0) {
+	// 		firstrow_id = value.id;
+	// 	}
+	// });
 	$('#tbl_fifo').dataTable().fnClearTable();
     $('#tbl_fifo').dataTable().fnDestroy();
 	$('#tbl_fifo').dataTable({
@@ -1048,16 +1048,16 @@ function getFifoTable(data) {
 		columns:[
 			{data: function (x) 
 				{
-					var isDisabled="";
-					if (x.id != firstrow_id) {
-						isDisabled="disabled";
-					} else {
-						isDisabled="";
-					}
+					// var isDisabled="";
+					// if (x.id != firstrow_id) {
+					// 	isDisabled="disabled";
+					// } else {
+					// 	isDisabled="";
+					// }
 					return '<td>'+
 								'<button class="btn green btn-sm showfifoitem" data-id="'+x.id+'" data-item="'+x.item+'" '+
 									'data-item_desc="'+x.item_desc+'" data-qty="'+x.qty+'" data-lot_no="'+x.lot_no+'" '+
-									'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'" '+isDisabled+'>'+
+									'data-location="'+x.location+'" data-receive_date="'+x.receive_date+'" data-kit_qty="'+x.kit_qty+'">'+
 									'<i class="fa fa-edit"></i>'+
 								'</button>'+
 							'</td>'
