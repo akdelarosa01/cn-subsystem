@@ -278,27 +278,29 @@ class WBSMaterialReceivingController extends Controller
                                 'updated_at' => date('Y-m-d h:i:s a')
                             ]);
 
-                        DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')
-                            ->where('item',$itemall)
-                            ->where('wbs_mr_id',$mrdata->receive_no)
-                            ->update([
-                                'not_for_iqc' => $checkiqc,
-                                'for_kitting' => $checkiqc,
-                                'iqc_status' => $iqcstatus,
-                                'update_user' => Auth::user()->user_id,
-                                'updated_at' => date('Y-m-d h:i:s a')
-                            ]);
+                        $this->checkIfJudged($itemall,$mrdata->receive_no,$checkiqc,$iqcstatus);
 
-                        DB::connection($this->mysql)->table('tbl_wbs_inventory')
-                            ->where('item',$itemall)
-                            ->where('wbs_mr_id',$mrdata->receive_no)
-                            ->update([
-                                'not_for_iqc' => $checkiqc,
-                                'for_kitting' => $checkiqc,
-                                'iqc_status' => $iqcstatus,
-                                'update_user' => Auth::user()->user_id,
-                                'updated_at' => date('Y-m-d h:i:s a')
-                            ]);
+                        // DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')
+                        //     ->where('item',$itemall)
+                        //     ->where('wbs_mr_id',$mrdata->receive_no)
+                        //     ->update([
+                        //         'not_for_iqc' => $checkiqc,
+                        //         'for_kitting' => $checkiqc,
+                        //         'iqc_status' => $iqcstatus,
+                        //         'update_user' => Auth::user()->user_id,
+                        //         'updated_at' => date('Y-m-d h:i:s a')
+                        //     ]);
+
+                        // DB::connection($this->mysql)->table('tbl_wbs_inventory')
+                        //     ->where('item',$itemall)
+                        //     ->where('wbs_mr_id',$mrdata->receive_no)
+                        //     ->update([
+                        //         'not_for_iqc' => $checkiqc,
+                        //         'for_kitting' => $checkiqc,
+                        //         'iqc_status' => $iqcstatus,
+                        //         'update_user' => Auth::user()->user_id,
+                        //         'updated_at' => date('Y-m-d h:i:s a')
+                        //     ]);
                     }
                 }
             } else {
@@ -2636,6 +2638,69 @@ class WBSMaterialReceivingController extends Controller
         } else {
             $id = $this->com->getDropdownById(41);
             return response()->json($id);
+        }
+    }
+
+    public function checkIfJudged($itemall,$receive_no,$checkiqc,$iqcstatus)
+    {
+        $mats = DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')
+                    ->where('item',$itemall)
+                    ->where('wbs_mr_id',$receive_no)
+                    ->get();
+
+        foreach ($mats as $key => $mat) {
+            if (intval($mat->iqc_status) > 0) {
+                DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')
+                    ->where('item',$itemall)
+                    ->where('wbs_mr_id',$receive_no)
+                    ->update([
+                        'not_for_iqc' => $checkiqc,
+                        'for_kitting' => $checkiqc,
+                        'update_user' => Auth::user()->user_id,
+                        'updated_at' => date('Y-m-d h:i:s a')
+                    ]);
+            } else {
+                DB::connection($this->mysql)->table('tbl_wbs_material_receiving_batch')
+                    ->where('item',$itemall)
+                    ->where('wbs_mr_id',$receive_no)
+                    ->update([
+                        'not_for_iqc' => $checkiqc,
+                        'for_kitting' => $checkiqc,
+                        'iqc_status' => $iqcstatus,
+                        'update_user' => Auth::user()->user_id,
+                        'updated_at' => date('Y-m-d h:i:s a')
+                    ]);
+            }
+        }
+
+        $invs = DB::connection($this->mysql)->table('tbl_wbs_inventory')
+                    ->where('item',$itemall)
+                    ->where('wbs_mr_id',$receive_no)
+                    ->get();
+
+        foreach ($invs as $key => $inv) {
+            if (intval($inv->iqc_status) > 0) {
+                DB::connection($this->mysql)->table('tbl_wbs_inventory')
+                    ->where('item',$itemall)
+                    ->where('wbs_mr_id',$receive_no)
+                    ->update([
+                        'not_for_iqc' => $checkiqc,
+                        'for_kitting' => $checkiqc,
+                        'update_user' => Auth::user()->user_id,
+                        'updated_at' => date('Y-m-d h:i:s a')
+                    ]);
+            } else {
+                DB::connection($this->mysql)->table('tbl_wbs_inventory')
+                    ->where('item',$itemall)
+                    ->where('wbs_mr_id',$receive_no)
+                    ->update([
+                        'not_for_iqc' => $checkiqc,
+                        'for_kitting' => $checkiqc,
+                        'iqc_status' => $iqcstatus,
+                        'update_user' => Auth::user()->user_id,
+                        'updated_at' => date('Y-m-d h:i:s a')
+                    ]);
+            }
         }
     }
 }
