@@ -242,11 +242,11 @@
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">WW#</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control input-sm clear" id="ww" name="ww" readonly>
+                                        <input type="text" class="form-control input-sm " id="ww" name="ww" readonly>
                                     </div>
                                     <label class="control-label col-sm-3">FY#</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control input-sm clear" id="fy" name="fy" readonly>
+                                        <input type="text" class="form-control input-sm " id="fy" name="fy" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group" id="time_ins_div">

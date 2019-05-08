@@ -886,27 +886,34 @@ function getProbeProduct(code) {
 }
 
 function samplingPLan() {
-	var data = {
-		_token: token,
-		soi: $('#severity_of_inspection').val(),
-		il: $('#inspection_lvl').val(),
-		lot_qty: $('#lot_qty').val(),
-		aql: $('#aql').val()
-	};
+	var _soi= $('#severity_of_inspection').val();
+	var	_il= $('#inspection_lvl').val();
+	var	_lot_qty= $('#lot_qty').val();
+	var	_aql= $('#aql').val();
 
-	$.ajax({
-		url: SamplingPlanURL,
-		type: 'GET',
-		dataType: 'JSON',
-		data: data,
-	}).done(function(data, textStatus, jqXHR) {
-		console.log(data);
-		$('#accept').val(data.accept);
-		$('#reject').val(data.reject);
-		$('#sample_size').val(data.size);
-	}).fail(function(data, textStatus, jqXHR) {
-		console.log("error");
-	});
+	if (soi != "" && il != "" && lot_qty != "" && aql !="") {
+		var data = {
+			_token: token,
+			soi: _soi,
+			il: _il,
+			lot_qty: _lot_qty,
+			aql: _aql
+		};
+	
+		$.ajax({
+			url: SamplingPlanURL,
+			type: 'GET',
+			dataType: 'JSON',
+			data: data,
+		}).done(function(data, textStatus, jqXHR) {
+			console.log(data);
+			$('#accept').val(data.accept);
+			$('#reject').val(data.reject);
+			$('#sample_size').val(data.size);
+		}).fail(function(data, textStatus, jqXHR) {
+			console.log("error");
+		});
+	}
 }
 
 function getShift() {

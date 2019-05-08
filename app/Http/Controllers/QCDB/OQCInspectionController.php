@@ -134,8 +134,7 @@ class OQCInspectionController extends Controller
             }
 
             if ($req->search_from !== '' || !empty($req->search_from)) {
-                $date = " AND date_inspected BETWEEN '".$this->com->convertDate($req->search_from,'Y-m-d').
-                        "' AND '".$this->com->convertDate($req->search_to,'Y-m-d')."'";
+                $date = " AND date_inspected BETWEEN '".$this->com->convertDate($req->search_from,'Y-m-d')."' AND '".$this->com->convertDate($req->search_to,'Y-m-d')."'";
             }
 
             $query = DB::connection($this->mysql)->table('oqc_inspections')
@@ -543,8 +542,7 @@ class OQCInspectionController extends Controller
         $sums = [];
 
         if ($req->from !== '' || !empty($req->from)) {
-            $date = " AND a.date_inspected BETWEEN '".$this->com->convertDate($req->from,'Y-m-d').
-                    "' AND '".$this->com->convertDate($req->to,'Y-m-d')."'";
+            $date = " AND a.date_inspected BETWEEN '".$this->com->convertDate($req->from,'Y-m-d')."' AND '".$this->com->convertDate($req->to,'Y-m-d')."'";
         }
 
         if ($req->po !== '' || !empty($req->po)) {
@@ -747,8 +745,7 @@ class OQCInspectionController extends Controller
                 $sums = [];
 
                 if ($req->from !== '' || !empty($req->from)) {
-                    $date = " AND a.date_inspected BETWEEN '".$this->com->convertDate($req->from,'Y-m-d').
-                    "' AND '".$this->com->convertDate($req->to,'Y-m-d')."'";
+                    $date = " AND a.date_inspected BETWEEN '".$this->com->convertDate($req->from,'Y-m-d')."' AND '".$this->com->convertDate($req->to,'Y-m-d')."'";
                 }
 
                 if ($req->po !== '' || !empty($req->po)) {
@@ -1118,8 +1115,7 @@ class OQCInspectionController extends Controller
 
         // wheres
         if (!empty($req->gfrom) && !empty($req->gto)) {
-            $date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d').
-                            "' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
+            $date_inspected = " AND date_inspected BETWEEN '".$this->com->convertDate($req->gfrom,'Y-m-d')."' AND '".$this->com->convertDate($req->gto,'Y-m-d')."'";
         }
 
         if (!empty($req->field1) && !empty($req->content1)) {
